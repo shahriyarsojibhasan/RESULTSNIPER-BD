@@ -59,13 +59,18 @@ Developed & maintained by **Shahriyar Sojib Hasan**.
 > **Important:** **GitHub Pages** hosts static files (`.html`, `.js`, `.css`) only — it **cannot execute Python (`server.py`)** or backend API proxies (`/api/...`, `/api/verify`).
 > To keep ResultSniper BD live **24/7**, deploy the repository to a Python/Docker cloud platform:
 
-### Option A: One-Click Deploy on Render (Free 24/7 Ready)
-1. Push this repo to GitHub (already done!).
-2. Go to [render.com](https://render.com) → **New** → **Blueprint** (or **Web Service**) → Connect `ResultSniper-BD`.
-3. Render automatically reads **`render.yaml`**, installs `requirements.txt`, sets `RS_SECRET`, and runs `python server.py` with `/health` monitoring.
-4. *(Tip)* Pair with a free uptime monitor (e.g., UptimeRobot pinging `https://your-app.onrender.com/health` every 5–10 minutes) to prevent free-tier cold sleeps.
+### Option A: One-Click Deploy on Vercel (24/7 Serverless Free Tier)
+- Includes native **`vercel.json`** and stateless **`api/index.py`** Python Serverless Function (`v2` signed captcha sessions + `/health` + dynamic `/sitemap.xml` & `/robots.txt`).
+1. Import **`shahriyarsojibhasan/ResultSniper-BD`** into [vercel.com/new](https://vercel.com/new).
+2. Add Environment Variable **`RS_SECRET`** (any random 32+ char secret string so QR verification tokens persist permanently across serverless cold starts).
+3. Click **Deploy** — live in seconds on Vercel's global CDN!
 
-### Option B: Railway / Koyeb / Fly.io / Docker
+### Option B: One-Click Deploy on Render (24/7 Web Service)
+1. Push this repo to GitHub (already done!).
+2. Go to [render.com](https://render.com) → **New** → **Blueprint** → Connect `ResultSniper-BD` (auto-reads **`render.yaml`**).
+3. *(Tip)* Pair with a free uptime monitor pinging `https://your-domain/health` every 5–10 minutes on Render Free Tier.
+
+### Option C: Railway / Koyeb / Fly.io / Docker
 - Included **`Dockerfile`** and **`Procfile`** work out-of-the-box on Railway, Koyeb, Fly.io, DigitalOcean App Platform, or any VPS (`docker build -t resultsniper . && docker run -p 8080:8080 resultsniper`).
 
 ---

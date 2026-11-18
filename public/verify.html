@@ -42,25 +42,25 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col text-slate-800 antialiased">
+<body class="min-h-screen flex flex-col text-slate-800 antialiased overflow-x-hidden">
 
   <div id="screenUI" class="min-h-screen flex flex-col">
     <div class="flag-bar"></div>
 
     <!-- Header -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-        <a href="/" class="flex items-center gap-3 group">
-          <img src="/favicon.svg" alt="ResultSniper BD" class="w-10 h-10 shrink-0">
-          <div>
-            <div class="font-bold text-lg text-slate-900 tracking-tight flex items-center gap-2">
+      <div class="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-3">
+        <a href="/" class="flex items-center gap-2.5 sm:gap-3 min-w-0 group">
+          <img src="/favicon.svg" alt="ResultSniper BD" class="w-8 h-8 sm:w-10 sm:h-10 shrink-0">
+          <div class="min-w-0">
+            <div class="font-bold text-base sm:text-lg text-slate-900 tracking-tight flex items-center gap-1.5 sm:gap-2 truncate">
               <span>ResultSniper <span class="text-emerald-700 font-extrabold">BD</span></span>
-              <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded-full border border-emerald-200">VERIFY</span>
+              <span class="text-[9px] sm:text-[10px] bg-emerald-50 text-emerald-800 font-bold px-1.5 sm:px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">VERIFY</span>
             </div>
-            <div class="text-[11px] text-slate-500 font-medium" data-i18n="v.subtitle">Cryptographic Document Verification Portal</div>
+            <div class="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate" data-i18n="v.subtitle">Cryptographic Document Verification Portal</div>
           </div>
         </a>
-        <div class="flex items-center gap-2 sm:gap-3">
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
           <nav class="hidden md:flex items-center gap-1">
             <a href="/" class="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50" data-i18n="nav.home">Result Finder</a>
             <a href="/about" class="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50" data-i18n="nav.about">About</a>
@@ -71,23 +71,29 @@
           </div>
         </div>
       </div>
+      <nav class="md:hidden flex items-center justify-around gap-1 px-2 py-1.5 bg-slate-50 border-t border-slate-200 text-xs font-semibold text-slate-700">
+        <a href="/" class="px-2 py-1 rounded-md hover:bg-slate-100" data-i18n="nav.home">Result Finder</a>
+        <a href="/verify" class="px-2 py-1 rounded-md text-emerald-700 bg-emerald-50" data-i18n="nav.verify">Verify Marksheet</a>
+        <a href="/about" class="px-2 py-1 rounded-md hover:bg-slate-100" data-i18n="nav.about">About</a>
+        <a href="/terms" class="px-2 py-1 rounded-md hover:bg-slate-100" data-i18n="nav.terms">Terms</a>
+      </nav>
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-8 sm:py-10">
+    <main class="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-5 sm:py-10">
 
       <!-- Token Input Box -->
-      <div id="inputBox" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-8">
-        <h1 class="text-lg font-bold text-slate-900 mb-1.5 flex items-center gap-2">
+      <div id="inputBox" class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm mb-6 sm:mb-8">
+        <h1 class="text-base sm:text-lg font-bold text-slate-900 mb-1.5 flex items-center gap-2">
           <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           <span data-i18n="v.inputTitle">Cryptographic Marksheet Token Verification</span>
         </h1>
-        <p class="text-sm text-slate-500 mb-4" data-i18n="v.inputDesc">
+        <p class="text-xs sm:text-sm text-slate-500 mb-4" data-i18n="v.inputDesc">
           Scan a marksheet QR code or paste the HMAC security token below to verify authenticity against official Education Board records.
         </p>
-        <div class="flex flex-col sm:flex-row gap-3">
-          <input id="tokenInput" type="text" placeholder="e.g. eJxtVlt..._a9Fq" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-sm mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
-          <button onclick="handleManualVerify()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors shadow-sm flex items-center justify-center gap-2">
+        <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+          <input id="tokenInput" type="text" placeholder="e.g. eJxtVlt..._a9Fq" class="flex-1 min-w-0 px-3.5 sm:px-4 py-2.5 rounded-xl border border-slate-300 text-sm mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+          <button onclick="handleManualVerify()" class="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors shadow-sm flex items-center justify-center gap-2 shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             <span data-i18n="v.btnVerify">Verify Token</span>
           </button>
@@ -95,19 +101,19 @@
       </div>
 
       <!-- Loading -->
-      <div id="loadingState" class="hidden text-center py-16">
+      <div id="loadingState" class="hidden text-center py-12 sm:py-16">
         <div class="inline-block animate-spin w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full mb-4"></div>
         <div class="text-base font-semibold text-slate-700" data-i18n="v.loading">Verifying Digital Signature…</div>
         <div class="text-xs text-slate-400 mt-1">HMAC-SHA256 Cryptographic Verification</div>
       </div>
 
       <!-- Invalid / Tampered -->
-      <div id="invalidState" class="hidden bg-white border border-rose-200 rounded-2xl p-8 shadow-sm text-center">
-        <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <div id="invalidState" class="hidden bg-white border border-rose-200 rounded-2xl p-5 sm:p-8 shadow-sm text-center">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         </div>
-        <h2 class="text-xl font-bold text-rose-700 mb-2" data-i18n="v.invalidTitle">Verification Failed (INVALID / TAMPERED)</h2>
-        <p id="invalidMsg" class="text-sm text-slate-600 max-w-md mx-auto mb-6">
+        <h2 class="text-lg sm:text-xl font-bold text-rose-700 mb-2" data-i18n="v.invalidTitle">Verification Failed (INVALID / TAMPERED)</h2>
+        <p id="invalidMsg" class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mb-6">
           This security token is invalid or modified. Its cryptographic signature does not match an official record.
         </p>
         <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl max-w-lg mx-auto text-xs text-left text-slate-600">
@@ -123,19 +129,19 @@
       <!-- Valid State -->
       <div id="validState" class="hidden">
         <!-- Verified Banner -->
-        <div class="bg-gradient-to-r from-emerald-700 to-emerald-600 text-white rounded-2xl p-5 shadow-lg shadow-emerald-700/20 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white shrink-0">
-              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="bg-gradient-to-r from-emerald-700 to-emerald-600 text-white rounded-2xl p-4 sm:p-5 shadow-lg shadow-emerald-700/20 mb-5 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+          <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-xl flex items-center justify-center text-white shrink-0">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <div>
-              <div class="text-[11px] uppercase font-bold tracking-wider text-emerald-200">OFFICIAL VERIFIED DOCUMENT</div>
-              <div class="text-xl font-bold" data-i18n="v.validHeading">Authentic &amp; Untampered Board Record</div>
-              <div class="text-xs text-emerald-100 mt-0.5" data-i18n="v.validSub">HMAC-SHA256 verified directly against Education Board data</div>
+            <div class="min-w-0">
+              <div class="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-emerald-200">OFFICIAL VERIFIED DOCUMENT</div>
+              <div class="text-base sm:text-xl font-bold leading-snug" data-i18n="v.validHeading">Authentic &amp; Untampered Board Record</div>
+              <div class="text-[11px] sm:text-xs text-emerald-100 mt-0.5" data-i18n="v.validSub">HMAC-SHA256 verified directly against Education Board data</div>
             </div>
           </div>
-          <div class="text-left sm:text-right sm:border-l sm:border-emerald-500/50 sm:pl-4">
-            <div class="text-[11px] text-emerald-200">DOCUMENT ID</div>
+          <div class="text-left sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-emerald-500/40 sm:border-l sm:border-emerald-500/50 sm:pl-4 shrink-0">
+            <div class="text-[10px] sm:text-[11px] text-emerald-200">DOCUMENT ID</div>
             <div id="vDocId" class="mono font-bold text-sm tracking-wider">RS-XXXXXXXXXX</div>
             <div id="vIssuedAt" class="text-[10px] text-emerald-100 mt-0.5">--</div>
           </div>
@@ -143,48 +149,48 @@
 
         <!-- Document Preview -->
         <div class="bg-white border-2 border-slate-200 rounded-2xl shadow-lg overflow-hidden soft-paper">
-          <div class="p-6 border-b border-slate-200 bg-white/85 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3.5">
-              <img src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal" class="w-14 h-14 object-contain">
-              <div>
-                <div class="text-[11px] text-slate-500 font-bold tracking-wider uppercase" data-i18n="v.gov">Government of the People's Republic of Bangladesh</div>
-                <div id="vBoardName" class="text-lg font-extrabold text-slate-900 leading-tight">Board of Intermediate &amp; Secondary Education</div>
-                <div id="vExamYear" class="text-xs text-emerald-800 font-semibold mt-0.5">HSC EXAMINATION - 2026</div>
+          <div class="p-4 sm:p-6 border-b border-slate-200 bg-white/85 flex items-center justify-between gap-2.5 sm:gap-4">
+            <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+              <img src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal" class="w-10 h-10 sm:w-14 sm:h-14 object-contain shrink-0">
+              <div class="min-w-0">
+                <div class="text-[9.5px] sm:text-[11px] text-slate-500 font-bold tracking-wider uppercase truncate" data-i18n="v.gov">Government of the People's Republic of Bangladesh</div>
+                <div id="vBoardName" class="text-sm sm:text-lg font-extrabold text-slate-900 leading-tight break-words">Board of Intermediate &amp; Secondary Education</div>
+                <div id="vExamYear" class="text-[11px] sm:text-xs text-emerald-800 font-semibold mt-0.5">HSC EXAMINATION - 2026</div>
               </div>
             </div>
-            <img id="vBoardLogo" src="/assets/boards/govt.svg" alt="Board Crest" class="w-14 h-14 object-contain">
+            <img id="vBoardLogo" src="/assets/boards/govt.svg" alt="Board Crest" class="w-10 h-10 sm:w-14 sm:h-14 object-contain shrink-0">
           </div>
 
-          <div class="p-6 space-y-6">
-            <div class="bg-white/95 border border-slate-200 rounded-xl p-5 shadow-sm">
+          <div class="p-4 sm:p-6 space-y-5 sm:space-y-6">
+            <div class="bg-white/95 border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
               <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3" data-i18n="v.profile">Candidate Profile</div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2.5 gap-x-6 text-sm">
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.name">Name:</span><span id="vName" class="font-bold text-slate-800 uppercase">--</span></div>
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.father">Father's Name:</span><span id="vFather" class="font-semibold text-slate-800 uppercase">--</span></div>
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.mother">Mother's Name:</span><span id="vMother" class="font-semibold text-slate-800 uppercase">--</span></div>
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.roll">Roll No.:</span><span id="vRoll" class="mono font-bold text-slate-900">--</span></div>
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.reg">Registration No.:</span><span id="vReg" class="mono font-bold text-slate-900">--</span></div>
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.group">Group:</span><span id="vGroup" class="font-semibold text-slate-800 uppercase">--</span></div>
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.inst">Institution:</span><span id="vCollege" class="font-semibold text-slate-800 text-right">--</span></div>
-                <div class="flex justify-between border-b border-slate-100 pb-1.5"><span class="text-slate-500" data-i18n="v.gpa">Result (GPA):</span><span id="vGpa" class="font-black text-emerald-700 mono text-base">--</span></div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2.5 gap-x-6 text-xs sm:text-sm">
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.name">Name:</span><span id="vName" class="font-bold text-slate-800 uppercase text-right break-words min-w-0">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.father">Father's Name:</span><span id="vFather" class="font-semibold text-slate-800 uppercase text-right break-words min-w-0">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.mother">Mother's Name:</span><span id="vMother" class="font-semibold text-slate-800 uppercase text-right break-words min-w-0">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.roll">Roll No.:</span><span id="vRoll" class="mono font-bold text-slate-900 text-right">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.reg">Registration No.:</span><span id="vReg" class="mono font-bold text-slate-900 text-right">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.group">Group:</span><span id="vGroup" class="font-semibold text-slate-800 uppercase text-right">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.inst">Institution:</span><span id="vCollege" class="font-semibold text-slate-800 text-right break-words min-w-0">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.gpa">Result (GPA):</span><span id="vGpa" class="font-black text-emerald-700 mono text-sm sm:text-base text-right">--</span></div>
               </div>
             </div>
 
             <!-- Subjects -->
             <div class="bg-white/95 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-              <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex justify-between items-center">
+              <div class="bg-slate-50 px-3 sm:px-4 py-2.5 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
                 <span class="text-xs font-bold text-slate-700 uppercase tracking-wider" data-i18n="v.subTitle">Verified Subject Grades &amp; Marks</span>
                 <span id="vTotMarksBadge" class="text-xs font-bold text-emerald-700 mono"></span>
               </div>
               <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                  <thead class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
+                <table class="w-full text-left text-xs sm:text-sm min-w-[440px]">
+                  <thead class="bg-slate-50 text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
                     <tr>
-                      <th class="py-2.5 px-4" data-i18n="v.code">Code</th>
-                      <th class="py-2.5 px-4" data-i18n="v.subName">Subject Name</th>
-                      <th class="py-2.5 px-4 text-center" data-i18n="v.marks">Marks</th>
-                      <th class="py-2.5 px-4 text-center" data-i18n="v.grade">Grade</th>
-                      <th class="py-2.5 px-4 text-center">GP</th>
+                      <th class="py-2 sm:py-2.5 px-3 sm:px-4" data-i18n="v.code">Code</th>
+                      <th class="py-2 sm:py-2.5 px-3 sm:px-4" data-i18n="v.subName">Subject Name</th>
+                      <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center" data-i18n="v.marks">Marks</th>
+                      <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center" data-i18n="v.grade">Grade</th>
+                      <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center">GP</th>
                     </tr>
                   </thead>
                   <tbody id="vSubjectsBody" class="divide-y divide-slate-100 text-slate-700"></tbody>
@@ -193,23 +199,23 @@
             </div>
 
             <!-- Action & Print Controls (1-Page A4 / Letter) -->
-            <div class="border border-emerald-200 bg-emerald-50/50 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="border border-emerald-200 bg-emerald-50/50 rounded-xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
               <div class="flex items-center gap-3 text-xs text-slate-600">
                 <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 </div>
-                <div>
+                <div class="min-w-0">
                   <div class="font-bold text-slate-800" data-i18n="v.secTitle">Cryptographic Non-Tamper Guarantee</div>
                   <div class="text-slate-500 mt-0.5" data-i18n="v.secDesc">Any edit to Roll, Name, Marks or Grade breaks the digital signature.</div>
                 </div>
               </div>
-              <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 w-full md:w-auto">
                 <select id="vPaperSize" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-700">
                   <option value="A4">A4 (1-Page PDF)</option>
                   <option value="letter">Letter (1-Page PDF)</option>
                 </select>
-                <button onclick="printVerifiedPDF()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-4 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 shadow-sm">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <button onclick="printVerifiedPDF()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-4 py-2.5 sm:py-2 rounded-lg text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                   <span data-i18n="v.printBtn">Print / Save 1-Page PDF</span>
                 </button>
               </div>

@@ -75,21 +75,21 @@
     }
   </style>
 </head>
-<body class="font-sans text-ink-900 antialiased">
+<body class="font-sans text-ink-900 antialiased overflow-x-hidden">
 <div id="app" class="min-h-screen flex flex-col">
   <div class="flag-bar"></div>
 
-  <!-- Header -->
+  <!-- Header (Responsive Mobile + Desktop) -->
   <header class="bg-white border-b border-ink-200 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-      <a href="/" class="flex items-center gap-3 min-w-0">
-        <img src="/favicon.svg" alt="ResultSniper BD" class="w-10 h-10 shrink-0">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-3">
+      <a href="/" class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <img src="/favicon.svg" alt="ResultSniper BD" class="w-8 h-8 sm:w-10 sm:h-10 shrink-0">
         <div class="min-w-0">
-          <div class="font-extrabold text-lg leading-tight text-brand-800 tracking-tight" style="font-family:Inter">ResultSniper <span class="text-flag-red">BD</span></div>
-          <div class="text-[11px] text-ink-500 truncate" data-i18n="nav.tagline">Detailed Marks • Merit Score • QR Verified</div>
+          <div class="font-extrabold text-base sm:text-lg leading-tight text-brand-800 tracking-tight truncate" style="font-family:Inter">ResultSniper <span class="text-flag-red">BD</span></div>
+          <div class="text-[10px] sm:text-[11px] text-ink-500 truncate" data-i18n="nav.tagline">Detailed Marks • Merit Score • QR Verified</div>
         </div>
       </a>
-      <div class="flex items-center gap-2 sm:gap-4">
+      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
         <nav class="hidden md:flex items-center gap-1 text-sm font-semibold text-ink-700">
           <a href="/verify" class="px-3 py-2 rounded-lg hover:bg-ink-100" data-i18n="nav.verify">Verify Marksheet</a>
           <a href="/about" class="px-3 py-2 rounded-lg hover:bg-ink-100" data-i18n="nav.about">About</a>
@@ -101,36 +101,43 @@
         </div>
       </div>
     </div>
+    <!-- Mobile compact navigation bar -->
+    <nav class="md:hidden flex items-center justify-around gap-1 px-2 py-1.5 bg-slate-50 border-t border-ink-200 text-xs font-semibold text-ink-700">
+      <a href="/" class="px-2 py-1 rounded-md text-brand-700 bg-brand-50" data-i18n="nav.home">Result Finder</a>
+      <a href="/verify" class="px-2 py-1 rounded-md hover:bg-ink-100" data-i18n="nav.verify">Verify Marksheet</a>
+      <a href="/about" class="px-2 py-1 rounded-md hover:bg-ink-100" data-i18n="nav.about">About</a>
+      <a href="/terms" class="px-2 py-1 rounded-md hover:bg-ink-100" data-i18n="nav.terms">Terms</a>
+    </nav>
   </header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-5">
 
-    <!-- Tabs -->
-    <div class="card p-1.5 flex gap-1 overflow-x-auto">
-      <button class="tab active flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="check">
-        <i data-lucide="search" class="w-4 h-4"></i><span data-i18n="tab.check">Result Finder</span>
+    <!-- Tabs (2x2 clean grid on mobile, inline flex on tablet/desktop) -->
+    <div class="card p-1.5 grid grid-cols-2 sm:flex gap-1.5">
+      <button class="tab active sm:flex-1 py-2.5 px-2 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2" data-tab="check">
+        <i data-lucide="search" class="w-4 h-4 shrink-0"></i><span class="truncate" data-i18n="tab.check">Result Finder</span>
       </button>
-      <button class="tab flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="sniper">
-        <i data-lucide="crosshair" class="w-4 h-4"></i><span data-i18n="tab.sniper">Auto-Retry Monitor</span>
+      <button class="tab sm:flex-1 py-2.5 px-2 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2" data-tab="sniper">
+        <i data-lucide="crosshair" class="w-4 h-4 shrink-0"></i><span class="truncate" data-i18n="tab.sniper">Auto-Retry Monitor</span>
       </button>
-      <button class="tab flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="pdf">
-        <i data-lucide="file-search" class="w-4 h-4"></i><span data-i18n="tab.pdf">PDF Scanner</span>
+      <button class="tab sm:flex-1 py-2.5 px-2 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2" data-tab="pdf">
+        <i data-lucide="file-search" class="w-4 h-4 shrink-0"></i><span class="truncate" data-i18n="tab.pdf">PDF Scanner</span>
       </button>
-      <button class="tab flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="profiles">
-        <i data-lucide="bookmark" class="w-4 h-4"></i><span data-i18n="tab.profiles">Saved &amp; History</span>
+      <button class="tab sm:flex-1 py-2.5 px-2 sm:px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2" data-tab="profiles">
+        <i data-lucide="bookmark" class="w-4 h-4 shrink-0"></i><span class="truncate" data-i18n="tab.profiles">Saved &amp; History</span>
       </button>
     </div>
 
     <!-- ================= TAB: RESULT ================= -->
-    <section id="tab-check" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+    <section id="tab-check" class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
       <!-- Form -->
-      <div class="lg:col-span-4 card p-5 space-y-4">
+      <div class="lg:col-span-4 card p-4 sm:p-5 space-y-4 min-w-0">
         <div>
           <div class="lbl" data-i18n="form.engine">Result Engine (API Gateway)</div>
-          <div class="grid grid-cols-3 gap-1 p-1 bg-ink-100 rounded-xl text-[12px]">
-            <button type="button" class="seg active py-2 rounded-lg leading-tight" data-method="edu"><span data-i18n="eng.edu">Full Marks</span><br><span class="text-[10px] font-normal opacity-70">eduboard</span></button>
-            <button type="button" class="seg py-2 rounded-lg leading-tight" data-method="eboard"><span data-i18n="eng.eboard">All Boards</span><br><span class="text-[10px] font-normal opacity-70">bangladeshgov</span></button>
-            <button type="button" class="seg py-2 rounded-lg leading-tight" data-method="ebr"><span data-i18n="eng.ebr">EBR Merit</span><br><span class="text-[10px] font-normal opacity-70">api.ebr.bd</span></button>
+          <div class="grid grid-cols-3 gap-1 p-1 bg-ink-100 rounded-xl text-[11px] sm:text-[12px]">
+            <button type="button" class="seg active py-2 px-1 rounded-lg leading-tight truncate" data-method="edu"><span data-i18n="eng.edu">Full Marks</span><br><span class="text-[9.5px] sm:text-[10px] font-normal opacity-70">eduboard</span></button>
+            <button type="button" class="seg py-2 px-1 rounded-lg leading-tight truncate" data-method="eboard"><span data-i18n="eng.eboard">All Boards</span><br><span class="text-[9.5px] sm:text-[10px] font-normal opacity-70">bangladeshgov</span></button>
+            <button type="button" class="seg py-2 px-1 rounded-lg leading-tight truncate" data-method="ebr"><span data-i18n="eng.ebr">EBR Merit</span><br><span class="text-[9.5px] sm:text-[10px] font-normal opacity-70">api.ebr.bd</span></button>
           </div>
           <p id="methodHint" class="text-[12px] text-ink-500 mt-2 leading-relaxed"></p>
         </div>
@@ -145,24 +152,24 @@
               <option value="dibs">DIBS (Diploma in Business Studies)</option>
             </select>
           </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="lbl" for="year" data-i18n="form.year">Passing Year</label><select id="year" class="inp"></select></div>
-            <div><label class="lbl" for="board" data-i18n="form.board">Education Board</label><select id="board" class="inp board-select"></select></div>
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+            <div class="min-w-0"><label class="lbl" for="year" data-i18n="form.year">Passing Year</label><select id="year" class="inp"></select></div>
+            <div class="min-w-0"><label class="lbl" for="board" data-i18n="form.board">Education Board</label><select id="board" class="inp board-select"></select></div>
           </div>
           <div><label class="lbl" for="roll" data-i18n="form.roll">Roll Number</label><input id="roll" class="inp mono" inputmode="numeric" maxlength="8" data-i18n-ph="ph.roll" placeholder="Enter Roll No." required></div>
           <div><label class="lbl" for="reg" data-i18n="form.reg">Registration Number</label><input id="reg" class="inp mono" inputmode="numeric" maxlength="12" data-i18n-ph="ph.reg" placeholder="Enter Registration No."></div>
 
           <div id="captchaBox" class="p-3 rounded-xl border border-brand-200 bg-brand-50 space-y-2">
-            <div class="flex items-center justify-between">
-              <span id="captchaLabel" class="text-xs font-bold text-brand-700 flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i><span>Security Code</span></span>
-              <button type="button" id="captchaRefresh" class="text-[11px] font-bold text-brand-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-brand-100"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span data-i18n="form.newcap">Reload</span></button>
+            <div class="flex items-center justify-between gap-2">
+              <span id="captchaLabel" class="text-xs font-bold text-brand-700 flex items-center gap-1.5 min-w-0 truncate"><i data-lucide="shield-check" class="w-4 h-4 shrink-0"></i><span class="truncate">Security Code</span></span>
+              <button type="button" id="captchaRefresh" class="text-[11px] font-bold text-brand-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-brand-100 shrink-0"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span data-i18n="form.newcap">Reload</span></button>
             </div>
             <div class="grid grid-cols-2 gap-2 items-stretch">
-              <div class="h-12 bg-white rounded-lg border border-ink-200 flex items-center justify-center overflow-hidden relative">
+              <div class="h-12 min-w-0 bg-white rounded-lg border border-ink-200 flex items-center justify-center overflow-hidden relative">
                 <img id="captchaImg" alt="captcha" class="h-full w-full object-contain">
                 <span id="captchaLoading" class="absolute inset-0 flex items-center justify-center text-xs text-ink-500 bg-white">Loading…</span>
               </div>
-              <input id="captchaInput" class="inp mono text-center text-lg font-bold tracking-widest h-12" data-i18n-ph="ph.cap" placeholder="Code">
+              <input id="captchaInput" class="inp min-w-0 mono text-center text-lg font-bold tracking-widest h-12" data-i18n-ph="ph.cap" placeholder="Code">
             </div>
           </div>
 
@@ -171,77 +178,79 @@
       </div>
 
       <!-- Output -->
-      <div class="lg:col-span-8 space-y-5 min-w-0">
+      <div class="lg:col-span-8 space-y-4 sm:space-y-5 min-w-0">
         <!-- Placeholder -->
-        <div id="placeholder" class="card p-10 text-center text-ink-500">
-          <div class="w-16 h-16 mx-auto rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-3"><i data-lucide="award" class="w-8 h-8"></i></div>
-          <h3 class="font-bold text-ink-900 text-lg" data-i18n="ph.title">Ready to Fetch Official Result</h3>
-          <p class="text-sm mt-1 max-w-md mx-auto" data-i18n="ph.desc">Enter your Roll &amp; Registration number to fetch official board subject-wise marks, merit score analytics, and a 1-page QR-verified marksheet PDF.</p>
+        <div id="placeholder" class="card p-6 sm:p-10 text-center text-ink-500">
+          <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-3"><i data-lucide="award" class="w-7 h-7 sm:w-8 sm:h-8"></i></div>
+          <h3 class="font-bold text-ink-900 text-base sm:text-lg" data-i18n="ph.title">Ready to Fetch Official Result</h3>
+          <p class="text-xs sm:text-sm mt-1 max-w-md mx-auto" data-i18n="ph.desc">Enter your Roll &amp; Registration number to fetch official board subject-wise marks, merit score analytics, and a 1-page QR-verified marksheet PDF.</p>
         </div>
 
         <!-- Result card -->
         <div id="resultCard" class="hidden card overflow-hidden">
-          <div id="resHeader" class="p-5 sm:p-6 flex flex-wrap items-center gap-4 border-b border-ink-200">
-            <img id="resLogo" class="w-16 h-16 object-contain shrink-0" alt="board logo">
-            <div class="flex-1 min-w-0">
-              <div id="resSource" class="text-[11px] font-bold text-brand-700 uppercase tracking-wider"></div>
-              <h2 id="resName" class="text-xl sm:text-2xl font-extrabold text-ink-900 truncate"></h2>
-              <div id="resInst" class="text-sm text-ink-500 truncate"></div>
+          <div id="resHeader" class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-3.5 sm:gap-4 border-b border-ink-200">
+            <div class="flex items-center gap-3.5 min-w-0 flex-1">
+              <img id="resLogo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain shrink-0" alt="board logo">
+              <div class="flex-1 min-w-0">
+                <div id="resSource" class="text-[10px] sm:text-[11px] font-bold text-brand-700 uppercase tracking-wider truncate"></div>
+                <h2 id="resName" class="text-lg sm:text-2xl font-extrabold text-ink-900 break-words leading-snug"></h2>
+                <div id="resInst" class="text-xs sm:text-sm text-ink-500 break-words"></div>
+              </div>
             </div>
-            <div id="resGpaBox" class="text-center px-5 py-3 rounded-2xl border">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-ink-500">GPA</div>
-              <div id="resGpa" class="text-3xl font-extrabold mono"></div>
+            <div id="resGpaBox" class="w-full sm:w-auto flex sm:block items-center justify-between sm:text-center px-4 py-2.5 sm:px-5 sm:py-3 rounded-2xl border shrink-0">
+              <div class="text-[11px] sm:text-[10px] font-bold uppercase tracking-wider text-ink-500">GPA</div>
+              <div id="resGpa" class="text-2xl sm:text-3xl font-extrabold mono"></div>
               <div id="resStatus" class="text-[11px] font-bold"></div>
             </div>
           </div>
 
-          <div class="p-5 sm:p-6 space-y-5">
-            <div id="resInfo" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-sm"></div>
+          <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
+            <div id="resInfo" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 text-xs sm:text-sm"></div>
 
             <!-- Merit score -->
-            <div class="rounded-2xl border border-gold-100 bg-gold-50 p-4 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <div class="font-bold text-ink-900 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-gold-600"></i><span data-i18n="merit.title">Merit Score &amp; Standing</span></div>
-                <label class="text-xs text-ink-500 flex items-center gap-2"><span data-i18n="merit.fourth">4th Subject:</span>
-                  <select id="fourthSel" class="inp !py-1 !px-2 !text-xs !w-auto"></select>
+            <div class="rounded-2xl border border-gold-100 bg-gold-50 p-3.5 sm:p-4 space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="font-bold text-ink-900 text-sm sm:text-base flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-gold-600 shrink-0"></i><span data-i18n="merit.title">Merit Score &amp; Standing</span></div>
+                <label class="text-xs text-ink-500 flex items-center gap-2 max-w-full"><span class="shrink-0" data-i18n="merit.fourth">4th Subject:</span>
+                  <select id="fourthSel" class="inp !py-1 !px-2 !text-xs flex-1 sm:flex-initial sm:!w-auto min-w-0"></select>
                 </label>
               </div>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="meritGrid"></div>
-              <div class="grid grid-cols-3 gap-2.5">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5" id="meritGrid"></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
                 <div><label class="lbl" data-i18n="merit.b">Board Rank</label><input id="mBoard" class="inp mono !py-1.5" placeholder="#"></div>
                 <div><label class="lbl" data-i18n="merit.g">Group Rank</label><input id="mGroup" class="inp mono !py-1.5" placeholder="#"></div>
                 <div><label class="lbl" data-i18n="merit.i">Institute Rank</label><input id="mInst" class="inp mono !py-1.5" placeholder="#"></div>
               </div>
-              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-ink-500">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-[11px] text-ink-500">
                 <span data-i18n="merit.note">Add board/group merit ranks optionally (shown as informational reference on print copy).</span>
-                <button type="button" id="ebrLookupBtn" class="text-brand-700 font-bold hover:underline inline-flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i><span data-i18n="merit.openEbr">Lookup on ebr.bd (New Tab)</span></button>
+                <button type="button" id="ebrLookupBtn" class="text-brand-700 font-bold hover:underline inline-flex items-center gap-1 self-start sm:self-auto shrink-0"><i data-lucide="external-link" class="w-3 h-3"></i><span data-i18n="merit.openEbr">Lookup on ebr.bd (New Tab)</span></button>
               </div>
             </div>
 
             <!-- Subjects -->
-            <div id="subWrap" class="overflow-x-auto rounded-2xl border border-ink-200">
-              <table class="w-full text-sm min-w-[620px]">
-                <thead class="bg-ink-50 text-ink-500 text-[11px] uppercase tracking-wider">
+            <div id="subWrap" class="overflow-x-auto rounded-2xl border border-ink-200 -mx-0.5 sm:mx-0">
+              <table class="w-full text-xs sm:text-sm min-w-[540px]">
+                <thead class="bg-ink-50 text-ink-500 text-[10px] sm:text-[11px] uppercase tracking-wider">
                   <tr>
-                    <th class="text-left py-3 px-4" data-i18n="tbl.sub">Subject</th>
-                    <th class="py-3 px-2">CQ</th><th class="py-3 px-2">MCQ</th><th class="py-3 px-2" data-i18n="tbl.prac">Practical</th>
-                    <th class="py-3 px-2 text-brand-700" data-i18n="tbl.tot">Total</th><th class="py-3 px-2" data-i18n="tbl.grd">Grade</th><th class="py-3 px-3">GP</th>
+                    <th class="text-left py-2.5 sm:py-3 px-3 sm:px-4" data-i18n="tbl.sub">Subject</th>
+                    <th class="py-2.5 sm:py-3 px-1.5 sm:px-2">CQ</th><th class="py-2.5 sm:py-3 px-1.5 sm:px-2">MCQ</th><th class="py-2.5 sm:py-3 px-1.5 sm:px-2" data-i18n="tbl.prac">Practical</th>
+                    <th class="py-2.5 sm:py-3 px-2 text-brand-700" data-i18n="tbl.tot">Total</th><th class="py-2.5 sm:py-3 px-2" data-i18n="tbl.grd">Grade</th><th class="py-2.5 sm:py-3 px-2 sm:px-3">GP</th>
                   </tr>
                 </thead>
                 <tbody id="subBody" class="divide-y divide-ink-100"></tbody>
               </table>
             </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-              <div id="verifyBadge" class="text-xs text-ink-500 flex items-center gap-1.5"></div>
-              <div class="flex flex-wrap items-center gap-2">
-                <select id="paperSizeSel" class="inp !py-2 !px-2.5 !text-xs !w-auto font-semibold">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+              <div id="verifyBadge" class="text-xs text-ink-500 flex items-center gap-1.5 break-all"></div>
+              <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
+                <select id="paperSizeSel" class="inp col-span-2 sm:w-auto !py-2 !px-2.5 !text-xs font-semibold">
                   <option value="A4">PDF: A4 (1-Page)</option>
                   <option value="letter">PDF: Letter (1-Page)</option>
                 </select>
-                <button id="saveProfileBtn" class="btn btn-ghost px-3.5 py-2 text-sm"><i data-lucide="bookmark-plus" class="w-4 h-4"></i><span data-i18n="act.save">Save</span></button>
-                <button id="copyVerifyBtn" class="btn btn-ghost px-3.5 py-2 text-sm"><i data-lucide="link" class="w-4 h-4"></i><span data-i18n="act.copy">Copy Verify Link</span></button>
-                <button id="printBtn" class="btn btn-primary px-4 py-2 text-sm"><i data-lucide="printer" class="w-4 h-4"></i><span data-i18n="act.print">Print / PDF</span></button>
+                <button id="saveProfileBtn" class="btn btn-ghost px-3 py-2 text-xs sm:text-sm"><i data-lucide="bookmark-plus" class="w-4 h-4 shrink-0"></i><span data-i18n="act.save">Save</span></button>
+                <button id="copyVerifyBtn" class="btn btn-ghost px-3 py-2 text-xs sm:text-sm"><i data-lucide="link" class="w-4 h-4 shrink-0"></i><span class="truncate" data-i18n="act.copy">Copy Link</span></button>
+                <button id="printBtn" class="btn btn-primary col-span-2 sm:w-auto px-4 py-2.5 sm:py-2 text-sm"><i data-lucide="printer" class="w-4 h-4 shrink-0"></i><span data-i18n="act.print">Print / PDF</span></button>
               </div>
             </div>
           </div>
@@ -250,13 +259,13 @@
     </section>
 
     <!-- ================= TAB: SNIPER (Auto-Retry Monitor) ================= -->
-    <section id="tab-sniper" class="hidden card p-5 sm:p-6 space-y-5">
+    <section id="tab-sniper" class="hidden card p-4 sm:p-6 space-y-5">
       <div class="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 class="text-lg font-extrabold flex items-center gap-2"><i data-lucide="crosshair" class="w-5 h-5 text-brand-600"></i><span data-i18n="snip.title">Auto-Retry Server-Busy Monitor</span></h2>
-          <p class="text-sm text-ink-500 mt-1 max-w-2xl" data-i18n="snip.desc">Solve the visible security key once and start monitoring on Result Day — automatically retries if government servers return timeouts or 5xx errors until your result is captured.</p>
+        <div class="min-w-0">
+          <h2 class="text-base sm:text-lg font-extrabold flex items-center gap-2"><i data-lucide="crosshair" class="w-5 h-5 text-brand-600 shrink-0"></i><span data-i18n="snip.title">Auto-Retry Server-Busy Monitor</span></h2>
+          <p class="text-xs sm:text-sm text-ink-500 mt-1 max-w-2xl" data-i18n="snip.desc">Solve the visible security key once and start monitoring on Result Day — automatically retries if government servers return timeouts or 5xx errors until your result is captured.</p>
         </div>
-        <div id="sniperBadge" class="text-xs font-bold px-3 py-1.5 rounded-full bg-ink-100 text-ink-500" data-i18n="snip.idle">Idle</div>
+        <div id="sniperBadge" class="text-xs font-bold px-3 py-1.5 rounded-full bg-ink-100 text-ink-500 shrink-0" data-i18n="snip.idle">Idle</div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -267,23 +276,23 @@
         <div><label class="lbl" data-i18n="form.exam">Exam</label><select id="sExam" class="inp"><option value="hsc">HSC</option><option value="ssc">SSC</option><option value="jsc">JSC</option></select></div>
         <div><label class="lbl" data-i18n="form.year">Year</label><select id="sYear" class="inp"></select></div>
         <div><label class="lbl" data-i18n="form.board">Board</label><select id="sBoard" class="inp board-select"></select></div>
-        <div><label class="lbl" data-i18n="form.roll">Roll</label><input id="sRoll" class="inp mono" data-i18n-ph="ph.roll" placeholder="Roll No."></div>
-        <div><label class="lbl" data-i18n="form.reg">Registration</label><input id="sReg" class="inp mono" data-i18n-ph="ph.reg" placeholder="Reg No."></div>
+        <div><label class="lbl" data-i18n="form.roll">Roll</label><input id="sRoll" class="inp mono" inputmode="numeric" data-i18n-ph="ph.roll" placeholder="Roll No."></div>
+        <div><label class="lbl" data-i18n="form.reg">Registration</label><input id="sReg" class="inp mono" inputmode="numeric" data-i18n-ph="ph.reg" placeholder="Reg No."></div>
         <div>
           <label class="lbl" data-i18n="snip.interval">Retry Interval</label>
           <select id="sInterval" class="inp"><option value="3">3 sec</option><option value="5" selected>5 sec</option><option value="10">10 sec</option></select>
         </div>
-        <div class="space-y-1">
+        <div class="space-y-1 min-w-0">
           <div class="flex items-center justify-between"><label class="lbl !mb-0" data-i18n="snip.cap">Security Key</label><button type="button" id="sCapRefresh" class="text-[11px] font-bold text-brand-700 hover:underline" data-i18n="form.newcap">Reload</button></div>
-          <div class="flex gap-2">
+          <div class="flex gap-2 min-w-0">
             <img id="sCapImg" alt="captcha" class="h-10 w-24 rounded-lg border border-ink-200 bg-white object-contain shrink-0">
-            <input id="sCapInput" class="inp mono text-center font-bold !py-1.5" placeholder="Code">
+            <input id="sCapInput" class="inp min-w-0 flex-1 mono text-center font-bold !py-1.5" placeholder="Code">
           </div>
         </div>
       </div>
 
       <div class="flex justify-end">
-        <button id="sniperBtn" class="btn btn-primary px-6 py-2.5"><i data-lucide="play" class="w-4 h-4"></i><span id="sniperBtnText" data-i18n="snip.start">Start Monitor</span></button>
+        <button id="sniperBtn" class="btn btn-primary w-full sm:w-auto px-6 py-2.5"><i data-lucide="play" class="w-4 h-4"></i><span id="sniperBtnText" data-i18n="snip.start">Start Monitor</span></button>
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
@@ -296,27 +305,27 @@
     </section>
 
     <!-- ================= TAB: PDF ================= -->
-    <section id="tab-pdf" class="hidden card p-5 sm:p-6 space-y-4">
+    <section id="tab-pdf" class="hidden card p-4 sm:p-6 space-y-4">
       <div>
-        <h2 class="text-lg font-extrabold flex items-center gap-2"><i data-lucide="file-search" class="w-5 h-5 text-brand-600"></i><span data-i18n="pdf.title">College / Institution PDF Result Scanner</span></h2>
-        <p class="text-sm text-ink-500 mt-1" data-i18n="pdf.desc">Upload an official EIIN board result PDF file and enter a Roll Number to extract GPA and pass status in milliseconds.</p>
+        <h2 class="text-base sm:text-lg font-extrabold flex items-center gap-2"><i data-lucide="file-search" class="w-5 h-5 text-brand-600 shrink-0"></i><span data-i18n="pdf.title">College / Institution PDF Result Scanner</span></h2>
+        <p class="text-xs sm:text-sm text-ink-500 mt-1" data-i18n="pdf.desc">Upload an official EIIN board result PDF file and enter a Roll Number to extract GPA and pass status in milliseconds.</p>
       </div>
       <form id="pdfForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-        <div><label class="lbl" data-i18n="form.roll">Roll Number</label><input id="pdfRoll" class="inp mono" required data-i18n-ph="ph.roll" placeholder="Enter Roll No."></div>
-        <div><label class="lbl" data-i18n="pdf.file">PDF File (.pdf)</label><input id="pdfFile" type="file" accept=".pdf" required class="inp !py-1.5 text-xs"></div>
-        <button id="pdfBtn" class="btn btn-primary py-2.5"><i data-lucide="scan-search" class="w-4 h-4"></i><span data-i18n="pdf.btn">Scan PDF</span></button>
+        <div class="min-w-0"><label class="lbl" data-i18n="form.roll">Roll Number</label><input id="pdfRoll" class="inp mono" inputmode="numeric" required data-i18n-ph="ph.roll" placeholder="Enter Roll No."></div>
+        <div class="min-w-0"><label class="lbl" data-i18n="pdf.file">PDF File (.pdf)</label><input id="pdfFile" type="file" accept=".pdf" required class="inp min-w-0 w-full !py-1.5 text-xs"></div>
+        <button id="pdfBtn" class="btn btn-primary w-full sm:w-auto py-2.5"><i data-lucide="scan-search" class="w-4 h-4"></i><span data-i18n="pdf.btn">Scan PDF</span></button>
       </form>
       <div id="pdfResult" class="hidden rounded-xl border border-ink-200 p-4"></div>
     </section>
 
     <!-- ================= TAB: PROFILES ================= -->
-    <section id="tab-profiles" class="hidden card p-5 sm:p-6 space-y-6">
+    <section id="tab-profiles" class="hidden card p-4 sm:p-6 space-y-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 class="text-lg font-extrabold flex items-center gap-2"><i data-lucide="bookmark" class="w-5 h-5 text-brand-600"></i><span data-i18n="prof.title">Saved Candidate Profiles</span></h2>
-          <p class="text-sm text-ink-500" data-i18n="prof.desc">Save student Roll, Registration &amp; Board details for 1-click search loading.</p>
+          <h2 class="text-base sm:text-lg font-extrabold flex items-center gap-2"><i data-lucide="bookmark" class="w-5 h-5 text-brand-600 shrink-0"></i><span data-i18n="prof.title">Saved Candidate Profiles</span></h2>
+          <p class="text-xs sm:text-sm text-ink-500" data-i18n="prof.desc">Save student Roll, Registration &amp; Board details for 1-click search loading.</p>
         </div>
-        <button id="toggleAdd" class="btn btn-primary px-4 py-2 text-sm"><i data-lucide="plus" class="w-4 h-4"></i><span data-i18n="prof.add">Add New</span></button>
+        <button id="toggleAdd" class="btn btn-primary px-4 py-2 text-xs sm:text-sm"><i data-lucide="plus" class="w-4 h-4"></i><span data-i18n="prof.add">Add New</span></button>
       </div>
       <div id="addBox" class="hidden rounded-2xl border border-ink-200 bg-ink-50 p-4 space-y-3">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -788,31 +797,82 @@ function printMarksheet() {
 }
 
 /* ======================= Auto-Retry Monitor ======================= */
-let sniperOn = false, sniperTimer = null;
+let sniperOn = false, sniperTimer = null, clientSnipe = null;
+function pushSniperLog(msg) {
+  const el = $('sniperLog');
+  el.innerHTML += `<div>[${new Date().toLocaleTimeString('en-GB')}] ${esc(msg)}</div>`;
+  el.scrollTop = 1e9;
+}
+async function runClientSniperAttempt() {
+  if (!sniperOn || !clientSnipe) return;
+  clientSnipe.attempts++;
+  $('stAttempts').textContent = clientSnipe.attempts;
+  $('stLast').textContent = new Date().toLocaleTimeString('en-GB');
+  try {
+    const url = clientSnipe.engine === 'eduboard' ? '/api/eduboard/check' : '/api/eboard/check';
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(clientSnipe.body) });
+    const d = await r.json();
+    if (d.success && d.data) {
+      pushSniperLog(`RESULT CAPTURED! Name: ${d.data.name} | GPA: ${d.data.gpa}`);
+      sniperOn = false; sniperUI(); clearInterval(sniperTimer);
+      d.data.board_key = clientSnipe.body.board;
+      switchTab('check'); showResult(d.data); saveHistory(d.data);
+      return;
+    }
+    const err = String(d.error || 'Server busy');
+    if (/captcha|security key|expired/i.test(err)) {
+      $('stMsg').textContent = 'Security Key expired/invalid';
+      pushSniperLog('Captcha invalid/expired — solve a new key.');
+      sniperOn = false; sniperUI(); clearInterval(sniperTimer);
+      loadSniperCaptcha();
+      return;
+    }
+    $('stMsg').textContent = `Retrying (${err.slice(0, 40)})`;
+    pushSniperLog(`Attempt #${clientSnipe.attempts}: ${err}`);
+  } catch (e) {
+    $('stMsg').textContent = 'Network Busy — retrying';
+    pushSniperLog(`Attempt #${clientSnipe.attempts} Error: ${e.message}`);
+  }
+}
 async function toggleSniper() {
   if (!sniperOn) {
     const roll = $('sRoll').value.trim(), cap = $('sCapInput').value.trim();
     if (!roll) return toast('Please enter Roll No.');
     if (!cap) return toast('Please solve the visible Security Key above first');
+    const eng = $('sEngine').value, interval = +$('sInterval').value;
+    const payload = {
+      engine: eng, board: $('sBoard').value, exam: $('sExam').value, year: $('sYear').value,
+      roll, reg: $('sReg').value.trim(), interval,
+      captcha: cap, session_id: sniperCap.sid, hash: sniperCap.hash, timestamp: sniperCap.ts
+    };
     const r = await fetch('/api/sniper/start', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        engine: $('sEngine').value, board: $('sBoard').value, exam: $('sExam').value, year: $('sYear').value,
-        roll, reg: $('sReg').value.trim(), interval: +$('sInterval').value,
-        captcha: cap, session_id: sniperCap.sid, hash: sniperCap.hash, timestamp: sniperCap.ts
-      })
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
     });
     const d = await r.json();
     if (!d.success) return toast(d.error || 'Could not start monitor');
-    sniperOn = true; sniperUI(); sniperTimer = setInterval(pollSniper, 2000);
+    sniperOn = true; sniperUI();
+    if (d.mode === 'client') {
+      $('sniperLog').innerHTML = '';
+      $('stStart').textContent = new Date().toLocaleTimeString('en-GB');
+      $('stAttempts').textContent = '0';
+      $('stMsg').textContent = 'Monitoring (Cloud Client Mode)';
+      clientSnipe = { engine: eng, body: payload, attempts: 0 };
+      pushSniperLog(`Monitor started [${eng.toUpperCase()}] — Roll: ${roll}`);
+      runClientSniperAttempt();
+      sniperTimer = setInterval(runClientSniperAttempt, Math.max(3, interval) * 1000);
+    } else {
+      clientSnipe = null;
+      sniperTimer = setInterval(pollSniper, 2000);
+    }
   } else {
-    await fetch('/api/sniper/stop', { method: 'POST' }); sniperOn = false; sniperUI(); clearInterval(sniperTimer);
+    if (!clientSnipe) await fetch('/api/sniper/stop', { method: 'POST' }).catch(() => {});
+    sniperOn = false; clientSnipe = null; sniperUI(); clearInterval(sniperTimer);
   }
 }
 function sniperUI() {
   $('sniperBtnText').textContent = sniperOn ? T('snip.stop') : T('snip.start');
-  $('sniperBtn').className = 'btn px-6 py-2.5 ' + (sniperOn ? 'bg-flag-red text-white' : 'btn-primary');
-  $('sniperBadge').className = 'text-xs font-bold px-3 py-1.5 rounded-full ' + (sniperOn ? 'bg-brand-50 text-brand-700' : 'bg-ink-100 text-ink-500');
+  $('sniperBtn').className = 'btn w-full sm:w-auto px-6 py-2.5 ' + (sniperOn ? 'bg-flag-red text-white' : 'btn-primary');
+  $('sniperBadge').className = 'text-xs font-bold px-3 py-1.5 rounded-full shrink-0 ' + (sniperOn ? 'bg-brand-50 text-brand-700' : 'bg-ink-100 text-ink-500');
   $('sniperBadge').textContent = sniperOn ? '● Monitoring' : T('snip.idle');
 }
 async function pollSniper() {

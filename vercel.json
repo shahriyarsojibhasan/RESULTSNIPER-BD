@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/health", "destination": "/api/index.py" },
+    { "source": "/robots.txt", "destination": "/api/index.py" },
+    { "source": "/sitemap.xml", "destination": "/api/index.py" },
+    { "source": "/verify", "destination": "/verify.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/privacy-policy", "destination": "/privacy.html" },
+    { "source": "/favicon.ico", "destination": "/favicon.svg" }
+  ]
+}

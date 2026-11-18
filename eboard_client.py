@@ -1,4 +1,8 @@
 import base64
+import hashlib
+import hmac
+import json
+import os
 import threading
 import time
 import uuid
@@ -8,14 +12,31 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def _session_secret():
+    env = os.environ.get("RS_SECRET")
+    if env:
+        return env.encode("utf-8")
+    for p in (
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), ".secret.key"),
+        "/tmp/.rs_secret.key",
+    ):
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return f.read().strip().encode("utf-8")
+            except Exception:
+                pass
+    return b"resultsniper-bd-ephemeral-session-fallback"
+
+
 class EboardClient:
-    """Clean client for Bangladesh Education Board multi-board results via result.bangladeshgov.org."""
+    """Stateless-capable client for Bangladesh Education Board results via result.bangladeshgov.org."""
 
     BASE_URL = "https://result.bangladeshgov.org"
 
     def __init__(self):
-        self.sessions = {}  # session_id -> {'session': requests.Session, 'created_at': float}
-        self.ready_pool = []  # list of (session_id, data_uri)
+        self.sessions = {}  # fast in-memory cache for persistent servers
+        self.ready_pool = []
         self.pool_lock = threading.Lock()
         self.headers = {
             "User-Agent": (
@@ -27,13 +48,36 @@ class EboardClient:
             "Referer": f"{self.BASE_URL}/",
             "Origin": self.BASE_URL,
         }
-        self.stop_worker = False
-        self.worker_thread = threading.Thread(target=self._pool_worker, daemon=True)
-        self.worker_thread.start()
+        # Only spawn background pre-fetcher when running inside persistent server (skip on serverless)
+        if not os.environ.get("VERCEL"):
+            self.stop_worker = False
+            self.worker_thread = threading.Thread(target=self._pool_worker, daemon=True)
+            self.worker_thread.start()
+
+    def _encode_cookies(self, cookies_dict):
+        payload = {"c": cookies_dict, "ts": int(time.time())}
+        raw = base64.urlsafe_b64encode(json.dumps(payload, separators=(",", ":")).encode("utf-8")).decode("ascii").rstrip("=")
+        sig = hmac.new(_session_secret(), raw.encode("ascii"), hashlib.sha256).hexdigest()[:16]
+        return f"v2.{raw}.{sig}"
+
+    def _decode_cookies(self, session_id):
+        try:
+            prefix, raw, sig = str(session_id).split(".", 2)
+            if prefix != "v2":
+                return None
+            expect = hmac.new(_session_secret(), raw.encode("ascii"), hashlib.sha256).hexdigest()[:16]
+            if not hmac.compare_digest(sig, expect):
+                return None
+            data = json.loads(base64.urlsafe_b64decode(raw + "=" * (-len(raw) % 4)).decode("utf-8"))
+            if time.time() - data.get("ts", 0) > 600:
+                return None
+            return data.get("c", {})
+        except Exception:
+            return None
 
     def _cleanup_old(self):
         now = time.time()
-        expired = [sid for sid, data in list(self.sessions.items()) if now - data["created_at"] > 300]
+        expired = [sid for sid, data in list(self.sessions.items()) if now - data["created_at"] > 600]
         for sid in expired:
             self.sessions.pop(sid, None)
 
@@ -45,7 +89,8 @@ class EboardClient:
         c_resp = s.get(c_url, headers=self.headers, timeout=12)
         c_resp.raise_for_status()
 
-        session_id = str(uuid.uuid4())
+        cookies_dict = s.cookies.get_dict()
+        session_id = self._encode_cookies(cookies_dict) if cookies_dict else str(uuid.uuid4())
         self.sessions[session_id] = {
             "session": s,
             "created_at": time.time(),
@@ -77,13 +122,22 @@ class EboardClient:
         return self._fetch_one_session()
 
     def get_result(self, session_id, board, exam, year, roll, reg, captcha):
-        if session_id not in self.sessions:
+        s = None
+        if session_id in self.sessions:
+            s = self.sessions[session_id]["session"]
+        else:
+            cookies = self._decode_cookies(session_id)
+            if cookies is not None:
+                s = requests.Session()
+                s.verify = False
+                s.cookies.update(cookies)
+
+        if s is None:
             return {
                 "success": False,
-                "error": "Captcha session expired. Please refresh the security key. / ক্যাপচা সেশনের মেয়াদ শেষ হয়েছে, নতুন কোড রিলোড করুন।",
+                "error": "Captcha session expired. Please reload security key. / ক্যাপচা সেশনের মেয়াদ শেষ হয়েছে, নতুন কোড দিন।",
             }
 
-        s = self.sessions[session_id]["session"]
         payload = {
             "result_type": "1",
             "exam": str(exam).lower().strip(),
