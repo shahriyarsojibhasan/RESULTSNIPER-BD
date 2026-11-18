@@ -456,8 +456,8 @@
       const stType = cleanStr(d.type) || 'REGULAR';
 
       const subHeadHtml = hasNum
-        ? '<tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left">Verified Subject Name</th><th style="width:13%">Marks</th><th style="width:11%">Grade</th><th style="width:11%">G.P.</th></tr>'
-        : '<tr><th style="width:7%">SL</th><th style="width:15%">Code</th><th style="text-align:left">Verified Subject Name</th><th style="width:13%">Grade</th><th style="width:13%">G.P.</th></tr>';
+        ? '<tr><th style="width:7%">SL</th><th style="width:13%">Code</th><th style="text-align:left;width:49%">Verified Subject Name</th><th style="width:11%">Marks</th><th style="width:10%">Grade</th><th style="width:10%">G.P.</th></tr>'
+        : '<tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left;width:55%">Verified Subject Name</th><th style="width:12%">Grade</th><th style="width:12%">G.P.</th></tr>';
 
       const sumCells = hasNum
         ? `<td><span class="k">Total Marks</span><span class="v">${tot}/${max}</span></td>
@@ -471,6 +471,12 @@
            <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${val(d.gpa)}</span></td>
            <td><span class="k">Signature</span><span class="v" style="color:#0f766e;font-size:10.5px">HMAC VALID</span></td>`;
 
+      const gradeRefHtml = `<table class="tx-grade-tbl" style="margin-top:2mm">
+        <tr><th style="width:16%;text-align:left;padding-left:2mm">GRADING SCALE</th><th>A+</th><th>A</th><th>A-</th><th>B</th><th>C</th><th>D</th><th>F</th></tr>
+        <tr><td class="lbl">Marks Range</td><td>80–100</td><td>70–79</td><td>60–69</td><td>50–59</td><td>40–49</td><td>33–39</td><td>00–32</td></tr>
+        <tr><td class="lbl">Grade Point (GP)</td><td>5.00</td><td>4.00</td><td>3.50</td><td>3.00</td><td>2.00</td><td>1.00</td><td>0.00</td></tr>
+      </table>`;
+
       return `<div class="tx tx-verify ${szClass}">
         <div class="tx-bg">${RS_ART.guillocheBG(seed, 'verify')}</div>
         <div class="tx-diag">${diag}</div>
@@ -478,48 +484,55 @@
         <div class="tx-frame"></div><div class="tx-frame2"></div>
         <div class="tx-micro t">${micro}</div><div class="tx-micro b">${micro}</div>
         <div class="tx-micro l">${micro}</div><div class="tx-micro r">${micro}</div>
-        <div class="tx-corner" style="top:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#0ea5e9')}</div>
-        <div class="tx-corner" style="top:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '#0ea5e9')}</div>
-        <div class="tx-corner" style="bottom:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#0f766e')}</div>
-        <div class="tx-corner" style="bottom:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '', 'vphos')}</div>
+        <div class="tx-corner" style="top:3.5mm;left:3.5mm">${RS_ART.rosetteSVG(72, '#0ea5e9')}</div>
+        <div class="tx-corner" style="top:3.5mm;right:3.5mm">${RS_ART.rosetteSVG(72, '#0ea5e9')}</div>
+        <div class="tx-corner" style="bottom:3.5mm;left:3.5mm">${RS_ART.rosetteSVG(72, '#0f766e')}</div>
+        <div class="tx-corner" style="bottom:3.5mm;right:3.5mm">${RS_ART.rosetteSVG(72, '', 'vphos')}</div>
 
         <div class="tx-in">
-          <table class="tx-head"><tr>
-            <td style="width:20mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal"></td>
-            <td style="text-align:center;padding:0 3mm">
-              <div class="tx-gov">ResultSniper BD • Cryptographic Verification Authority</div>
-              <div class="tx-board">${esc(meta.en)}</div>
-              <div class="tx-exam">${esc((d.exam || 'HSC').toUpperCase())} EXAMINATION — ${esc(d.year || '2026')} (${esc(stType)})</div>
-              <div class="tx-pill">CRYPTOGRAPHIC AUTHENTICITY CERTIFICATE</div>
-            </td>
-            <td style="width:20mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${meta.logo}" alt="Board Logo"></td>
-          </tr></table>
-          <div class="tx-rule"></div>
-
-          <div class="tx-audit-strip">
-            <div><b>Algorithm:</b> <span class="mono">HMAC-SHA256</span></div>
-            <div><b>Document ID:</b> <span class="mono">${esc(docId)}</span></div>
-            <div><b>Signed:</b> ${esc(issuedStr)}</div>
-            <div class="tx-audit-badge">✓ SIGNATURE VALID &amp; UNTAMPERED</div>
+          <div class="tx-sec">
+            <table class="tx-head"><tr>
+              <td style="width:20mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal"></td>
+              <td style="text-align:center;padding:0 3mm">
+                <div class="tx-gov">ResultSniper BD • Cryptographic Verification Authority</div>
+                <div class="tx-board">${esc(meta.en)}</div>
+                <div class="tx-exam">${esc((d.exam || 'HSC').toUpperCase())} EXAMINATION — ${esc(d.year || '2026')} (${esc(stType)})</div>
+                <div class="tx-pill">CRYPTOGRAPHIC AUTHENTICITY CERTIFICATE</div>
+              </td>
+              <td style="width:20mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${meta.logo}" alt="Board Logo"></td>
+            </tr></table>
+            <div class="tx-rule"></div>
           </div>
 
-          <div class="tx-sec-hd">Verified Candidate Record</div>
-          <table class="tx-info">
-            <tr><td class="k">Roll No.</td><td class="v mono">${val(d.roll)}</td><td class="k">Registration No.</td><td class="v mono">${val(d.reg)}</td></tr>
-            <tr><td class="k">Student Name</td><td class="v" style="font-size:9.6px">${val(d.name)}</td><td class="k">Father's Name</td><td class="v">${val(d.father)}</td></tr>
-            <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Group / Session</td><td class="v">${val(d.group)} (${esc(sess)})</td></tr>
-            <tr><td class="k">Institution</td><td class="v">${val(d.college)}</td><td class="k">EIIN</td><td class="v mono">${esc(eiin)}</td></tr>
-          </table>
+          <div class="tx-sec">
+            <div class="tx-audit-strip">
+              <div><b>Algorithm:</b> <span class="mono">HMAC-SHA256</span></div>
+              <div><b>Document ID:</b> <span class="mono">${esc(docId)}</span></div>
+              <div><b>Signed:</b> ${esc(issuedStr)}</div>
+              <div class="tx-audit-badge">✓ SIGNATURE VALID &amp; UNTAMPERED</div>
+            </div>
 
-          <div class="tx-sec-hd">${hasNum ? 'Audited Subject Grades & Marks' : 'Audited Subject Grade Sheet'}</div>
-          <table class="tx-sub">
-            <thead>${subHeadHtml}</thead>
-            <tbody>${rows || `<tr><td colspan="${hasNum ? 6 : 5}" class="tx-c">—</td></tr>`}</tbody>
-          </table>
+            <div class="tx-sec-hd" style="margin-top:2.4mm">Verified Candidate Record</div>
+            <table class="tx-info">
+              <tr><td class="k">Roll No.</td><td class="v mono">${val(d.roll)}</td><td class="k">Registration No.</td><td class="v mono">${val(d.reg)}</td></tr>
+              <tr><td class="k">Student Name</td><td class="v" style="font-size:9.6px">${val(d.name)}</td><td class="k">Father's Name</td><td class="v">${val(d.father)}</td></tr>
+              <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Group / Session</td><td class="v">${val(d.group)} (${esc(sess)})</td></tr>
+              <tr><td class="k">Institution</td><td class="v">${val(d.college)}</td><td class="k">EIIN</td><td class="v mono">${esc(eiin)}</td></tr>
+            </table>
+          </div>
 
-          <table class="tx-sum" style="margin-top:2.2mm"><tr>${sumCells}</tr></table>
+          <div class="tx-sec">
+            <div class="tx-sec-hd">${hasNum ? 'Audited Subject Grades & Marks' : 'Audited Subject Grade Sheet'}</div>
+            <table class="tx-sub">
+              <thead>${subHeadHtml}</thead>
+              <tbody>${rows || `<tr><td colspan="${hasNum ? 6 : 5}" class="tx-c">—</td></tr>`}</tbody>
+            </table>
+            <table class="tx-sum" style="margin-top:2.2mm"><tr>${sumCells}</tr></table>
+          </div>
 
-          <div class="tx-scale">Grading Scale: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
+          <div class="tx-sec">
+            ${gradeRefHtml}
+          </div>
 
           <div class="tx-bottom">
             <div class="tx-foot-grid">
@@ -549,7 +562,7 @@
     function printVerifiedPDF() {
       if (!verifiedData) return;
       const sz = document.getElementById('vPaperSize').value;
-      document.getElementById('verifyPrintPageStyle').textContent = `@page { size: ${sz} portrait; margin: 6mm; }`;
+      document.getElementById('verifyPrintPageStyle').textContent = `@page { size: ${sz} portrait; margin: 7mm; }`;
       document.getElementById('verifyPrintArea').innerHTML = buildVerifyCertificate(verifiedData, sz);
       const imgs = [...document.getElementById('verifyPrintArea').querySelectorAll('img')];
       Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 150));

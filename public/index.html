@@ -726,7 +726,7 @@ function detectFourthIdx(subs, d) {
     '136', '137', '150', '111', '112', '113', '114', '147', '148',
     '201', '202', '203', '204', '103', '104', '105', '106'
   ]);
-  const OPT_PRIO = { '239': 1, '134': 1, '129': 1, '271': 1, '273': 1, '235': 1, '178': 2, '138': 2, '265': 3, '126': 3 };
+  const OPT_PRIO = { '239': 1, '134': 1, '282': 1, '151': 1, '127': 1, '249': 2, '129': 2, '178': 3, '138': 3, '265': 4, '126': 4 };
   const baseCode = c => String(c || '').split(/[-+]/)[0].trim();
 
   // If candidate passed overall and one eligible subject failed, that failed subject must be the 4th subject
@@ -922,8 +922,8 @@ function buildMarksheet(d, paperSz) {
   const hasRank = rk.board || rk.group || rk.inst;
 
   const subHeadHtml = hasMarks
-    ? '<tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left">Name of Subject</th><th style="width:13%">Marks</th><th style="width:11%">Grade</th><th style="width:11%">G.P.</th></tr>'
-    : '<tr><th style="width:7%">SL</th><th style="width:15%">Code</th><th style="text-align:left">Name of Subject</th><th style="width:13%">Grade</th><th style="width:13%">G.P.</th></tr>';
+    ? '<tr><th style="width:7%">SL</th><th style="width:13%">Code</th><th style="text-align:left;width:49%">Name of Subject</th><th style="width:11%">Marks</th><th style="width:10%">Grade</th><th style="width:10%">G.P.</th></tr>'
+    : '<tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left;width:55%">Name of Subject</th><th style="width:12%">Grade</th><th style="width:12%">G.P.</th></tr>';
 
   const summaryHtml = hasMarks
     ? `<td><span class="k">Total Marks</span><span class="v">${m.tot}/${m.max}</span></td>
@@ -937,6 +937,14 @@ function buildMarksheet(d, paperSz) {
        <td><span class="k">Result</span><span class="v" style="color:${passed ? '#006a4e' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
        <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${passed ? esc(d.gpa || '—') : '0.00'}</span></td>`;
 
+  const gradeRefHtml = `<table class="tx-grade-tbl">
+    <tr><th style="width:16%;text-align:left;padding-left:2mm">GRADING SCALE</th><th>A+</th><th>A</th><th>A-</th><th>B</th><th>C</th><th>D</th><th>F</th></tr>
+    <tr><td class="lbl">Marks Range</td><td>80–100</td><td>70–79</td><td>60–69</td><td>50–59</td><td>40–49</td><td>33–39</td><td>00–32</td></tr>
+    <tr><td class="lbl">Grade Point (GP)</td><td>5.00</td><td>4.00</td><td>3.50</td><td>3.00</td><td>2.00</td><td>1.00</td><td>0.00</td></tr>
+  </table>`;
+
+  const fourthName = fourthIdx >= 0 && subs[fourthIdx] ? esc((subs[fourthIdx].name_en || subs[fourthIdx].code).toUpperCase()) : 'None';
+
   return `<div class="tx tx-result ${szClass}">
     <div class="tx-bg">${RS_ART.guillocheBG(seed, 'result')}</div>
     <div class="tx-diag">${diag}</div>
@@ -944,49 +952,59 @@ function buildMarksheet(d, paperSz) {
     <div class="tx-frame"></div><div class="tx-frame2"></div>
     <div class="tx-micro t">${micro}</div><div class="tx-micro b">${micro}</div>
     <div class="tx-micro l">${micro}</div><div class="tx-micro r">${micro}</div>
-    <div class="tx-corner" style="top:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
-    <div class="tx-corner" style="top:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
-    <div class="tx-corner" style="bottom:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#eab308')}</div>
-    <div class="tx-corner" style="bottom:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '', 'phos')}</div>
+    <div class="tx-corner" style="top:3.5mm;left:3.5mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
+    <div class="tx-corner" style="top:3.5mm;right:3.5mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
+    <div class="tx-corner" style="bottom:3.5mm;left:3.5mm">${RS_ART.rosetteSVG(72, '#eab308')}</div>
+    <div class="tx-corner" style="bottom:3.5mm;right:3.5mm">${RS_ART.rosetteSVG(72, '', 'phos')}</div>
 
     <div class="tx-in">
-      <table class="tx-head"><tr>
-        <td style="width:20mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Government Seal of Bangladesh"></td>
-        <td style="text-align:center;padding:0 3mm">
-          <div class="tx-gov">Government of the People's Republic of Bangladesh</div>
-          <div class="tx-board">${esc(bi.full)}</div>
-          <div class="tx-exam">Result of ${esc(examKey.toUpperCase())} Examination — ${esc(d.year)}</div>
-          <div class="tx-pill">OFFICIAL ACADEMIC TRANSCRIPT</div>
-        </td>
-        <td style="width:20mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${logoUrl(bk)}" alt="${esc(bi.en)} Board"></td>
-      </tr></table>
-      <div class="tx-rule"></div>
+      <div class="tx-sec">
+        <table class="tx-head"><tr>
+          <td style="width:20mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Government Seal of Bangladesh"></td>
+          <td style="text-align:center;padding:0 3mm">
+            <div class="tx-gov">Government of the People's Republic of Bangladesh</div>
+            <div class="tx-board">${esc(bi.full)}</div>
+            <div class="tx-exam">Result of ${esc(examKey.toUpperCase())} Examination — ${esc(d.year)}</div>
+            <div class="tx-pill">OFFICIAL ACADEMIC TRANSCRIPT</div>
+          </td>
+          <td style="width:20mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${logoUrl(bk)}" alt="${esc(bi.en)} Board"></td>
+        </tr></table>
+        <div class="tx-rule"></div>
+      </div>
 
-      <div class="tx-sec-hd">Student Information Summary</div>
-      <table class="tx-info">
-        <tr><td class="k">Roll No</td><td class="v mono">${val(d.roll)}</td><td class="k">Registration No</td><td class="v mono">${esc(cleanReg)}</td></tr>
-        <tr><td class="k">Name</td><td class="v" style="font-size:9.6px">${val(d.name)}</td><td class="k">Father's Name</td><td class="v">${val(d.father)}</td></tr>
-        <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Board</td><td class="v">${esc(bi.en.toUpperCase())}</td></tr>
-        <tr><td class="k">Group</td><td class="v">${val(d.group)}</td><td class="k">Session</td><td class="v mono">${esc(sessVal || '—')}</td></tr>
-        <tr><td class="k">Exam Type</td><td class="v">${esc(examKey.toUpperCase())}</td><td class="k">Student Type</td><td class="v">${esc(studType)}</td></tr>
-        <tr><td class="k">Result</td><td class="v mono" style="color:${passed ? '#065f46' : '#dc2626'}">${passed ? 'GPA=' + esc(d.gpa || 'PASSED') : 'FAILED'}</td><td class="k">EIIN</td><td class="v mono">${esc(eiin || '—')}</td></tr>
-        <tr><td class="k">Institution</td><td class="v" colspan="3">${esc(inst)}</td></tr>
-      </table>
+      <div class="tx-sec">
+        <div class="tx-sec-hd">Student Information Summary</div>
+        <table class="tx-info">
+          <tr><td class="k">Roll No</td><td class="v mono">${val(d.roll)}</td><td class="k">Registration No</td><td class="v mono">${esc(cleanReg)}</td></tr>
+          <tr><td class="k">Name</td><td class="v" style="font-size:9.6px">${val(d.name)}</td><td class="k">Father's Name</td><td class="v">${val(d.father)}</td></tr>
+          <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Board</td><td class="v">${esc(bi.en.toUpperCase())}</td></tr>
+          <tr><td class="k">Group</td><td class="v">${val(d.group)}</td><td class="k">Session</td><td class="v mono">${esc(sessVal || '—')}</td></tr>
+          <tr><td class="k">Exam Type</td><td class="v">${esc(examKey.toUpperCase())}</td><td class="k">Student Type</td><td class="v">${esc(studType)}</td></tr>
+          <tr><td class="k">Result</td><td class="v mono" style="color:${passed ? '#065f46' : '#dc2626'}">${passed ? 'GPA=' + esc(d.gpa || 'PASSED') : 'FAILED'}</td><td class="k">EIIN</td><td class="v mono">${esc(eiin || '—')}</td></tr>
+          <tr><td class="k">Institution</td><td class="v" colspan="3">${esc(inst)}</td></tr>
+        </table>
+      </div>
 
-      <div class="tx-sec-hd">${hasMarks ? 'Subject-wise Grade / Marks' : 'Subject-wise Grade Sheet'}</div>
-      <table class="tx-sub">
-        <thead>${subHeadHtml}</thead>
-        <tbody>${rows || `<tr><td colspan="${hasMarks ? 6 : 5}" class="tx-c">—</td></tr>`}</tbody>
-      </table>
+      <div class="tx-sec">
+        <div class="tx-sec-hd">${hasMarks ? 'Subject-wise Grade / Marks' : 'Subject-wise Grade Sheet'}</div>
+        <table class="tx-sub">
+          <thead>${subHeadHtml}</thead>
+          <tbody>${rows || `<tr><td colspan="${hasMarks ? 6 : 5}" class="tx-c">—</td></tr>`}</tbody>
+        </table>
+        <table class="tx-sum" style="margin-top:2.2mm"><tr>${summaryHtml}</tr></table>
+      </div>
 
-      <table class="tx-sum" style="margin-top:2.2mm"><tr>${summaryHtml}</tr></table>
-
-      ${hasRank ? `<table class="tx-merit" style="margin-top:1.8mm"><tr>
-        <td style="font-weight:800;color:#b45309;width:26%">MERIT POSITION<br><span style="font-size:6.3px;font-weight:600;color:#64748b">Reference: ebr.bd (informational)</span></td>
-        <td><b>Board:</b> ${rk.board ? '#' + esc(rk.board) : '—'}</td><td><b>Group:</b> ${rk.group ? '#' + esc(rk.group) : '—'}</td><td><b>Institute:</b> ${rk.inst ? '#' + esc(rk.inst) : '—'}</td>
-      </tr></table>` : ''}
-
-      <div class="tx-scale">Grading: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
+      <div class="tx-sec">
+        <div class="tx-sec-hd">Performance Overview &amp; Official Grading System</div>
+        ${hasRank ? `<table class="tx-merit" style="margin-bottom:1.5mm"><tr>
+          <td style="font-weight:800;color:#b45309;width:26%">MERIT POSITION<br><span style="font-size:6.3px;font-weight:600;color:#64748b">Reference: ebr.bd (informational)</span></td>
+          <td><b>Board:</b> ${rk.board ? '#' + esc(rk.board) : '—'}</td><td><b>Group:</b> ${rk.group ? '#' + esc(rk.group) : '—'}</td><td><b>Institute:</b> ${rk.inst ? '#' + esc(rk.inst) : '—'}</td>
+        </tr></table>` : `<table class="tx-info"><tr>
+          <td class="k">Total Subjects</td><td class="v mono">${subs.length}</td>
+          <td class="k">4th Optional</td><td class="v">${fourthName}</td>
+        </tr></table>`}
+        ${gradeRefHtml}
+      </div>
 
       <div class="tx-bottom">
         <div class="tx-foot-grid">
@@ -1015,7 +1033,7 @@ function buildMarksheet(d, paperSz) {
 function printMarksheet() {
   if (!last) return toast('Please fetch a result first');
   const sz = $('paperSizeSel').value;
-  $('printPageStyle').textContent = `@page { size: ${sz} portrait; margin: 6mm; }`;
+  $('printPageStyle').textContent = `@page { size: ${sz} portrait; margin: 7mm; }`;
   $('printArea').innerHTML = buildMarksheet(last, sz);
   const imgs = [...$('printArea').querySelectorAll('img')];
   Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 150));
