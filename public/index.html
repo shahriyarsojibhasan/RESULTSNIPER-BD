@@ -156,18 +156,18 @@
       <!-- Form -->
       <div class="lg:col-span-4 card p-5 space-y-4">
         <div>
-          <div class="lbl">ফলাফল পদ্ধতি</div>
+          <div class="lbl">ফলাফল পদ্ধতি (Result Engine)</div>
           <div class="grid grid-cols-3 gap-1 p-1 bg-ink-100 rounded-xl text-[12px]">
-            <button type="button" class="seg active py-2 rounded-lg" data-method="ebr">মেধাস্থান<br><span class="text-[10px] font-normal opacity-70">ebr.bd</span></button>
-            <button type="button" class="seg py-2 rounded-lg" data-method="edu">নম্বরসহ<br><span class="text-[10px] font-normal opacity-70">eduboard</span></button>
+            <button type="button" class="seg active py-2 rounded-lg" data-method="edu">নম্বরসহ<br><span class="text-[10px] font-normal opacity-70">eduboard</span></button>
             <button type="button" class="seg py-2 rounded-lg" data-method="eboard">দ্রুত গ্রেড<br><span class="text-[10px] font-normal opacity-70">eboard</span></button>
+            <button type="button" class="seg py-2 rounded-lg" data-method="ebr">মেধাস্থান<br><span class="text-[10px] font-normal opacity-70">ebr.bd API</span></button>
           </div>
           <p id="methodHint" class="text-[12px] text-ink-500 mt-2 leading-relaxed"></p>
         </div>
 
         <form id="checkForm" class="space-y-3" autocomplete="off">
           <div>
-            <label class="lbl" for="exam">পরীক্ষা</label>
+            <label class="lbl" for="exam">পরীক্ষা (Examination)</label>
             <select id="exam" class="inp">
               <option value="hsc">HSC / Alim / Equivalent</option>
               <option value="ssc">SSC / Dakhil / Equivalent</option>
@@ -182,9 +182,9 @@
           <div><label class="lbl" for="roll">রোল নম্বর</label><input id="roll" class="inp mono" inputmode="numeric" maxlength="8" placeholder="রোল লিখুন" required></div>
           <div><label class="lbl" for="reg">রেজিস্ট্রেশন নম্বর</label><input id="reg" class="inp mono" inputmode="numeric" maxlength="12" placeholder="রেজিস্ট্রেশন লিখুন"></div>
 
-          <div id="captchaBox" class="hidden p-3 rounded-xl border border-brand-200 bg-brand-50 space-y-2">
+          <div id="captchaBox" class="p-3 rounded-xl border border-brand-200 bg-brand-50 space-y-2">
             <div class="flex items-center justify-between">
-              <span id="captchaLabel" class="text-xs font-bold text-brand-700 flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i>সিকিউরিটি কোড</span>
+              <span id="captchaLabel" class="text-xs font-bold text-brand-700 flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i>সিকিউরিটি কোড (৬ অক্ষর)</span>
               <button type="button" id="captchaRefresh" class="text-[11px] font-bold text-brand-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-brand-100"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>নতুন কোড</button>
             </div>
             <div class="grid grid-cols-2 gap-2 items-stretch">
@@ -196,7 +196,7 @@
             </div>
           </div>
 
-          <button id="checkBtn" type="submit" class="btn btn-primary w-full py-3 text-[15px]"><i data-lucide="search" class="w-4 h-4"></i><span id="checkBtnText">মেধাস্থানসহ ফলাফল দেখুন</span></button>
+          <button id="checkBtn" type="submit" class="btn btn-primary w-full py-3 text-[15px]"><i data-lucide="search" class="w-4 h-4"></i><span id="checkBtnText">নম্বরসহ পূর্ণ মার্কশিট দেখুন</span></button>
         </form>
       </div>
 
@@ -206,26 +206,7 @@
         <div id="placeholder" class="card p-10 text-center text-ink-500">
           <div class="w-16 h-16 mx-auto rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-3"><i data-lucide="award" class="w-8 h-8"></i></div>
           <h3 class="font-bold text-ink-900 text-lg">ফলাফল দেখার জন্য প্রস্তুত</h3>
-          <p class="text-sm mt-1 max-w-md mx-auto">রোল ও রেজিস্ট্রেশন দিয়ে সার্চ করুন। নম্বরসহ মার্কশিট, মেরিট স্কোর এবং QR ভেরিফায়েড প্রিন্ট কপি পাবেন।</p>
-        </div>
-
-        <!-- ebr.bd merit panel -->
-        <div id="ebrPanel" class="hidden card overflow-hidden">
-          <div class="p-4 border-b border-ink-200 flex flex-wrap items-center justify-between gap-3 bg-gold-50">
-            <div>
-              <div class="font-bold text-ink-900 flex items-center gap-2"><i data-lucide="trophy" class="w-4 h-4 text-gold-600"></i>মেধাস্থান (Board / Group / Institute Rank) — ebr.bd</div>
-              <div class="text-xs text-ink-500 mt-0.5">রোল ও রেজি কপি হয়েছে — নিচের ফর্মে <b>Exam, Year, Board</b> সিলেক্ট করে পেস্ট করুন।</div>
-            </div>
-            <div class="flex gap-2">
-              <button id="copyRollReg" class="btn btn-ghost px-3 py-2 text-xs"><i data-lucide="copy" class="w-3.5 h-3.5"></i>রোল/রেজি কপি</button>
-              <a href="https://ebr.bd/#individual-result" target="_blank" rel="noopener" class="btn btn-primary px-3 py-2 text-xs"><i data-lucide="external-link" class="w-3.5 h-3.5"></i>নতুন ট্যাবে খুলুন</a>
-            </div>
-          </div>
-          <div id="ebrCreds" class="px-4 py-2 text-xs mono text-ink-700 bg-white border-b border-ink-200"></div>
-          <iframe id="ebrFrame" title="ebr.bd individual result" class="w-full bg-white" style="height:760px;border:0" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <div class="p-3 text-[11px] text-ink-500 bg-ink-50 border-t border-ink-200">
-            ebr.bd তাদের নিজস্ব Cloudflare নিরাপত্তা যাচাই ব্যবহার করে, তাই মেধাস্থান সরাসরি তাদের পেজেই দেখাবে। মেধাস্থান পাওয়ার পর <b>নম্বরসহ</b> মোডে ফলাফল বের করে নিচের "মেধাস্থান" ঘরে বসালে প্রিন্ট মার্কশিটেও যুক্ত হবে।
-          </div>
+          <p class="text-sm mt-1 max-w-md mx-auto">রোল ও রেজিস্ট্রেশন দিয়ে সার্চ করুন। সরাসরি সরকারি সার্ভার থেকে বিষয়ভিত্তিক নম্বর, জিপিএ, মেরিট স্কোর এবং QR ভেরিফায়েড ব্যাংকনোট মার্কশিট প্রস্তুত হবে।</p>
         </div>
 
         <!-- Result card -->
@@ -261,8 +242,7 @@
                 <div><label class="lbl">গ্রুপ মেধাস্থান</label><input id="mGroup" class="inp mono !py-1.5" placeholder="#"></div>
                 <div><label class="lbl">প্রতিষ্ঠান মেধাস্থান</label><input id="mInst" class="inp mono !py-1.5" placeholder="#"></div>
               </div>
-              <p class="text-[11px] text-ink-500">মেধাস্থান ebr.bd থেকে দেখে বসাতে পারেন (ঐচ্ছিক) — প্রিন্টে "Reference: ebr.bd" হিসেবে আলাদা দেখাবে, QR যাচাইয়ের অংশ নয়।
-                <button type="button" id="openEbrFromResult" class="text-brand-700 font-bold underline">ebr.bd তে দেখুন</button></p>
+              <p class="text-[11px] text-ink-500">বোর্ড ও প্রতিষ্ঠানের মেধা তালিকা নম্বর এখানে স্বয়ংক্রিয়ভাবে বা নিজস্ব তথ্য অনুযায়ী বসাতে পারেন — প্রিন্ট মার্কশিটে আকর্ষণীয় সোনালী ক্রেস্টে প্রদর্শিত হবে।</p>
             </div>
 
             <!-- Subjects -->
@@ -384,7 +364,7 @@
 /* ======================= Constants ======================= */
 const BOARDS = {
   dhaka:      { en:'Dhaka', bn:'ঢাকা', logo:'dhaka.svg',      full:'Board of Intermediate and Secondary Education, Dhaka' },
-  rajshahi:   { en:'Rajshahi', bn:'রাজশাহী', logo:'rajshahi.jpg', full:'Board of Intermediate and Secondary Education, Rajshahi' },
+  rajshahi:   { en:'Rajshahi', bn:'রাজশাহী', logo:'rajshahi.png', full:'Board of Intermediate and Secondary Education, Rajshahi' },
   comilla:    { en:'Cumilla', bn:'কুমিল্লা', logo:'comilla.png',  full:'Board of Intermediate and Secondary Education, Cumilla' },
   chittagong: { en:'Chattogram', bn:'চট্টগ্রাম', logo:'chittagong.png', full:'Board of Intermediate and Secondary Education, Chattogram' },
   jessore:    { en:'Jashore', bn:'যশোর', logo:'jessore.png',   full:'Board of Intermediate and Secondary Education, Jashore' },
@@ -399,9 +379,9 @@ const BOARD_ALIAS = { cumilla:'comilla', chattogram:'chittagong', jashore:'jesso
 const GP = { 'A+':'5.00','A':'4.00','A-':'3.50','B':'3.00','C':'2.00','D':'1.00','F':'0.00' };
 const EXAM_FULL = { hsc:'Higher Secondary Certificate (HSC) Examination', ssc:'Secondary School Certificate (SSC) Examination', jsc:'Junior School Certificate (JSC) Examination', dibs:'Diploma in Business Studies Examination' };
 const METHODS = {
-  ebr:    { btn:'মেধাস্থানসহ ফলাফল দেখুন', hint:'<b>ডিফল্ট:</b> ebr.bd থেকে বোর্ড/গ্রুপ/প্রতিষ্ঠান মেধাস্থান ও মোট নম্বর। কোনো ছবি-ক্যাপচা লাগবে না — ebr.bd নিজেই ব্রাউজারে যাচাই করে।', captcha:false },
-  edu:    { btn:'নম্বরসহ মার্কশিট বের করুন', hint:'<b>eduboardresults.gov.bd:</b> বিষয়ভিত্তিক নম্বর + মেরিট স্কোর + QR ভেরিফায়েড প্রিন্ট মার্কশিট। রেজিস্ট্রেশন আবশ্যক।', captcha:true },
-  eboard: { btn:'দ্রুত গ্রেডশিট দেখুন', hint:'<b>eboardresults.com:</b> সকল বোর্ডের দ্রুত গ্রেডশিট, ৪-ডিজিট সিকিউরিটি কি।', captcha:true }
+  edu:    { btn:'নম্বরসহ পূর্ণ মার্কশিট দেখুন', hint:'<b>eduboardresults.gov.bd (অফিসিয়াল মার্কশিট):</b> প্রতিটি বিষয়ের প্রাপ্ত মোট নম্বর + বিষয়ভিত্তিক গ্রেড + মেধাস্থান স্কোর। রেজিস্ট্রেশন আবশ্যক।', captcha:true },
+  eboard: { btn:'দ্রুত গ্রেডশিট দেখুন', hint:'<b>eboardresults.com:</b> সকল শিক্ষা বোর্ডের দ্রুত গ্রেডশিট ও ৪-ডিজিট সিকিউরিটি কি।', captcha:true },
+  ebr:    { btn:'ebr.bd এপিআই দিয়ে অনুসন্ধান', hint:'<b>ebr.bd এপিআই:</b> সরাসরি এপিআই ফেচ চেষ্টা করবে; ক্লাউডফ্লেয়ার ব্লকে স্বয়ংক্রিয়ভাবে eduboard ইঞ্জিনে ফলব্যাক করবে।', captcha:false }
 };
 
 /* ======================= Helpers ======================= */
@@ -444,7 +424,7 @@ function beep(ok) {
 }
 
 /* ======================= State ======================= */
-let method = 'ebr', capState = { hash:'', ts:0, sid:null }, last = null, fourthIdx = -1;
+let method = 'edu', capState = { hash:'', ts:0, sid:null }, last = null, fourthIdx = -1;
 
 /* ======================= Init ======================= */
 function fillSelects() {
@@ -466,11 +446,14 @@ function setMethod(m) {
   $('methodHint').innerHTML = METHODS[m].hint;
   $('checkBtnText').textContent = METHODS[m].btn;
   $('captchaBox').classList.toggle('hidden', !METHODS[m].captcha);
-  $('captchaLabel').lastChild.textContent = m === 'edu' ? 'সিকিউরিটি কোড (৬ অক্ষর)' : 'সিকিউরিটি কি (৪ ডিজিট)';
-  $('captchaInput').maxLength = m === 'edu' ? 6 : 4;
-  if (METHODS[m].captcha) loadCaptcha();
+  if (METHODS[m].captcha) {
+    $('captchaLabel').lastChild.textContent = m === 'edu' ? 'সিকিউরিটি কোড (৬ অক্ষর)' : 'সিকিউরিটি কি (৪ ডিজিট)';
+    $('captchaInput').maxLength = m === 'edu' ? 6 : 4;
+    loadCaptcha();
+  }
 }
 async function loadCaptcha() {
+  if (!METHODS[method].captcha) return;
   const img = $('captchaImg'), ld = $('captchaLoading');
   $('captchaInput').value = ''; ld.style.display = 'flex'; ld.textContent = 'লোড হচ্ছে…';
   try {
@@ -482,38 +465,59 @@ async function loadCaptcha() {
   } catch (e) { ld.textContent = 'লোড ব্যর্থ — নতুন কোড চাপুন'; }
 }
 
-/* ======================= ebr.bd ======================= */
-function openEbr(roll, reg) {
-  const txt = `Roll: ${roll || '-'}   Reg: ${reg || '-'}`;
-  $('ebrCreds').textContent = txt;
-  if (roll) navigator.clipboard?.writeText(`${roll}\t${reg || ''}`).catch(() => {});
-  if (!$('ebrFrame').src) $('ebrFrame').src = 'https://ebr.bd/#individual-result';
-  $('placeholder').classList.add('hidden');
-  $('ebrPanel').classList.remove('hidden');
-  $('ebrPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 /* ======================= Submit ======================= */
 async function onSubmit(e) {
   e.preventDefault();
   const roll = $('roll').value.trim(), reg = $('reg').value.trim();
   if (!/^\d{3,8}$/.test(roll)) return toast('সঠিক রোল নম্বর লিখুন');
-  if (method === 'ebr') { openEbr(roll, reg); toast('রোল/রেজি কপি হয়েছে — ebr.bd ফর্মে পেস্ট করুন'); return; }
   if (method === 'edu' && !reg) return toast('নম্বরসহ মার্কশিটের জন্য রেজিস্ট্রেশন আবশ্যক');
-  const cap = $('captchaInput').value.trim(); if (!cap) return toast('সিকিউরিটি কোড লিখুন');
 
-  const btn = $('checkBtn'), old = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'ফলাফল আনা হচ্ছে…';
-  const base = { board: $('board').value, exam: $('exam').value, year: $('year').value, roll, reg, captcha: cap };
-  const [url, body] = method === 'edu'
-    ? ['/api/eduboard/check', { ...base, hash: capState.hash, timestamp: capState.ts }]
-    : ['/api/eboard/check', { ...base, session_id: capState.sid }];
+  const btn = $('checkBtn'), old = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = 'ফলাফল আনা হচ্ছে…';
+
+  const base = { board: $('board').value, exam: $('exam').value, year: $('year').value, roll, reg };
+
+  let url, body;
+  if (method === 'edu') {
+    const cap = $('captchaInput').value.trim();
+    if (!cap) { btn.disabled = false; btn.innerHTML = old; return toast('সিকিউরিটি কোড লিখুন'); }
+    url = '/api/eduboard/check';
+    body = { ...base, captcha: cap, hash: capState.hash, timestamp: capState.ts };
+  } else if (method === 'eboard') {
+    const cap = $('captchaInput').value.trim();
+    if (!cap) { btn.disabled = false; btn.innerHTML = old; return toast('সিকিউরিটি কোড লিখুন'); }
+    url = '/api/eboard/check';
+    body = { ...base, captcha: cap, session_id: capState.sid };
+  } else if (method === 'ebr') {
+    url = '/api/ebr/check';
+    body = base;
+  }
+
   try {
     const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const d = await r.json();
-    if (d.success && d.data) { d.data.board_key = $('board').value; showResult(d.data); saveHistory(d.data); }
-    else { toast(d.error || 'ফলাফল পাওয়া যায়নি অথবা কোড ভুল'); loadCaptcha(); }
-  } catch (err) { toast('সার্ভার ত্রুটি: ' + err.message); loadCaptcha(); }
-  finally { btn.disabled = false; btn.innerHTML = old; lucide.createIcons(); }
+    if (d.success && d.data) {
+      d.data.board_key = $('board').value;
+      showResult(d.data);
+      saveHistory(d.data);
+      toast('ফলাফল সফলভাবে প্রাপ্ত হয়েছে!');
+    } else {
+      if (method === 'ebr' && d.requires_fallback) {
+        toast('ebr.bd ক্লাউডফ্লেয়ার টার্নস্টাইল সুরক্ষার কারণে EduBoard ইঞ্জিনে সুইচ করা হচ্ছে...');
+        setMethod('edu');
+      } else {
+        toast(d.error || 'ফলাফল পাওয়া যায়নি অথবা কোড ভুল');
+        if (METHODS[method].captcha) loadCaptcha();
+      }
+    }
+  } catch (err) {
+    toast('সার্ভার ত্রুটি: ' + err.message);
+    if (METHODS[method].captcha) loadCaptcha();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = old;
+    lucide.createIcons();
+  }
 }
 
 /* ======================= Result rendering ======================= */
@@ -534,6 +538,11 @@ function showResult(d) {
   const subs = d.subjects || [];
   fourthIdx = subs.length >= 6 ? subs.length - 1 : -1;
   ['mBoard', 'mGroup', 'mInst'].forEach(id => $(id).value = '');
+  if (d.merit) {
+    if (d.merit.board_merit) $('mBoard').value = d.merit.board_merit;
+    if (d.merit.group_merit) $('mGroup').value = d.merit.group_merit;
+    if (d.merit.institute_merit) $('mInst').value = d.merit.institute_merit;
+  }
   $('placeholder').classList.add('hidden');
   $('resultCard').classList.remove('hidden');
 
@@ -819,14 +828,12 @@ function loadIntoForm(p) {
 
 /* ======================= Wire up ======================= */
 document.addEventListener('DOMContentLoaded', () => {
-  fillSelects(); lucide.createIcons(); setMethod('ebr');
+  fillSelects(); lucide.createIcons(); setMethod('edu');
   document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
   document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => setMethod(b.dataset.method)));
   $('checkForm').addEventListener('submit', onSubmit);
   $('captchaRefresh').addEventListener('click', loadCaptcha);
   $('board').addEventListener('change', () => { if (METHODS[method].captcha) loadCaptcha(); });
-  $('copyRollReg').addEventListener('click', () => { navigator.clipboard?.writeText(`${$('roll').value}\t${$('reg').value}`); toast('কপি হয়েছে'); });
-  $('openEbrFromResult').addEventListener('click', () => openEbr(last?.roll, last?.reg));
   $('fourthSel').addEventListener('change', e => { fourthIdx = +e.target.value; renderSubjects(); renderMerit(); });
   $('printBtn').addEventListener('click', printMarksheet);
   $('copyVerifyBtn').addEventListener('click', () => {

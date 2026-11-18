@@ -228,12 +228,12 @@ def parse_subjects(display_details):
         raw_name = ""
 
         # FORMAT 1: eduboard format: "101-102 A BANGLA 139" or "275 A INFORMATION & COMMUNICATION TECHNOLOGY 073"
-        m_edu = re.match(r'^([\d\-]+)\s+([A-F][\+\-]?)\s+(.+?)\s+(\d+)$', item_str)
+        m_edu = re.match(r'^([\d\-]+)\s+([A-F][\+\-]?)\s+([\s\S]*?)(?:\s+(\d+))?$', item_str)
         if m_edu:
             code = m_edu.group(1).strip()
             grade = m_edu.group(2).strip()
             raw_name = m_edu.group(3).strip().title()
-            total_marks = str(int(m_edu.group(4).strip()))
+            total_marks = str(int(m_edu.group(4).strip())) if m_edu.group(4) else "--"
 
             sub_info = HSC_SUBJECT_MAP.get(code)
             if not sub_info:
@@ -531,6 +531,83 @@ async def eduboard_check_endpoint(request):
             return web.json_response({"success": True, "data": student_data})
         else:
             return web.json_response({"success": False, "error": res.get("error", "রেজাল্ট পাওয়া যায়নি অথবা কোড সঠিক নয়।")})
+    except Exception as e:
+        return web.json_response({"success": False, "error": str(e)}, status=500)
+
+async def ebr_check_endpoint(request):
+    try:
+        data = await request.json()
+        board = data.get("board", "rajshahi").strip().lower()
+        exam = str(data.get("exam", "hsc")).strip().lower()
+        year = str(data.get("year", "2026")).strip()
+        roll = str(data.get("roll", "")).strip()
+        reg = str(data.get("reg", "")).strip()
+
+        if not roll:
+            return web.json_response({"success": False, "error": "রোল নম্বর প্রয়োজন।"}, status=400)
+
+        url = f"https://api.ebr.bd/?exam={exam}&year={year}&board={board}&roll={roll}&reg={reg}"
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'Accept': 'application/json',
+            'Referer': 'https://ebr.bd/',
+            'Origin': 'https://ebr.bd'
+        }
+
+        loop = asyncio.get_event_loop()
+        def _fetch_ebr():
+            import urllib.request, ssl
+            ctx = ssl._create_unverified_context()
+            req = urllib.request.Request(url, headers=headers)
+            try:
+                with urllib.request.urlopen(req, context=ctx, timeout=8) as resp:
+                    return json.loads(resp.read().decode('utf-8'))
+            except Exception as e:
+                return {"error": str(e)}
+
+        res_json = await loop.run_in_executor(None, _fetch_ebr)
+
+        if res_json.get("success") and res_json.get("data", {}).get("result"):
+            res_obj = res_json["data"]["result"]
+            info = res_obj.get("info", {})
+            raw_result = res_obj.get("result", "")
+            subs = parse_subjects(raw_result)
+
+            student_data = {
+                "name": info.get("name", "N/A"),
+                "father": info.get("fatherName", "N/A"),
+                "mother": info.get("motherName", "N/A"),
+                "roll": info.get("rollNo", roll),
+                "reg": info.get("regNo", reg),
+                "board": board,
+                "exam": exam.upper(),
+                "year": info.get("passYear", year),
+                "gpa": str(info.get("gpa", "")) or ("PASSED" if info.get("result") == "P" else info.get("result", "FAILED")),
+                "group": info.get("groupName", "N/A"),
+                "college": info.get("instituteName", "N/A"),
+                "eiin": info.get("eiin", ""),
+                "subjects": subs,
+                "source": "ebr.bd",
+                "merit": {
+                    "board_merit": info.get("boardMerit"),
+                    "group_merit": info.get("groupMerit"),
+                    "institute_merit": info.get("eiinMerit"),
+                    "total_marks": info.get("totalMarks"),
+                    "board_merit_w4": info.get("boardMeritW4"),
+                    "group_merit_w4": info.get("groupMeritW4"),
+                    "institute_merit_w4": info.get("eiinMeritW4"),
+                    "total_marks_w4": info.get("totalMarksWithoutFourth")
+                }
+            }
+            attach_verification(student_data)
+            return web.json_response({"success": True, "data": student_data})
+        else:
+            msg = res_json.get("msg") or res_json.get("message") or res_json.get("error") or "Server unavailable"
+            return web.json_response({
+                "success": False,
+                "requires_fallback": True,
+                "error": f"ebr.bd সরাসরি এপিআইতে ক্লাউডফ্লেয়ার টার্নস্টাইল প্রয়োজন ({msg})। দয়া করে নম্বরসহ পূর্ণ ফলাফল ও মার্কশিটের জন্য 'eduboard' ইঞ্জিন ব্যবহার করুন।"
+            })
     except Exception as e:
         return web.json_response({"success": False, "error": str(e)}, status=500)
 
@@ -911,6 +988,7 @@ def create_app():
     app.router.add_get('/', index_handler)
     app.router.add_get('/api/verify', verify_api_endpoint)
     app.router.add_post('/api/check', check_result_endpoint)
+    app.router.add_post('/api/ebr/check', ebr_check_endpoint)
     app.router.add_get('/api/eduboard/captcha', eduboard_captcha_endpoint)
     app.router.add_post('/api/eduboard/check', eduboard_check_endpoint)
     app.router.add_get('/api/eboard/captcha', eboard_captcha_endpoint)
