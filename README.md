@@ -61,13 +61,13 @@ Developed & maintained by **Shahriyar Sojib Hasan**.
 
 ### Option A: One-Click Deploy on Vercel (24/7 Serverless Free Tier)
 - Includes native **`vercel.json`** and stateless **`api/index.py`** Python Serverless Function (`v2` signed captcha sessions + `/health` + dynamic `/sitemap.xml` & `/robots.txt`).
-1. Import **`shahriyarsojibhasan/ResultSniper-BD`** into [vercel.com/new](https://vercel.com/new).
+1. Import **`shahriyarsojibhasan/RESULTSNIPER-BD`** into [vercel.com/new](https://vercel.com/new).
 2. Add Environment Variable **`RS_SECRET`** (any random 32+ char secret string so QR verification tokens persist permanently across serverless cold starts).
 3. Click **Deploy** — live in seconds on Vercel's global CDN!
 
 ### Option B: One-Click Deploy on Render (24/7 Web Service)
 1. Push this repo to GitHub (already done!).
-2. Go to [render.com](https://render.com) → **New** → **Blueprint** → Connect `ResultSniper-BD` (auto-reads **`render.yaml`**).
+2. Go to [render.com](https://render.com) → **New** → **Blueprint** → Connect `RESULTSNIPER-BD` (auto-reads **`render.yaml`**).
 3. *(Tip)* Pair with a free uptime monitor pinging `https://your-domain/health` every 5–10 minutes on Render Free Tier.
 
 ### Option C: Railway / Koyeb / Fly.io / Docker

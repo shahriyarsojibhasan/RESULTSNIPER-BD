@@ -9,7 +9,7 @@
 - **Terms of Service**: https://resultsniper-bd.vercel.app/terms
 - **Privacy Policy**: https://resultsniper-bd.vercel.app/privacy
 - **XML Sitemap**: https://resultsniper-bd.vercel.app/sitemap.xml
-- **Source Repository**: https://github.com/shahriyarsojibhasan/ResultSniper-BD
+- **Source Repository**: https://github.com/shahriyarsojibhasan/RESULTSNIPER-BD
 - **Support Author (Buy Me a Coffee)**: https://buymeacoffee.com/shahriyarsojibhasan
 
 ## Author & Attribution
