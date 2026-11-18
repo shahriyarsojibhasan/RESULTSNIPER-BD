@@ -1,28 +1,24 @@
-# ResultSniper BD (ResultSniper BD - Shahriyar Sojib Hasan)
-> Fast, resilient Bangladesh Education Board Result Extraction, Merit Ranking & Banknote-Grade Cryptographically Verified Marksheet Generation Platform.
+# ResultSniper BD (ResultSniper BD — Shahriyar Sojib Hasan)
+> Fast, resilient Bangladesh Education Board Result Extraction, Merit Analytics & 1-Page A4/Letter Cryptographically Verified Marksheet Platform (English default + Bangla toggle).
 
 ## Creator & Lead Developer
 - **Name**: Shahriyar Sojib Hasan
 - **Role**: Software Architect & Lead Developer
-- **GitHub**: https://github.com/shahriyarsojibhasan
+- **GitHub**: https://github.com/shahriyarsojibhasan/ResultSniper-BD
 
-## Architecture & Core Engines
-ResultSniper BD connects to 3 distinct backend gateways:
-1. **ebr.bd Engine**: Direct integration for fast result lookup with candidate Merit Positions and score breakdown without manual CAPTCHA hurdles.
-2. **eduboardresults.gov.bd Engine**: Ministry of Education official rescrutiny/detailed marksheet engine with subjectwise CQ, MCQ, Practical, and Total marks.
-3. **eboardresults.com Engine**: Nixtec Systems nationwide board API with 4-digit security code support and automated sniper loop.
+## Architecture & Live API Engines
+1. **eduboardresults.gov.bd (Official Full Marks Engine)**: Fetches candidate profiles and subject-wise numerical marks (`getStudentResult`) with human-solved 6-char captcha.
+2. **result.bangladeshgov.org (All-Board / EBR Mirror Gateway)**: Supports SSC, HSC, JSC, DIBS across all 11 Education Boards (2015–2026) with `sub_details` resolution and 4-digit security key.
+3. **api.ebr.bd (EBR Leaderboard API)**: Protected upstream by Cloudflare Turnstile bound to `ebr.bd`; server route `/api/ebr/check` reports Turnstile gate status transparently and hands off cleanly to Full Marks / All-Board gateways.
 
-## Security & Marksheet Authenticity
-- **Banknote-Style Art**: High-security guilloche wave patterns, microtext borders (`RESULTSNIPER BD • DOC_ID • ROLL ...`), anti-copy rosette art, and authentic board watermarks.
-- **Official Board Crests**: Official emblems for all boards including custom high-resolution emblem for Rajshahi Education Board.
-- **Cryptographic Verification**: Every generated marksheet contains an HMAC-SHA256 digital signature (`verify_token`) and unique Document ID (`RS-XXXXXXXXXX`).
-- **QR Code Verification**: Scanning the embedded QR code routes to `/verify?t=<TOKEN>`, allowing instant tamper-evident authentication without server database dependencies.
+## Security & 1-Page Print PDFs
+- **Light Currency Wave Underprint**: Soft pastel guilloche curves, rosettes, microtext frame, and dynamic official board emblems (including transparent official PNG crest for Rajshahi Board).
+- **1-Page A4 & US Letter Fit**: Both main marksheet print and `/verify` certificate fit cleanly onto a single A4 or Letter page.
+- **HMAC-SHA256 Verification**: Stateless compressed payload + signature embedded in QR code (`/verify?t=<TOKEN>`).
 
-## Key Endpoints
-- `GET /`: Main user interface with interactive forms, live sniper, profile management, and print marksheet generator.
-- `GET /verify?t=<TOKEN>`: Public verification portal displaying full validated student transcript and tamper alerts.
-- `GET /api/verify?t=<TOKEN>`: Cryptographic JSON endpoint validating HMAC signatures and returning candidate records.
-- `POST /api/check`: Unified result checking endpoint supporting all 3 engines.
-- `GET /about`: Project details and developer biography.
-- `GET /terms`: Legal disclaimer and terms of usage.
-- `GET /privacy`: Zero-log privacy policy and security standards.
+## Endpoints
+- `GET /`: Bilingual (EN default / BN toggle) multi-engine UI.
+- `GET /verify?t={token}`: Public verification portal + 1-page A4/Letter printable certificate.
+- `GET /api/verify?t={token}`: JSON verification endpoint.
+- `GET /health`: Health check endpoint for 24/7 cloud uptime monitors.
+- `GET /about`, `/terms`, `/privacy`, `/robots.txt`, `/sitemap.xml`, `/llms.txt`

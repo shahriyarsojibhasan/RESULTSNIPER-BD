@@ -1,152 +1,174 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | ResultSniper BD - Shahriyar Sojib Hasan</title>
-    <meta name="description" content="ResultSniper BD is an advanced Bangladesh Education Board Result Extraction, Merit Tracking, and Cryptographically Verified Marksheet Generation Platform developed by Shahriyar Sojib Hasan.">
-    <meta name="author" content="Shahriyar Sojib Hasan">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About ResultSniper BD | Developed by Shahriyar Sojib Hasan</title>
+  <meta name="description" content="ResultSniper BD is a fast Bangladesh Education Board Result Extraction, Merit Analytics &amp; Cryptographically Verified 1-Page Marksheet Platform built by Shahriyar Sojib Hasan.">
+  <meta name="keywords" content="ResultSniper BD, Shahriyar Sojib Hasan, Bangladesh education board results API, marksheet verification, HSC SSC result platform">
+  <meta name="author" content="Shahriyar Sojib Hasan">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About ResultSniper BD — Shahriyar Sojib Hasan">
+  <meta property="og:description" content="Learn about ResultSniper BD architecture, multi-board official crests, light banknote PDF marksheets &amp; HMAC-SHA256 verification.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Shahriyar Sojib Hasan",
+      "url": "https://github.com/shahriyarsojibhasan",
+      "jobTitle": "Software Architect & Lead Developer"
+    }
+  }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; background-color: #f6f7f9; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .flag-bar { height: 4px; background: linear-gradient(90deg, #006a4e 0 70%, #e0313f 70% 100%); }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col text-slate-800">
+<body class="min-h-screen flex flex-col text-slate-800 antialiased">
+  <div class="flag-bar"></div>
 
-    <!-- Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-700 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                </div>
-                <div>
-                    <div class="font-bold text-lg text-slate-900 tracking-tight">
-                        ResultSniper <span class="text-emerald-700 font-extrabold">BD</span>
-                    </div>
-                    <div class="text-[11px] text-slate-500 font-medium">About Developer & Platform</div>
-                </div>
-            </a>
-            <div class="flex items-center gap-3">
-                <a href="/" class="text-sm font-medium text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">হোম</a>
-                <a href="/verify" class="text-sm font-medium text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">যাচাইকরণ (Verify)</a>
-            </div>
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <a href="/" class="flex items-center gap-3">
+        <img src="/favicon.svg" alt="ResultSniper BD" class="w-10 h-10 shrink-0">
+        <div>
+          <div class="font-bold text-lg text-slate-900 tracking-tight">ResultSniper <span class="text-emerald-700 font-extrabold">BD</span></div>
+          <div class="text-[11px] text-slate-500 font-medium" data-i18n="a.sub">About Developer &amp; Platform</div>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-10 sm:py-14">
-
-        <!-- Hero Section -->
-        <div class="text-center mb-12">
-            <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-emerald-200 mb-4">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Official Project Overview
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-                ResultSniper <span class="text-emerald-700">BD</span>
-            </h1>
-            <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto">
-                বাংলাদেশের মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ডের শিক্ষার্থীদের দ্রুততম সময়ে নির্ভুল ফলাফল, মেরিট পজিশন ও সিকিউরিটি মার্কশিট সেবা প্রদানের এক আধুনিক প্রযুক্তি প্ল্যাটফর্ম।
-            </p>
+      </a>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="/" class="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50" data-i18n="nav.home">Result Finder</a>
+          <a href="/verify" class="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50" data-i18n="nav.verify">Verify Marksheet</a>
+        </nav>
+        <div class="inline-flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+          <button type="button" class="rs-lang-btn" data-lang="en">EN</button>
+          <button type="button" class="rs-lang-btn" data-lang="bn">বাংলা</button>
         </div>
+      </div>
+    </div>
+  </header>
 
-        <!-- Developer Card -->
-        <div class="bg-gradient-to-br from-white to-emerald-50/40 border-2 border-emerald-200/80 rounded-2xl p-6 sm:p-8 shadow-sm mb-12">
-            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-                <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-emerald-800 via-emerald-600 to-teal-500 flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-emerald-700/25 shrink-0">
-                    SH
-                </div>
-                <div class="flex-1">
-                    <div class="inline-block text-[11px] font-bold text-emerald-700 uppercase tracking-widest bg-emerald-100/70 px-2.5 py-0.5 rounded-md mb-2">
-                        Creator & Lead Engineer
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-900 mb-1">Shahriyar Sojib Hasan</h2>
-                    <div class="text-sm font-medium text-slate-500 mb-4">Software Architect • Full-Stack Developer • Security Enthusiast</div>
-                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
-                        <strong class="text-slate-800">শাহরিয়ার সজীব হাসান (Shahriyar Sojib Hasan)</strong> কর্তৃক পরিকল্পিত এবং নির্মিত এই সিস্টেমটি বাংলাদেশের পাবলিক পরীক্ষার লাখ লাখ শিক্ষার্থীর রেজাল্ট দিনে সার্ভার জটলা, অস্পষ্ট মার্কশিট এবং ভুয়া ফলাফল যাচাইয়ের জটিলতা নিরসনের লক্ষ্যে একক উদ্যোগে তৈরি করা হয়েছে।
-                    </p>
-                    <div class="flex flex-wrap gap-2 text-xs">
-                        <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">Python / Asyncio</span>
-                        <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">HMAC-SHA256 Cryptography</span>
-                        <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">Govt API Interfacing</span>
-                        <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">High-Security Document Engineering</span>
-                    </div>
-                </div>
-            </div>
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-10 sm:py-12">
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-emerald-200 mb-4">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span data-i18n="a.badge">Official Platform Overview</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
+        ResultSniper <span class="text-emerald-700">BD</span>
+      </h1>
+      <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto" data-i18n="a.hero">
+        A fast, clean technology platform built to help Bangladesh Education Board students view subject-wise detailed marks, analyze merit scores, and verify authentic 1-page marksheets securely.
+      </p>
+    </div>
+
+    <!-- Developer Card -->
+    <div class="bg-gradient-to-br from-white to-emerald-50/40 border-2 border-emerald-200/80 rounded-2xl p-6 sm:p-8 shadow-sm mb-10">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+        <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-emerald-800 via-emerald-600 to-teal-500 flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-emerald-700/25 shrink-0">
+          SH
         </div>
-
-        <!-- Key Platform Innovations -->
-        <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-            <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            মূল বৈশিষ্ঠ্য ও প্রযুক্তিগত উৎকর্ষ
-        </h3>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mb-3">1</div>
-                <h4 class="font-bold text-slate-900 mb-2">৩-ইঞ্জিন মাল্টি-গেটওয়ে আর্কিটেকচার</h4>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    সরাসরি <code>ebr.bd</code> (মেরিট পজিশন ও দ্রুত রেজাল্ট), <code>eduboardresults.gov.bd</code> (বিষয়ভিত্তিক পূর্ণ নম্বরসহ সরকারি মার্কশিট), এবং <code>eboardresults.com</code> (মাল্টি-বোর্ড বিশ্লেষণ) এই তিনটি পৃথক ইঞ্জিন থেকে রেজাল্ট সমন্বয় করার সক্ষমতা।
-                </p>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold mb-3">2</div>
-                <h4 class="font-bold text-slate-900 mb-2">ব্যাংকনোট-গ্রেড সিকিউরিটি মার্কশিট</h4>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    কারেন্সি নোটের মতো মাইক্রোটেক্সট বর্ডার (<code>RESULTSNIPER BD • DOC_ID • ROLL ...</code>), গিলোশ ওয়েভ প্যাটার্ন (Guilloche lines), ইউনিক রোজেট আর্টওয়ার্ক এবং প্রত্যেক শিক্ষা বোর্ডের অফিশিয়াল ক্রেস্ট সংবলিত আন্তর্জাতিক মানের সিকিউর প্রিন্টিং আউটপুট।
-                </p>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold mb-3">3</div>
-                <h4 class="font-bold text-slate-900 mb-2">QR কোড ও HMAC-SHA256 যাচাইকরণ</h4>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    প্রত্যেকটি জেনারেট করা মার্কশিটের সাথে যুক্ত থাকে একটি স্বয়ংক্রিয় ক্রিপ্টোগ্রাফিক ডিজিটাল টোকেন ও কিউআর কোড। মোবাইলে স্ক্যান করলেই তাৎক্ষণিক রেজাল্ট ভেরিফাই হয়; মার্কশিটের ১টি নম্বর বা গ্রেড পরিবর্তন করলেও তাৎক্ষণিক ইনভ্যালিড এলার্ট দেয়।
-                </p>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mb-3">4</div>
-                <h4 class="font-bold text-slate-900 mb-2">মেরিট স্কোর ও পারসেন্টাইল ক্যালকুলেশন</h4>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    শুধু পাসের গ্রেড নয়, মোট কত নম্বর পেয়েছে, ৪র্থ বিষয় ছাড়া মূল বিষয়গুলোতে কত নম্বর এবং সর্বমোট কত শতাংশ মার্কস অর্জিত হয়েছে তা স্বয়ংক্রিয়ভাবে নির্ভুল গণনার মাধ্যমে তুলে ধরা হয়।
-                </p>
-            </div>
+        <div class="flex-1">
+          <div class="inline-block text-[11px] font-bold text-emerald-700 uppercase tracking-widest bg-emerald-100/70 px-2.5 py-0.5 rounded-md mb-2" data-i18n="a.roleBadge">
+            Creator &amp; Lead Engineer
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900 mb-1">Shahriyar Sojib Hasan</h2>
+          <div class="text-sm font-medium text-slate-500 mb-4">Software Architect • Full-Stack Developer • Security Enthusiast</div>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4" data-i18n-html="a.bio">
+            Designed and engineered by <strong>Shahriyar Sojib Hasan</strong> to eliminate Result Day congestion, unclear scorecards, and document forgery across Bangladesh public board examinations (SSC, HSC, JSC &amp; Equivalent).
+          </p>
+          <div class="flex flex-wrap justify-center sm:justify-start gap-2 text-xs">
+            <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">Python / Aiohttp</span>
+            <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">HMAC-SHA256 Security</span>
+            <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">Gov Board API Integration</span>
+            <span class="bg-white border border-slate-200 px-3 py-1 rounded-lg text-slate-700 font-medium">1-Page A4/Letter PDF</span>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Vision and Open Standards -->
-        <div class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8">
-            <h3 class="text-lg font-bold mb-2">উন্মুক্ত তথ্য ও দায়িত্বশীল ব্যবহার</h3>
-            <p class="text-xs text-slate-300 leading-relaxed mb-4">
-                ResultSniper BD কোনো সরকারি তথ্য পরিবর্তন বা বিকৃত করে না। এটি শিক্ষার্থীদের সুবিধার জন্য সরকারি পাবলিক এপিআই ও রেজাল্ট সার্ভার থেকে প্রাপ্ত বৈধ তথ্য সুন্দর ও সুরক্ষিতভাবে উপস্থাপনের একটি সহায়ক টুল।
-            </p>
-            <div class="text-xs text-slate-400">
-                Created with passion by <strong class="text-white">Shahriyar Sojib Hasan</strong> • Open for educational and non-commercial benefit.
-            </div>
-        </div>
+    <h3 class="text-xl font-bold text-slate-900 mb-5" data-i18n="a.featTitle">Key Engineering &amp; Security Features</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mb-3">1</div>
+        <h4 class="font-bold text-slate-900 mb-2" data-i18n="a.f1t">Multi-Gateway Official APIs</h4>
+        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="a.f1d">Direct integration with eduboardresults.gov.bd (subject-wise numeric marks) and result.bangladeshgov.org (multi-board gateway covering SSC, HSC, JSC, DIBS across all 11 boards), plus api.ebr.bd lookup support.</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="w-9 h-9 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold mb-3">2</div>
+        <h4 class="font-bold text-slate-900 mb-2" data-i18n="a.f2t">Light Security Wave Banknote Marksheet</h4>
+        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="a.f2d">Subtle pastel guilloche curve underprints, microtext security border, geometric rosettes, and official transparent PNG/SVG crests for every Education Board (including Rajshahi Board's official emblem).</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold mb-3">3</div>
+        <h4 class="font-bold text-slate-900 mb-2" data-i18n="a.f3t">1-Page A4/Letter QR &amp; HMAC Verification</h4>
+        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="a.f3d">Every marksheet includes a compressed, HMAC-SHA256 signed QR token (/verify?t=...) that verifies untampered records and prints as a crisp 1-page A4 or Letter certificate.</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mb-3">4</div>
+        <h4 class="font-bold text-slate-900 mb-2" data-i18n="a.f4t">Merit Analytics &amp; 0.01s PDF Scanner</h4>
+        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="a.f4d">Automatically computes total marks (with and without 4th subject), percentages, and scans uploaded EIIN college result PDFs in milliseconds.</p>
+      </div>
+    </div>
 
-    </main>
+    <div class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8">
+      <h3 class="text-lg font-bold mb-2" data-i18n="a.ethTitle">Open Data &amp; Responsible Use</h3>
+      <p class="text-xs text-slate-300 leading-relaxed mb-3" data-i18n="a.ethDesc">ResultSniper BD never fabricates or alters official examination results. All verified marksheets directly reflect data retrieved from official public Education Board endpoints.</p>
+      <div class="text-xs text-slate-400">Built by <strong class="text-white">Shahriyar Sojib Hasan</strong> • <a href="https://github.com/shahriyarsojibhasan/ResultSniper-BD" class="underline text-emerald-400">GitHub Repository</a></div>
+    </div>
+  </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div>
-                © 2026 <strong class="text-slate-700">ResultSniper BD</strong> • Developer: <a href="/about" class="text-emerald-700 font-semibold hover:underline">Shahriyar Sojib Hasan</a>
-            </div>
-            <div class="flex items-center gap-4">
-                <a href="/terms" class="hover:underline">শর্তাবলী (Terms)</a>
-                <a href="/privacy" class="hover:underline">গোপনীয়তা নীতি (Privacy)</a>
-                <a href="/verify" class="hover:underline">যাচাইকরণ (Verify)</a>
-            </div>
-        </div>
-    </footer>
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>© 2026 <strong class="text-slate-700">ResultSniper BD</strong> • <span data-i18n="footer.dev">Developed by</span> <a href="/about" class="text-emerald-700 font-semibold hover:underline">Shahriyar Sojib Hasan</a></div>
+      <div class="flex items-center gap-4">
+        <a href="/terms" class="hover:underline" data-i18n="nav.terms">Terms</a>
+        <a href="/privacy" class="hover:underline" data-i18n="nav.privacy">Privacy Policy</a>
+        <a href="/verify" class="hover:underline" data-i18n="nav.verify">Verify Marksheet</a>
+      </div>
+    </div>
+  </footer>
 
+  <script src="/assets/i18n.js"></script>
+  <script>
+    RS_I18N.register({
+      en: {
+        'a.sub': 'About Developer & Platform', 'a.badge': 'Official Platform Overview',
+        'a.hero': 'A fast, clean technology platform built to help Bangladesh Education Board students view subject-wise detailed marks, analyze merit scores, and verify authentic 1-page marksheets securely.',
+        'a.roleBadge': 'Creator & Lead Engineer',
+        'a.bio': 'Designed and engineered by <strong>Shahriyar Sojib Hasan</strong> to eliminate Result Day congestion, unclear scorecards, and document forgery across Bangladesh public board examinations (SSC, HSC, JSC &amp; Equivalent).',
+        'a.featTitle': 'Key Engineering & Security Features',
+        'a.f1t': 'Multi-Gateway Official APIs', 'a.f1d': 'Direct integration with eduboardresults.gov.bd (subject-wise numeric marks) and result.bangladeshgov.org (multi-board gateway covering SSC, HSC, JSC, DIBS across all 11 boards), plus api.ebr.bd lookup support.',
+        'a.f2t': 'Light Security Wave Banknote Marksheet', 'a.f2d': 'Subtle pastel guilloche curve underprints, microtext security border, geometric rosettes, and official transparent PNG/SVG crests for every Education Board (including Rajshahi Board official emblem).',
+        'a.f3t': '1-Page A4/Letter QR & HMAC Verification', 'a.f3d': 'Every marksheet includes a compressed, HMAC-SHA256 signed QR token (/verify?t=...) that verifies untampered records and prints as a crisp 1-page A4 or Letter certificate.',
+        'a.f4t': 'Merit Analytics & 0.01s PDF Scanner', 'a.f4d': 'Automatically computes total marks (with and without 4th subject), percentages, and scans uploaded EIIN college result PDFs in milliseconds.',
+        'a.ethTitle': 'Open Data & Responsible Use', 'a.ethDesc': 'ResultSniper BD never fabricates or alters official examination results. All verified marksheets directly reflect data retrieved from official public Education Board endpoints.'
+      },
+      bn: {
+        'a.sub': 'প্ল্যাটফর্ম ও ডেভেলপার পরিচিতি', 'a.badge': 'অফিশিয়াল প্রজেক্ট বিবরণ',
+        'a.hero': 'বাংলাদেশের শিক্ষা বোর্ডের শিক্ষার্থীদের দ্রুততম সময়ে বিষয়ভিত্তিক পূর্ণ নম্বর, মেরিট স্কোর ও ক্রিপ্টোগ্রাফিক QR ভেরিফায়েড মার্কশিট প্রদানের আধুনিক প্ল্যাটফর্ম।',
+        'a.roleBadge': 'নির্মাতা ও প্রধান সফটওয়্যার ইঞ্জিনিয়ার',
+        'a.bio': '<strong>শাহরিয়ার সজীব হাসান (Shahriyar Sojib Hasan)</strong> কর্তৃক নির্মিত এই সিস্টেমটি পরীক্ষার ফলাফল প্রকাশের দিন সার্ভার জটলা ও জাল মার্কশিট রোধের লক্ষ্যে তৈরি করা হয়েছে।',
+        'a.featTitle': 'মূল প্রযুক্তিগত বৈশিষ্ট্যসমূহ',
+        'a.f1t': 'মাল্টি-গেটওয়ে অফিশিয়াল এপিআই', 'a.f1d': 'eduboardresults.gov.bd ও result.bangladeshgov.org গেটওয়ে থেকে সরাসরি বিষয়ভিত্তিক নম্বর ও ১১টি বোর্ডের ফলাফল সংগ্রহের সুবিধা।',
+        'a.f2t': 'লাইট ওয়েভ ব্যাংকনোট মার্কশিট', 'a.f2d': 'চোখ জুড়ানো হালকা প্যাস্টেল গিলোশ ওয়েভ, মাইক্রোটেক্সট বর্ডার এবং রাজশাহী বোর্ডসহ সকল বোর্ডের অফিশিয়াল স্বচ্ছ লোগো সংযুক্ত।',
+        'a.f3t': '১-পেজের A4/Letter QR ভেরিফিকেশন', 'a.f3d': 'প্রতিটি মার্কশিটে থাকা HMAC-SHA256 টোকেন QR স্ক্যানেই সত্যতা যাচাই করে এবং এক পৃষ্ঠার A4 বা Letter পিডিএফ প্রিন্ট দেয়।',
+        'a.f4t': 'মেরিট স্কোর ও ০.০১ সেকেন্ড পিডিএফ স্ক্যানার', 'a.f4d': '৪র্থ বিষয়সহ ও ছাড়া মোট নম্বর ও পার্সেন্টেজ হিসাব এবং প্রতিষ্ঠানের EIIN রেজাল্ট পিডিএফ তাৎক্ষণিক স্ক্যান।',
+        'a.ethTitle': 'স্বচ্ছতা ও দায়িত্বশীল ব্যবহার', 'a.ethDesc': 'ResultSniper BD কোনো সরকারি তথ্য পরিবর্তন করে না; এটি কেবল সরকারি সার্ভারের মূল ফলাফল সুরক্ষিত ও সুন্দরভাবে উপস্থাপন করে।'
+      }
+    });
+  </script>
 </body>
 </html>

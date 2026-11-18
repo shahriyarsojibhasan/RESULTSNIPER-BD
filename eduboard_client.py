@@ -102,16 +102,15 @@ class EduBoardClient:
                     }
                 }
             elif res_data.get('status') == 210:
-                return {"success": False, "error": "ক্যাপচা কোড ভুল হয়েছে! অনুগ্রহ করে ক্যাপচাটি ঠিকভাবে লিখুন।"}
+                return {"success": False, "error": "Invalid captcha code! Please try again. / ক্যাপচা কোড ভুল হয়েছে!"}
             else:
-                msg = res_data.get('message') or "রেজাল্ট পাওয়া যায়নি। রোল, রেজিস্ট্রেশন ও বোর্ড চেক করুন।"
+                msg = res_data.get('message') or "Result not found. Verify Roll, Reg, Board and try again. / রেজাল্ট পাওয়া যায়নি।"
                 return {"success": False, "error": msg}
 
         except urllib.error.HTTPError as e:
-            err_body = e.read().decode('utf-8', errors='replace')
-            return {"success": False, "error": f"সার্ভার ত্রুটি ({e.code}): রেজাল্ট সার্ভার ব্যস্ত অথবা ক্যাপচা মেয়াদোত্তীর্ণ।"}
+            return {"success": False, "error": f"Server error ({e.code}): Captcha expired or board server busy."}
         except Exception as e:
-            return {"success": False, "error": f"সংযোগ সমস্যা: {str(e)}"}
+            return {"success": False, "error": f"Connection error: {str(e)}"}
 
 eduboard_client = EduBoardClient()
 

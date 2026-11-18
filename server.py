@@ -49,12 +49,21 @@ def _b64u_dec(s):
     return base64.urlsafe_b64decode(s + '=' * (-len(s) % 4))
 
 def sign_result(d):
-    """Create a tamper-proof token from a result that was fetched from an official board server."""
-    subs = ';'.join(f"{s.get('code','')}:{s.get('grade','')}:{s.get('total', s.get('marks','--'))}" for s in d.get('subjects', []))
+    """Create a tamper-proof token from a result fetched from an official board server."""
+    exam_u = str(d.get('exam', 'HSC')).upper()
+    subs_parts = []
+    for s in d.get('subjects', []):
+        code = str(s.get('code', '')).replace(':', '').replace(';', '')
+        grade = str(s.get('grade', '')).replace(':', '').replace(';', '')
+        marks = str(s.get('total', s.get('marks', '--'))).replace(':', '').replace(';', '')
+        known = (exam_u == 'SSC' and code in SSC_SUBJECT_MAP) or (code in HSC_SUBJECT_MAP)
+        extra_nm = '' if known else str(s.get('name_en', '')).replace(':', ' ').replace(';', ' ')[:40]
+        subs_parts.append(f"{code}:{grade}:{marks}:{extra_nm}" if extra_nm else f"{code}:{grade}:{marks}")
+    subs = ';'.join(subs_parts)
     payload = {
         'n': d.get('name', ''), 'f': d.get('father', ''), 'm': d.get('mother', ''),
         'r': str(d.get('roll', '')), 'g': str(d.get('reg', '')), 'b': d.get('board', ''),
-        'e': d.get('exam', ''), 'y': str(d.get('year', '')), 'p': str(d.get('gpa', '')),
+        'e': exam_u, 'y': str(d.get('year', '')), 'p': str(d.get('gpa', '')),
         'gr': d.get('group', ''), 'i': d.get('college', ''), 'ei': str(d.get('eiin', '')),
         's': subs, 't': int(time.time())
     }
@@ -154,19 +163,39 @@ HSC_SUBJECT_MAP = {
     "290": {"en": "Production Management & Marketing I", "bn": "উৎপাদন ব্যবস্থাপনা ১ম পত্র"},
     "291": {"en": "Production Management & Marketing II", "bn": "উৎপাদন ব্যবস্থাপনা ২য় পত্র"},
     "290-291": {"en": "Production Management & Marketing", "bn": "উৎপাদন ব্যবস্থাপনা ও বিপণন"},
-    # SSC
+}
+
+SSC_SUBJECT_MAP = {
+    "101": {"en": "Bangla", "bn": "বাংলা"},
+    "101-102": {"en": "Bangla", "bn": "বাংলা"},
+    "107": {"en": "English", "bn": "ইংরেজি"},
+    "107-108": {"en": "English", "bn": "ইংরেজি"},
+    "109": {"en": "Mathematics", "bn": "গণিত"},
     "111": {"en": "Islam & Moral Education", "bn": "ইসলাম ও নৈতিক শিক্ষা"},
     "112": {"en": "Hindu Religion & Moral Education", "bn": "হিন্দুধর্ম ও নৈতিক শিক্ষা"},
-    "136": {"en": "Physics (SSC)", "bn": "পদার্থবিজ্ঞান"},
-    "137": {"en": "Chemistry (SSC)", "bn": "রসায়ন"},
-    "138": {"en": "Biology (SSC)", "bn": "জীববিজ্ঞান"},
-    "143": {"en": "Accounting (SSC)", "bn": "হিসাববিজ্ঞান"},
-    "144": {"en": "Business Ent. (SSC)", "bn": "ব্যবসায় উদ্যোগ"},
-    "145": {"en": "Finance & Banking (SSC)", "bn": "ফিন্যান্স ও ব্যাংকিং"},
-    "150": {"en": "Bangladesh & Global Studies", "bn": "বাংলাদেশ ও বিশ্বপরিচয়"},
-    "153": {"en": "General Science", "bn": "সাধারণ বিজ্ঞান"},
+    "113": {"en": "Christian Religion & Moral Education", "bn": "খ্রিষ্টধর্ম ও নৈতিক শিক্ষা"},
+    "114": {"en": "Buddhist Religion & Moral Education", "bn": "বৌদ্ধধর্ম ও নৈতিক শিক্ষা"},
+    "126": {"en": "Higher Mathematics", "bn": "উচ্চতর গণিত"},
+    "127": {"en": "Science", "bn": "বিজ্ঞান"},
     "133": {"en": "Agriculture Studies", "bn": "কৃষিশিক্ষা"},
-    "151": {"en": "Home Science (SSC)", "bn": "গার্হস্থ্য বিজ্ঞান"},
+    "136": {"en": "Physics", "bn": "পদার্থবিজ্ঞান"},
+    "137": {"en": "Chemistry", "bn": "রসায়ন"},
+    "138": {"en": "Biology", "bn": "জীববিজ্ঞান"},
+    "140": {"en": "Business Entrepreneurship", "bn": "ব্যবসায় উদ্যোগ"},
+    "141": {"en": "Finance & Banking", "bn": "ফিন্যান্স ও ব্যাংকিং"},
+    "143": {"en": "Accounting", "bn": "হিসাববিজ্ঞান"},
+    "144": {"en": "Business Entrepreneurship", "bn": "ব্যবসায় উদ্যোগ"},
+    "145": {"en": "Finance & Banking", "bn": "ফিন্যান্স ও ব্যাংকিং"},
+    "146": {"en": "Accounting", "bn": "হিসাববিজ্ঞান"},
+    "147": {"en": "Physical Education, Health Science & Sports", "bn": "শারীরিক শিক্ষা, স্বাস্থ্যবিজ্ঞান ও খেলাধুলা"},
+    "150": {"en": "Bangladesh & Global Studies", "bn": "বাংলাদেশ ও বিশ্বপরিচয়"},
+    "151": {"en": "Home Science", "bn": "গার্হস্থ্য বিজ্ঞান"},
+    "152": {"en": "Finance & Banking", "bn": "ফিন্যান্স ও ব্যাংকিং"},
+    "153": {"en": "History of Bangladesh & World Civilization", "bn": "বাংলাদেশের ইতিহাস ও বিশ্বসভ্যতা"},
+    "154": {"en": "Information & Communication Technology", "bn": "তথ্য ও যোগাযোগ প্রযুক্তি"},
+    "156": {"en": "Career Education", "bn": "ক্যারিয়ার শিক্ষা"},
+    "110": {"en": "Geography & Environment", "bn": "ভূগোল ও পরিবেশ"},
+    "141-142": {"en": "Economics", "bn": "অর্থনীতি"},
 }
 
 GRADE_POINT_MAP = {
@@ -179,10 +208,39 @@ GRADE_POINT_MAP = {
     "F": "0.00"
 }
 
-def parse_subjects(display_details):
+def _resolve_subject(code, exam="HSC", sub_map=None, fallback_name=""):
+    exam_u = str(exam or "HSC").upper()
+    code_s = str(code or "").strip()
+    base = code_s.split('-')[0].split('+')[0].strip()
+
+    # 1. Explicit API sub_details has exact subject name for that specific student/board
+    api_en = ""
+    if sub_map:
+        api_en = sub_map.get(code_s) or sub_map.get(base) or ""
+
+    primary = SSC_SUBJECT_MAP if exam_u == "SSC" else HSC_SUBJECT_MAP
+    secondary = HSC_SUBJECT_MAP if exam_u == "SSC" else SSC_SUBJECT_MAP
+    info = primary.get(code_s) or primary.get(base) or secondary.get(code_s) or secondary.get(base)
+
+    if info:
+        return {"en": api_en.title() if api_en else info["en"], "bn": info["bn"]}
+    en_txt = api_en.title() if api_en else (fallback_name or f"Subject {code_s}")
+    bn_txt = fallback_name or en_txt
+    return {"en": en_txt, "bn": bn_txt}
+
+def parse_subjects(display_details, sub_details=None, exam="HSC"):
     subjects = []
     if not display_details:
         return subjects
+
+    sub_map = {}
+    if isinstance(sub_details, list):
+        for s in sub_details:
+            if isinstance(s, dict):
+                c = str(s.get("SUB_CODE") or s.get("sub_code") or "").strip()
+                n = str(s.get("SUB_NAME") or s.get("sub_name") or "").strip()
+                if c and n:
+                    sub_map[c] = n
 
     items = []
     if isinstance(display_details, str):
@@ -191,12 +249,11 @@ def parse_subjects(display_details):
         items = display_details
 
     for item in items:
-        # Check if item is list e.g. ["101", "Bangla", "A+", "85"]
         if isinstance(item, list) and len(item) >= 3:
             code = str(item[0]).strip()
             grade = str(item[2]).strip()
             total_marks = str(item[3]).strip() if len(item) > 3 else "--"
-            sub_info = HSC_SUBJECT_MAP.get(code, {"en": f"Subject {code}", "bn": f"বিষয় {code}"})
+            sub_info = _resolve_subject(code, exam, sub_map)
             gp = GRADE_POINT_MAP.get(grade, "--")
             subjects.append({
                 "code": code,
@@ -227,19 +284,14 @@ def parse_subjects(display_details):
         paper_details = []
         raw_name = ""
 
-        # FORMAT 1: eduboard format: "101-102 A BANGLA 139" or "275 A INFORMATION & COMMUNICATION TECHNOLOGY 073"
+        # FORMAT 1: eduboard / ebr format: "101-102 A BANGLA 139" or "176-177 F CHEMISTRY"
         m_edu = re.match(r'^([\d\-]+)\s+([A-F][\+\-]?)\s+([\s\S]*?)(?:\s+(\d+))?$', item_str)
         if m_edu:
             code = m_edu.group(1).strip()
-            grade = m_edu.group(2).strip()
+            grade = m_edu.group(2).strip().upper()
             raw_name = m_edu.group(3).strip().title()
-            total_marks = str(int(m_edu.group(4).strip())) if m_edu.group(4) else "--"
-
-            sub_info = HSC_SUBJECT_MAP.get(code)
-            if not sub_info:
-                base_code = code.split('-')[0]
-                sub_info = HSC_SUBJECT_MAP.get(base_code, {"en": raw_name, "bn": raw_name})
-
+            total_marks = str(int(m_edu.group(4).strip())) if (m_edu.group(4) and grade != 'F') else "--"
+            sub_info = _resolve_subject(code, exam, sub_map, raw_name)
             gp = GRADE_POINT_MAP.get(grade, "--")
             subjects.append({
                 "code": code,
@@ -257,13 +309,12 @@ def parse_subjects(display_details):
             })
             continue
 
-        # FORMAT 2: Colon format e.g. "101-102:133=A-", "107-108:146=A", "275:091=A+", "101-102:A", "174=42+25...=179:A+"
+        # FORMAT 2: Colon format e.g. "101-102:133=A-", "174=42+25...=179:A+"
         if ':' in item_str:
             left, right = item_str.split(':', 1)
             left = left.strip()
             right = right.strip()
 
-            # Check if right is "[marks]=[grade]" e.g. "133=A-" or "091=A+"
             if '=' in right:
                 r_parts = right.split('=')
                 grade = r_parts[-1].strip()
@@ -274,12 +325,10 @@ def parse_subjects(display_details):
             else:
                 grade = right
 
-            # Check if left has "=" (e.g. 174=42+25+21-45+24+22=179 or 101=85)
             if '=' in left:
                 l_parts = left.split('=')
                 code = l_parts[0].strip()
                 if len(l_parts) > 2:
-                    # code=details=total
                     mrks_dtls = l_parts[1].strip()
                     total_marks = l_parts[2].strip()
 
@@ -321,19 +370,14 @@ def parse_subjects(display_details):
             else:
                 code = left
 
-            # Clean grade if '=' still in it
             if '=' in grade:
                 g_parts = grade.split('=')
                 grade = g_parts[-1].strip()
                 if total_marks == "--" and g_parts[0].strip().isdigit():
                     total_marks = str(int(g_parts[0].strip()))
 
-            sub_info = HSC_SUBJECT_MAP.get(code)
-            if not sub_info:
-                base_code = code.split('-')[0]
-                sub_info = HSC_SUBJECT_MAP.get(base_code, {"en": f"Subject {code}", "bn": f"বিষয় {code}"})
-
-            gp = GRADE_POINT_MAP.get(grade, "--")
+            sub_info = _resolve_subject(code, exam, sub_map)
+            gp = GRADE_POINT_MAP.get(grade.upper(), "--")
             subjects.append({
                 "code": code,
                 "name": f"{sub_info['bn']} ({sub_info['en']})",
@@ -347,7 +391,7 @@ def parse_subjects(display_details):
                 "practical_total": practical_total,
                 "total": total_marks if total_marks else "--",
                 "marks": total_marks if total_marks else "--",
-                "grade": grade,
+                "grade": grade.upper(),
                 "gp": gp,
                 "papers": paper_details
             })
@@ -357,15 +401,11 @@ def parse_subjects(display_details):
         if '=' in item_str:
             eqs = item_str.split('=')
             code = eqs[0].strip()
-            grade = eqs[-1].strip()
+            grade = eqs[-1].strip().upper()
             if len(eqs) > 2 and eqs[1].strip().isdigit():
                 total_marks = str(int(eqs[1].strip()))
 
-            sub_info = HSC_SUBJECT_MAP.get(code)
-            if not sub_info:
-                base_code = code.split('-')[0]
-                sub_info = HSC_SUBJECT_MAP.get(base_code, {"en": f"Subject {code}", "bn": f"বিষয় {code}"})
-
+            sub_info = _resolve_subject(code, exam, sub_map)
             gp = GRADE_POINT_MAP.get(grade, "--")
             subjects.append({
                 "code": code,
@@ -410,30 +450,14 @@ def add_sniper_log(msg):
     if len(sniper_state["logs"]) > 100:
         sniper_state["logs"].pop(0)
 
-# ----------------- Dhaka Board e-File Direct Gateway -----------------
+# ----------------- Direct Gateway (Standard Sanctioned Fetch) -----------------
 def fetch_dhaka_board_sync(exam, year, roll, reg):
     session = requests.Session()
     session.verify = False
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     }
-
-    r = session.get('https://efile.dhakaeducationboard.gov.bd/index.php/document', headers=headers, timeout=12)
-    m = re.search(r'var challenge = ({.*?});', r.text)
-    if m:
-        chal = json.loads(m.group(1))
-        proof_str = f"browser-proof:{chal['seed']}:{chal['salt']}"
-        hash_val = hashlib.sha256(proof_str.encode('utf-8')).hexdigest()
-        answer = f"hash:{hash_val}"
-        verify_url = 'https://efile.dhakaeducationboard.gov.bd/_challenge-verify'
-        session.post(
-            verify_url,
-            json={'token': chal['token'], 'answer': answer},
-            headers={**headers, 'Referer': r.url},
-            timeout=12
-        )
-
     url = 'https://efile.dhakaeducationboard.gov.bd/index.php/document/form3/js'
     data = {
         'exam': exam,
@@ -459,7 +483,10 @@ def fetch_dhaka_board_sync(exam, year, roll, reg):
     if 'Data Not Found' in resp.text:
         return {"status": "NOT_FOUND", "error": "Result / Data not found for this Roll & Registration combination."}
 
-    if resp.status_code == 200 and len(resp.text) > 100:
+    if 'challenge' in resp.text[:1500].lower():
+        return {"status": "ERROR", "error": "Dhaka eFile requires interactive browser verification; please use Official Marks or All-Board / EBR Mirror engine."}
+
+    if resp.status_code == 200 and len(resp.text) > 100 and 'input' in resp.text.lower():
         details = {}
         inputs = re.findall(r'<input[^>]+>', resp.text)
         for inp in inputs:
@@ -468,28 +495,29 @@ def fetch_dhaka_board_sync(exam, year, roll, reg):
             if name_m and val_m:
                 details[name_m.group(1)] = val_m.group(1)
 
-        result_obj = {
-            "source": "Dhaka Board Direct Gateway",
-            "name": details.get("name", "N/A"),
-            "father": details.get("father", "N/A"),
-            "mother": details.get("mother", "N/A"),
-            "roll": str(roll),
-            "reg": str(reg),
-            "exam": exam,
-            "year": str(year),
-            "board": "Dhaka",
-            "gpa": details.get("result", "N/A").replace("GPA=", "").strip("[]"),
-            "session": details.get("session", "N/A"),
-            "college": details.get("institute", "N/A"),
-            "eiin": details.get("eiin", "N/A"),
-            "centre_code": details.get("c_code", "N/A"),
-            "subjects": []
-        }
-        return {"status": "FOUND", "data": result_obj}
+        if details.get("name") or details.get("result"):
+            result_obj = {
+                "source": "Dhaka Board Direct Gateway",
+                "name": details.get("name", "N/A"),
+                "father": details.get("father", "N/A"),
+                "mother": details.get("mother", "N/A"),
+                "roll": str(roll),
+                "reg": str(reg),
+                "exam": exam,
+                "year": str(year),
+                "board": "Dhaka",
+                "gpa": details.get("result", "N/A").replace("GPA=", "").strip("[]"),
+                "session": details.get("session", "N/A"),
+                "college": details.get("institute", "N/A"),
+                "eiin": details.get("eiin", "N/A"),
+                "centre_code": details.get("c_code", "N/A"),
+                "subjects": []
+            }
+            return {"status": "FOUND", "data": result_obj}
 
     return {"status": "ERROR", "error": f"Unexpected server response (Code: {resp.status_code})"}
 
-# ----------------- eduboardresults.gov.bd Handlers (New Cloud API with Marks) -----------------
+# ----------------- eduboardresults.gov.bd Handlers (Official Cloud API with Marks) -----------------
 async def eduboard_captcha_endpoint(request):
     try:
         loop = asyncio.get_event_loop()
@@ -502,6 +530,7 @@ async def eduboard_check_endpoint(request):
     try:
         data = await request.json()
         board = data.get("board", "dhaka").strip().lower()
+        exam_val = str(data.get("exam", "hsc")).upper()
         year = str(data.get("year", "2026")).strip()
         roll = str(data.get("roll", "")).strip()
         reg = str(data.get("reg", "")).strip()
@@ -510,7 +539,7 @@ async def eduboard_check_endpoint(request):
         timestamp = data.get("timestamp", 0)
 
         if not roll or not reg or not captcha:
-            return web.json_response({"success": False, "error": "রোল নম্বর, রেজিস্ট্রেশন নম্বর এবং সিকিউরিটি কোড আবশ্যক।"}, status=400)
+            return web.json_response({"success": False, "error": "Roll, Registration number, and Security Code are required."}, status=400)
 
         loop = asyncio.get_event_loop()
         res = await loop.run_in_executor(
@@ -521,16 +550,15 @@ async def eduboard_check_endpoint(request):
 
         if res["success"]:
             student_data = res["data"]
-            # Parse subjects with total marks
-            subjects = parse_subjects(student_data.get("raw_result_str", ""))
+            subjects = parse_subjects(student_data.get("raw_result_str", ""), exam=exam_val)
             student_data["subjects"] = subjects
             student_data["source"] = "eduboardresults.gov.bd"
-            student_data["exam"] = str(data.get("exam", "hsc")).upper()
+            student_data["exam"] = exam_val
             student_data.pop("raw_result_str", None)
             attach_verification(student_data)
             return web.json_response({"success": True, "data": student_data})
         else:
-            return web.json_response({"success": False, "error": res.get("error", "রেজাল্ট পাওয়া যায়নি অথবা কোড সঠিক নয়।")})
+            return web.json_response({"success": False, "error": res.get("error", "Result not found or invalid captcha code.")})
     except Exception as e:
         return web.json_response({"success": False, "error": str(e)}, status=500)
 
@@ -542,26 +570,39 @@ async def ebr_check_endpoint(request):
         year = str(data.get("year", "2026")).strip()
         roll = str(data.get("roll", "")).strip()
         reg = str(data.get("reg", "")).strip()
+        cf_token = str(data.get("cf_turnstile_response", "")).strip()
 
         if not roll:
-            return web.json_response({"success": False, "error": "রোল নম্বর প্রয়োজন।"}, status=400)
+            return web.json_response({"success": False, "error": "Roll number is required."}, status=400)
 
-        url = f"https://api.ebr.bd/?exam={exam}&year={year}&board={board}&roll={roll}&reg={reg}"
+        from urllib.parse import urlencode
+        qs = urlencode({
+            'exam': exam, 'year': year, 'board': board, 'roll': roll, 'reg': reg,
+            'cf-turnstile-response': cf_token
+        })
+        url = f"https://api.ebr.bd/?{qs}"
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
             'Accept': 'application/json',
             'Referer': 'https://ebr.bd/',
             'Origin': 'https://ebr.bd'
         }
+        if cf_token:
+            headers['cf-turnstile-response'] = cf_token
 
         loop = asyncio.get_event_loop()
         def _fetch_ebr():
-            import urllib.request, ssl
+            import urllib.request, urllib.error, ssl
             ctx = ssl._create_unverified_context()
             req = urllib.request.Request(url, headers=headers)
             try:
                 with urllib.request.urlopen(req, context=ctx, timeout=8) as resp:
                     return json.loads(resp.read().decode('utf-8'))
+            except urllib.error.HTTPError as e:
+                try:
+                    return json.loads(e.read().decode('utf-8'))
+                except Exception:
+                    return {"error": f"HTTP {e.code}"}
             except Exception as e:
                 return {"error": str(e)}
 
@@ -571,7 +612,7 @@ async def ebr_check_endpoint(request):
             res_obj = res_json["data"]["result"]
             info = res_obj.get("info", {})
             raw_result = res_obj.get("result", "")
-            subs = parse_subjects(raw_result)
+            subs = parse_subjects(raw_result, exam=exam.upper())
 
             student_data = {
                 "name": info.get("name", "N/A"),
@@ -587,7 +628,7 @@ async def ebr_check_endpoint(request):
                 "college": info.get("instituteName", "N/A"),
                 "eiin": info.get("eiin", ""),
                 "subjects": subs,
-                "source": "ebr.bd",
+                "source": "api.ebr.bd",
                 "merit": {
                     "board_merit": info.get("boardMerit"),
                     "group_merit": info.get("groupMerit"),
@@ -602,16 +643,20 @@ async def ebr_check_endpoint(request):
             attach_verification(student_data)
             return web.json_response({"success": True, "data": student_data})
         else:
-            msg = res_json.get("msg") or res_json.get("message") or res_json.get("error") or "Server unavailable"
+            msg = res_json.get("msg") or res_json.get("message") or res_json.get("error") or "Access Denied: Missing CAPTCHA Token"
             return web.json_response({
                 "success": False,
+                "requires_turnstile": True,
                 "requires_fallback": True,
-                "error": f"ebr.bd সরাসরি এপিআইতে ক্লাউডফ্লেয়ার টার্নস্টাইল প্রয়োজন ({msg})। দয়া করে নম্বরসহ পূর্ণ ফলাফল ও মার্কশিটের জন্য 'eduboard' ইঞ্জিন ব্যবহার করুন।"
+                "error": (
+                    f"ebr.bd leaderboard API enforces Cloudflare Turnstile on ebr.bd origin ({msg}). "
+                    "Use Official Marks (eduboardresults.gov.bd) or All-Board EBR Gateway (result.bangladeshgov.org) below — both work natively inside ResultSniper BD."
+                )
             })
     except Exception as e:
         return web.json_response({"success": False, "error": str(e)}, status=500)
 
-# ----------------- eboardresults.com Handlers -----------------
+# ----------------- All-Board / EBR Mirror Handlers (result.bangladeshgov.org) -----------------
 async def eboard_captcha_endpoint(request):
     try:
         loop = asyncio.get_event_loop()
@@ -632,7 +677,7 @@ async def eboard_check_endpoint(request):
         captcha = str(data.get("captcha", "")).strip()
 
         if not session_id or not roll or not captcha:
-            return web.json_response({"success": False, "error": "রোল, সিকিউরিটি কি এবং সেশন প্রয়োজন।"}, status=400)
+            return web.json_response({"success": False, "error": "Roll, Security Key and Captcha Session are required."}, status=400)
 
         loop = asyncio.get_event_loop()
         res = await loop.run_in_executor(
@@ -643,12 +688,19 @@ async def eboard_check_endpoint(request):
 
         if res["success"]:
             raw = res["data"]
-            # Parse subjects / marksheet
             display_details = raw.get("display_details") or raw.get("log_display_details") or ""
-            subjects = parse_subjects(display_details)
+            sub_details = raw.get("sub_details") or []
+            subjects = parse_subjects(display_details, sub_details=sub_details, exam=exam.upper())
+
+            res_det = str(raw.get("res_detail", "") or "")
+            raw_gpa = str(raw.get("gpa", "") or "")
+            if not raw_gpa and "GPA=" in res_det:
+                raw_gpa = res_det.replace("GPA=", "").strip("[] ")
+            elif not raw_gpa:
+                raw_gpa = "PASSED" if res_det == "P" else (res_det or "N/A")
 
             normalized = {
-                "source": "eboardresults.com (All Boards Official API)",
+                "source": "result.bangladeshgov.org (EBR / Multi-Board API)",
                 "name": raw.get("name", "N/A"),
                 "father": raw.get("fname", "N/A"),
                 "mother": raw.get("mname", "N/A"),
@@ -657,7 +709,8 @@ async def eboard_check_endpoint(request):
                 "board": raw.get("board_name", board.capitalize()),
                 "exam": exam.upper(),
                 "year": str(year),
-                "gpa": raw.get("gpa") or (f"Passed ({raw.get('res_detail')})" if raw.get("res_detail") == "P" else raw.get("res_detail", "N/A")),
+                "gpa": raw_gpa,
+                "status": "F" if ("FAIL" in res_det.upper() or raw_gpa == "F" or raw_gpa == "0.00") else "P",
                 "session": raw.get("session", "N/A"),
                 "college": raw.get("inst_name") or f"EIIN: {raw.get('eiin', 'N/A')}",
                 "eiin": raw.get("eiin", "N/A"),
@@ -667,7 +720,7 @@ async def eboard_check_endpoint(request):
             attach_verification(normalized)
             return web.json_response({"success": True, "data": normalized})
         else:
-            return web.json_response({"success": False, "error": res.get("error", "রেজাল্ট পাওয়া যায়নি অথবা সিকিউরিটি কি সঠিক নয়।")})
+            return web.json_response({"success": False, "error": res.get("error", "Result not found or incorrect security key.")})
     except Exception as e:
         return web.json_response({"success": False, "error": str(e)}, status=500)
 
@@ -701,55 +754,108 @@ async def check_result_endpoint(request):
     except Exception as e:
         return web.json_response({"success": False, "error": str(e)}, status=500)
 
-# ----------------- Sniper Endpoints -----------------
+# ----------------- Sniper Endpoints (Server-Busy Retry Monitor) -----------------
 async def sniper_worker():
     global sniper_state
     params = sniper_state["params"]
-    board = params.get("board", "dhaka").lower()
-    exam = params["exam"]
-    year = params["year"]
+    engine = params.get("engine", "eboard")
+    board = params.get("board", "rajshahi").lower()
+    exam = params.get("exam", "hsc")
+    year = params.get("year", "2026")
     roll = params["roll"]
-    reg = params["reg"]
+    reg = params.get("reg", "")
+    captcha = params.get("captcha", "")
+    session_id = params.get("session_id", "")
+    hash_val = params.get("hash", "")
+    timestamp = params.get("timestamp", 0)
     interval = max(3, params.get("interval", 5))
 
-    add_sniper_log(f"Sniper started for Roll: {roll}, Reg: {reg}, Board: {board.capitalize()}, Exam: {exam}-{year}")
+    add_sniper_log(f"Sniper started [{engine.upper()}] — Roll: {roll}, Board: {board.capitalize()}, Exam: {exam.upper()}-{year}")
     loop = asyncio.get_event_loop()
-
-    if board != 'dhaka':
-        add_sniper_log(f"⚠️ লক্ষ্য করুন: অটো-বট মোড সরাসরি ঢাকা বোর্ডের জিরো-ক্যাপচা গেটওয়ে ব্যবহার করে। {board.capitalize()} বোর্ডের রেজাল্ট চেক করতে 'ওয়েব রেজাল্ট (eboardresults)' ট্যাবে যান।")
 
     while sniper_state["status"] == "RUNNING":
         sniper_state["attempts"] += 1
         sniper_state["last_attempt_time"] = time.strftime('%H:%M:%S')
 
         try:
-            if board == 'dhaka':
-                res = await loop.run_in_executor(None, fetch_dhaka_board_sync, exam, year, roll, reg)
-                if res["status"] == "FOUND":
+            if not captcha:
+                sniper_state["status"] = "STOPPED"
+                sniper_state["last_status"] = "Captcha required in Auto-Sniper tab"
+                add_sniper_log("⚠️ Please solve the visible Security Key in Auto-Sniper to monitor official board APIs.")
+                break
+
+            if engine == 'eduboard':
+                res = await loop.run_in_executor(
+                    None, eduboard_client.get_result, board, year, roll, reg, captcha, hash_val, timestamp
+                )
+                if res.get("success"):
+                    sd = res["data"]
+                    sd["subjects"] = parse_subjects(sd.get("raw_result_str", ""), exam=exam.upper())
+                    sd["source"] = "eduboardresults.gov.bd"
+                    sd["exam"] = exam.upper()
+                    sd.pop("raw_result_str", None)
                     sniper_state["status"] = "FOUND"
-                    sniper_state["result"] = attach_verification(res["data"])
-                    sniper_state["last_status"] = "Result Published & Captured!"
-                    add_sniper_log(f"🔥 RESULT CAPTURED! GPA: {res['data'].get('gpa')} for {res['data'].get('name')}")
+                    sniper_state["result"] = attach_verification(sd)
+                    sniper_state["last_status"] = "Result Captured!"
+                    add_sniper_log(f"🔥 RESULT CAPTURED! Name: {sd.get('name')} | GPA: {sd.get('gpa')}")
                     break
-                elif res["status"] == "NOT_FOUND":
-                    sniper_state["last_status"] = "Not published yet / Pending"
-                    add_sniper_log(f"Attempt #{sniper_state['attempts']}: Result not available yet. Retrying in {interval}s...")
-                elif res["status"] == "RATE_LIMITED":
-                    sniper_state["last_status"] = "Rate-limited (waiting cooldown)"
-                    add_sniper_log(f"Attempt #{sniper_state['attempts']}: 429 Rate limit. Backing off 8s...")
-                    await asyncio.sleep(8)
-                    continue
-                else:
-                    sniper_state["last_status"] = res.get("error", "Server Busy")
-                    add_sniper_log(f"Attempt #{sniper_state['attempts']}: {sniper_state['last_status']}")
+                err = str(res.get("error", ""))
+                if "ক্যাপচা" in err or "captcha" in err.lower() or "expired" in err.lower():
+                    sniper_state["status"] = "CAPTCHA_ERROR"
+                    sniper_state["last_status"] = "Security Key expired/invalid — enter new key"
+                    add_sniper_log(f"❌ Attempt #{sniper_state['attempts']}: {err}")
+                    break
+                sniper_state["last_status"] = f"Retrying in {interval}s ({err[:50]})"
+                add_sniper_log(f"Attempt #{sniper_state['attempts']}: {err}")
             else:
-                # Non-dhaka board sniper explanation
-                sniper_state["last_status"] = f"বোর্ড {board.capitalize()}: eboardresults ট্যাব ব্যবহার করুন"
-                add_sniper_log(f"Attempt #{sniper_state['attempts']}: {board.capitalize()} বোর্ডের জন্য eboardresults ট্যাবে ৪-ডিজিটের সিকিউরিটি কি দিয়ে চেক করুন।")
-                await asyncio.sleep(interval)
+                res = await loop.run_in_executor(
+                    None, eboard_client.get_result, session_id, board, exam, year, roll, reg, captcha
+                )
+                if res.get("success"):
+                    raw = res["data"]
+                    details = raw.get("display_details") or raw.get("log_display_details") or ""
+                    sub_details = raw.get("sub_details") or []
+                    subjects = parse_subjects(details, sub_details=sub_details, exam=exam.upper())
+                    res_det = str(raw.get("res_detail", "") or "")
+                    raw_gpa = str(raw.get("gpa", "") or "")
+                    if not raw_gpa and "GPA=" in res_det:
+                        raw_gpa = res_det.replace("GPA=", "").strip("[] ")
+                    elif not raw_gpa:
+                        raw_gpa = "PASSED" if res_det == "P" else (res_det or "N/A")
+                    normalized = {
+                        "source": "result.bangladeshgov.org (EBR / Multi-Board API)",
+                        "name": raw.get("name", "N/A"),
+                        "father": raw.get("fname", "N/A"),
+                        "mother": raw.get("mname", "N/A"),
+                        "roll": raw.get("roll_no", roll),
+                        "reg": raw.get("regno", reg),
+                        "board": raw.get("board_name", board.capitalize()),
+                        "exam": exam.upper(),
+                        "year": str(year),
+                        "gpa": raw_gpa,
+                        "status": "F" if ("FAIL" in res_det.upper() or raw_gpa == "F" or raw_gpa == "0.00") else "P",
+                        "session": raw.get("session", "N/A"),
+                        "college": raw.get("inst_name") or f"EIIN: {raw.get('eiin', 'N/A')}",
+                        "eiin": raw.get("eiin", "N/A"),
+                        "group": raw.get("stud_group", "N/A"),
+                        "subjects": subjects,
+                    }
+                    sniper_state["status"] = "FOUND"
+                    sniper_state["result"] = attach_verification(normalized)
+                    sniper_state["last_status"] = "Result Captured!"
+                    add_sniper_log(f"🔥 RESULT CAPTURED! Name: {normalized.get('name')} | GPA: {normalized.get('gpa')}")
+                    break
+                err = str(res.get("error", ""))
+                if "captcha" in err.lower() or "security key" in err.lower() or "expired" in err.lower():
+                    sniper_state["status"] = "CAPTCHA_ERROR"
+                    sniper_state["last_status"] = "Security Key expired/invalid — enter new key"
+                    add_sniper_log(f"❌ Attempt #{sniper_state['attempts']}: {err}")
+                    break
+                sniper_state["last_status"] = f"Retrying in {interval}s ({err[:50]})"
+                add_sniper_log(f"Attempt #{sniper_state['attempts']}: {err}")
         except Exception as e:
-            sniper_state["last_status"] = f"Network Error: {str(e)}"
-            add_sniper_log(f"Attempt #{sniper_state['attempts']} Error: {str(e)}")
+            sniper_state["last_status"] = f"Network Busy — retrying in {interval}s"
+            add_sniper_log(f"Attempt #{sniper_state['attempts']} Server Busy: {str(e)}")
 
         await asyncio.sleep(interval)
 
@@ -758,13 +864,20 @@ async def sniper_start_endpoint(request):
     data = await request.json()
     roll = str(data.get("roll", "")).strip()
     reg = str(data.get("reg", "")).strip()
-    board = str(data.get("board", "dhaka")).strip().lower()
-    exam = data.get("exam", "HSC").strip()
+    board = str(data.get("board", "rajshahi")).strip().lower()
+    exam = str(data.get("exam", "hsc")).strip()
     year = str(data.get("year", "2026")).strip()
+    engine = str(data.get("engine", "eboard")).strip().lower()
+    captcha = str(data.get("captcha", "")).strip()
+    session_id = str(data.get("session_id", "")).strip()
+    hash_val = data.get("hash", "")
+    timestamp = data.get("timestamp", 0)
     interval = int(data.get("interval", 5))
 
     if not roll:
-        return web.json_response({"success": False, "error": "Roll is required."}, status=400)
+        return web.json_response({"success": False, "error": "Roll number is required."}, status=400)
+    if not captcha:
+        return web.json_response({"success": False, "error": "Please enter the security key / captcha shown above before starting monitor."}, status=400)
 
     if sniper_task and not sniper_task.done():
         sniper_state["status"] = "STOPPED"
@@ -772,17 +885,21 @@ async def sniper_start_endpoint(request):
 
     sniper_state = {
         "status": "RUNNING",
-        "params": {"roll": roll, "reg": reg, "board": board, "exam": exam, "year": year, "interval": interval},
+        "params": {
+            "engine": engine, "roll": roll, "reg": reg, "board": board, "exam": exam, "year": year,
+            "captcha": captcha, "session_id": session_id, "hash": hash_val, "timestamp": timestamp,
+            "interval": interval
+        },
         "attempts": 0,
         "start_time": time.strftime('%H:%M:%S'),
         "last_attempt_time": None,
-        "last_status": "Starting sniper loop...",
+        "last_status": "Starting monitor loop...",
         "result": None,
         "logs": []
     }
 
     sniper_task = asyncio.create_task(sniper_worker())
-    return web.json_response({"success": True, "message": "Sniper monitoring initiated."})
+    return web.json_response({"success": True, "message": "Auto-retry monitor initiated."})
 
 async def sniper_stop_endpoint(request):
     global sniper_state, sniper_task
@@ -920,6 +1037,7 @@ async def verify_api_endpoint(request):
     if not raw:
         return web.json_response({"valid": False, "error": "Invalid or tampered marksheet token."})
 
+    exam_u = raw.get('e', 'HSC')
     subs = []
     if raw.get('s'):
         for item in raw['s'].split(';'):
@@ -929,12 +1047,14 @@ async def verify_api_endpoint(request):
             code = parts[0] if len(parts) > 0 else ''
             grade = parts[1] if len(parts) > 1 else ''
             marks = parts[2] if len(parts) > 2 else ''
-            sub_meta = HSC_SUBJECT_MAP.get(code, {})
+            extra_nm = parts[3] if len(parts) > 3 else ''
+            sub_meta = _resolve_subject(code, exam_u, None, extra_nm)
             subs.append({
                 'code': code,
                 'name_en': sub_meta.get('en', f'Subject {code}'),
                 'name_bn': sub_meta.get('bn', f'বিষয় {code}'),
                 'grade': grade,
+                'gp': GRADE_POINT_MAP.get(grade.upper(), '--'),
                 'marks': marks,
                 'total': marks
             })
@@ -948,7 +1068,7 @@ async def verify_api_endpoint(request):
         'roll': raw.get('r', ''),
         'reg': raw.get('g', ''),
         'board': raw.get('b', ''),
-        'exam': raw.get('e', ''),
+        'exam': exam_u,
         'year': raw.get('y', ''),
         'gpa': raw.get('p', ''),
         'group': raw.get('gr', ''),
@@ -959,6 +1079,9 @@ async def verify_api_endpoint(request):
         'token': token
     }
     return web.json_response({"valid": True, "data": data})
+
+async def health_endpoint(request):
+    return web.json_response({"status": "ok", "service": "ResultSniper BD", "timestamp": int(time.time())})
 
 # Clean public pages: /about, /terms, /privacy, /verify + root files (llms.txt, robots.txt, ...)
 PAGE_MAP = {
@@ -979,6 +1102,13 @@ async def page_handler(request):
     if not os.path.exists(path):
         raise web.HTTPNotFound(text="404 - Page not found")
     headers = dict(NO_CACHE) if fname.endswith('.html') else {}
+    if fname in ('robots.txt', 'sitemap.xml'):
+        proto = request.headers.get('X-Forwarded-Proto', request.scheme)
+        origin = f"{proto}://{request.host}"
+        with open(path, 'r', encoding='utf-8') as f:
+            body = f.read().replace('https://resultsniper-bd.local', origin)
+        ctype = 'application/xml; charset=utf-8' if fname.endswith('.xml') else 'text/plain; charset=utf-8'
+        return web.Response(text=body, content_type=ctype.split(';')[0], charset='utf-8')
     if fname.endswith('.txt'):
         headers['Content-Type'] = 'text/plain; charset=utf-8'
     return web.FileResponse(path, headers=headers)
@@ -986,6 +1116,7 @@ async def page_handler(request):
 def create_app():
     app = web.Application(client_max_size=50*1024*1024)
     app.router.add_get('/', index_handler)
+    app.router.add_get('/health', health_endpoint)
     app.router.add_get('/api/verify', verify_api_endpoint)
     app.router.add_post('/api/check', check_result_endpoint)
     app.router.add_post('/api/ebr/check', ebr_check_endpoint)
