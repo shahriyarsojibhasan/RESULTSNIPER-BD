@@ -485,14 +485,14 @@
 
         <div class="tx-in">
           <table class="tx-head"><tr>
-            <td style="width:19mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal"></td>
-            <td style="text-align:center">
-              <div class="tx-gov">ResultSniper BD • Independent Cryptographic Verification Authority</div>
+            <td style="width:20mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal"></td>
+            <td style="text-align:center;padding:0 3mm">
+              <div class="tx-gov">ResultSniper BD • Cryptographic Verification Authority</div>
               <div class="tx-board">${esc(meta.en)}</div>
               <div class="tx-exam">${esc((d.exam || 'HSC').toUpperCase())} EXAMINATION — ${esc(d.year || '2026')} (${esc(stType)})</div>
               <div class="tx-pill">CRYPTOGRAPHIC AUTHENTICITY CERTIFICATE</div>
             </td>
-            <td style="width:19mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${meta.logo}" alt="Board Logo"></td>
+            <td style="width:20mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${meta.logo}" alt="Board Logo"></td>
           </tr></table>
           <div class="tx-rule"></div>
 
@@ -522,25 +522,23 @@
           <div class="tx-scale">Grading Scale: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
 
           <div class="tx-bottom">
-            <div class="tx-authbar">
-              <span>INTEGRITY AUDIT: PASSED (100% UNTAMPERED)</span>
-              <span>DOC ID: ${esc(docId)}</span>
-              <span>ALGORITHM: HMAC-SHA256</span>
-            </div>
-            <table class="tx-foot"><tr>
-              <td style="width:36%">
-                <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #0f2942">${RS_ART.qrSVG(verifyUrl)}</div>
-                <div class="tx-note" style="margin-top:0.8mm"><b style="color:#0f2942">VERIFICATION QR</b> — Re-scan to confirm cryptographic signature live on /verify.</div>
-              </td>
-              <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'CRYPTOGRAPHICALLY VERIFIED • HMAC-SHA256 AUTHENTIC •', 'AUTHENTIC', '#0f2942')}</td>
-              <td style="width:36%;text-align:right" class="tx-note">
+            <div class="tx-foot-grid">
+              <div class="tx-qr-wrap">
+                <div class="tx-qr-box">${RS_ART.qrSVG(verifyUrl)}</div>
+                <div class="tx-note">
+                  <div style="font-weight:800;color:#0f2942;margin-bottom:0.6mm">VERIFICATION QR</div>
+                  <div>Re-scan to confirm signature live on /verify.</div>
+                </div>
+              </div>
+              <div class="tx-seal-wrap">${RS_ART.sealSVG(docId, 'CRYPTOGRAPHICALLY VERIFIED ★ HMAC-SHA256 ★ AUTHENTIC ★', 'AUTHENTIC', '#0f2942')}</div>
+              <div class="tx-sig-wrap tx-note">
                 <div><b style="color:#0f2942">Certificate ID:</b> <span class="mono">${esc(docId)}</span></div>
                 <div><b style="color:#0f2942">Signed At:</b> ${esc(issuedStr)}</div>
                 <div><b style="color:#0f2942">Verified On:</b> ${new Date().toLocaleString('en-GB')}</div>
-                <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #0f2942;font-weight:800;color:#0f2942;font-size:7.6px">RESULTSNIPER BD VERIFY</div>
+                <div style="margin-top:2mm;padding-top:1mm;border-top:.28mm solid #0f2942;font-weight:800;color:#0f2942;font-size:7.6px">RESULTSNIPER BD VERIFICATION</div>
                 <div>Developed by Shahriyar Sojib Hasan</div>
-              </td>
-            </tr></table>
+              </div>
+            </div>
 
             <div class="tx-disc">Official ResultSniper BD Verification Certificate confirming cryptographic non-tampering of live Education Board records. Guaranteed 1-page A4/Letter output.</div>
           </div>

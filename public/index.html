@@ -951,14 +951,14 @@ function buildMarksheet(d, paperSz) {
 
     <div class="tx-in">
       <table class="tx-head"><tr>
-        <td style="width:19mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Government Seal of Bangladesh"></td>
-        <td style="text-align:center">
+        <td style="width:20mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Government Seal of Bangladesh"></td>
+        <td style="text-align:center;padding:0 3mm">
           <div class="tx-gov">Government of the People's Republic of Bangladesh</div>
           <div class="tx-board">${esc(bi.full)}</div>
           <div class="tx-exam">Result of ${esc(examKey.toUpperCase())} Examination — ${esc(d.year)}</div>
-          <div class="tx-pill">ACADEMIC RESULT MARKSHEET</div>
+          <div class="tx-pill">OFFICIAL ACADEMIC TRANSCRIPT</div>
         </td>
-        <td style="width:19mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${logoUrl(bk)}" alt="${esc(bi.en)} Board"></td>
+        <td style="width:20mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${logoUrl(bk)}" alt="${esc(bi.en)} Board"></td>
       </tr></table>
       <div class="tx-rule"></div>
 
@@ -989,27 +989,25 @@ function buildMarksheet(d, paperSz) {
       <div class="tx-scale">Grading: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
 
       <div class="tx-bottom">
-        <div class="tx-authbar">
-          <span>STATUS: OFFICIAL ONLINE MARKSHEET</span>
-          <span>GATEWAY: ${esc((d.source || 'Education Board').toUpperCase())}</span>
-          <span>CRYPTO: HMAC-SHA256</span>
+        <div class="tx-foot-grid">
+          <div class="tx-qr-wrap">
+            <div class="tx-qr-box">${RS_ART.qrSVG(verifyUrl)}</div>
+            <div class="tx-note">
+              <div style="font-weight:800;color:#065f46;margin-bottom:0.6mm">SCAN QR TO VERIFY</div>
+              <div>Confirm authenticity online at /verify portal.</div>
+            </div>
+          </div>
+          <div class="tx-seal-wrap">${RS_ART.sealSVG(docId, 'RESULTSNIPER BD ★ ACADEMIC MARKSHEET ★ DIGITALLY SIGNED ★', 'VERIFIED', '#065f46')}</div>
+          <div class="tx-sig-wrap tx-note">
+            <div><b style="color:#065f46">Document Ref:</b> <span class="mono">${esc(docId)}</span></div>
+            <div><b style="color:#065f46">Board Record:</b> ${esc(bi.en)} (${esc(d.year)})</div>
+            <div><b style="color:#065f46">Printed On:</b> ${new Date().toLocaleString('en-GB')}</div>
+            <div style="margin-top:2mm;padding-top:1mm;border-top:.28mm solid #065f46;font-weight:800;color:#065f46;font-size:7.6px">AUTHORIZED TRANSCRIPT PORTAL</div>
+            <div>ResultSniper BD • Shahriyar Sojib Hasan</div>
+          </div>
         </div>
-        <table class="tx-foot"><tr>
-          <td style="width:36%">
-            <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #065f46">${RS_ART.qrSVG(verifyUrl)}</div>
-            <div class="tx-note" style="margin-top:0.8mm"><b style="color:#065f46">SCAN TO VERIFY</b> — Opens cryptographic /verify portal. Print a separate Verification Certificate via QR.</div>
-          </td>
-          <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'RESULTSNIPER BD • OFFICIAL MARKSHEET • QR VERIFIED •', 'VERIFIED', '#065f46')}</td>
-          <td style="width:36%;text-align:right" class="tx-note">
-            <div><b style="color:#065f46">Document ID:</b> <span class="mono">${esc(docId)}</span></div>
-            <div><b style="color:#065f46">Source:</b> ${esc(d.source || 'Education Board')}</div>
-            <div><b style="color:#065f46">Generated:</b> ${new Date().toLocaleString('en-GB')}</div>
-            <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #065f46;font-weight:800;color:#065f46;font-size:7.6px">RESULTSNIPER BD</div>
-            <div>Developed by Shahriyar Sojib Hasan</div>
-          </td>
-        </tr></table>
 
-        <div class="tx-disc">Computer-generated result transcript digitally signed via HMAC-SHA256 from official Bangladesh Education Board servers. Not a replacement for an original Board certificate.</div>
+        <div class="tx-disc">Computer-generated academic marksheet verified digitally against official Bangladesh Education Board records. Not a replacement for an original Board certificate.</div>
       </div>
     </div>
   </div>`;

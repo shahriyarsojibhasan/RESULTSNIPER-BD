@@ -61,20 +61,20 @@
   }
 
   function sealSVG(docId, labelText, centerText, accentColor) {
-    const topLabel = labelText || 'RESULTSNIPER BD • DIGITALLY VERIFIED • QR AUTHENTIC •';
+    const topLabel = labelText || 'RESULTSNIPER BD ★ DIGITALLY VERIFIED ★ AUTHENTIC RECORD ★';
     const midWord = centerText || 'VERIFIED';
     const ink = accentColor || '#065f46';
-    const fillBg = accentColor ? 'rgba(240,253,250,0.7)' : 'rgba(236,253,245,0.6)';
+    const fillBg = accentColor ? 'rgba(240,253,250,0.75)' : 'rgba(236,253,245,0.65)';
     const uid = 'seal_' + Math.random().toString(36).slice(2, 7);
-    return `<svg viewBox="0 0 120 120" width="26mm" height="26mm">
-      <defs><path id="${uid}" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
-      <circle cx="60" cy="60" r="57" fill="${fillBg}" stroke="${ink}" stroke-width="1.4"/>
-      <circle cx="60" cy="60" r="52.5" fill="none" stroke="#d97706" stroke-width="0.5" stroke-dasharray="1.5 1.2"/>
-      <text font-size="6.9" font-weight="800" letter-spacing="1.2" fill="${ink}" font-family="Inter,Arial"><textPath href="#${uid}">${esc(topLabel)}</textPath></text>
+    return `<svg viewBox="0 0 120 120" width="25mm" height="25mm" style="display:block;margin:0 auto">
+      <defs><path id="${uid}" d="M60,16 a44,44 0 1,1 -0.1,0"/></defs>
+      <circle cx="60" cy="60" r="57" fill="${fillBg}" stroke="#065f46" stroke-width="1.35" style="stroke:${ink}"/>
+      <circle cx="60" cy="60" r="52.5" fill="none" stroke="#d97706" stroke-width="0.55" stroke-dasharray="1.6 1.2"/>
+      <text font-size="6.5" font-weight="800" fill="${ink}" font-family="Inter,Arial"><textPath href="#${uid}" textLength="264" lengthAdjust="spacing">${esc(topLabel)}</textPath></text>
       <g transform="translate(26,26)">${rosetteSVG(68, accentColor ? '#0d9488' : '#10b981').replace('<svg ', '<svg width="68" height="68" ')}</g>
-      <circle cx="60" cy="60" r="21" fill="#fffefa" stroke="${ink}" stroke-width="0.7"/>
-      <text x="60" y="57" text-anchor="middle" font-size="7.6" font-weight="900" fill="${ink}" font-family="Inter,Arial">${esc(midWord)}</text>
-      <text x="60" y="66" text-anchor="middle" font-size="4.8" font-weight="700" fill="#b45309" font-family="JetBrains Mono,monospace">${esc(docId)}</text>
+      <circle cx="60" cy="60" r="21" fill="#fffefa" stroke="${ink}" stroke-width="0.75"/>
+      <text x="60" y="57.5" text-anchor="middle" font-size="7.6" font-weight="900" fill="${ink}" font-family="Inter,Arial">${esc(midWord)}</text>
+      <text x="60" y="66.5" text-anchor="middle" font-size="4.8" font-weight="700" fill="#b45309" font-family="JetBrains Mono,monospace">${esc(docId)}</text>
     </svg>`;
   }
 
