@@ -530,13 +530,16 @@ function switchTab(t) {
   if (t === 'sniper') loadSniperCaptcha();
 }
 function refreshMethodTexts() {
-  $('methodHint').innerHTML = T('hint.' + method) || '';
-  $('checkBtnText').textContent = T('btn.' + method) || 'Get Result';
+  const mh = $('methodHint');
+  if (mh) mh.innerHTML = T('hint.' + method) || '';
+  const cbt = $('checkBtnText');
+  if (cbt) cbt.textContent = T('btn.' + method) || 'Get Result';
   const needCap = method !== 'cache';
   $('captchaBox').classList.toggle('hidden', !needCap);
   $('forceRefreshWrap').classList.toggle('hidden', !needCap);
   if (needCap) {
-    $('captchaLabel').querySelector('span').textContent = method === 'edu' ? T('cap.6') : T('cap.4');
+    const lblSp = $('captchaLabel')?.querySelector('span');
+    if (lblSp) lblSp.textContent = method === 'edu' ? T('cap.6') : T('cap.4');
     $('captchaInput').maxLength = method === 'edu' ? 6 : 4;
   }
 }
@@ -598,32 +601,50 @@ async function onSubmit(e) {
   if (!/^\d{3,8}$/.test(roll)) return toast('Please enter a valid Roll number');
   if ((method === 'edu' || method === 'cache') && !reg) return toast('Registration number is required');
 
-  const btn = $('checkBtn'), old = btn.innerHTML;
+  const btn = $('checkBtn'), cbt = $('checkBtnText');
+  const setBtnLabel = txt => { if ($('checkBtnText')) $('checkBtnText').textContent = txt; };
   const forceRefresh = $('forceRefreshChk').checked;
   const base = { board: $('board').value, exam: $('exam').value, year: $('year').value, roll, reg, force_refresh: forceRefresh };
 
-  // Instant browser 1-year cache check when Force Refresh is off & Roll+Reg match
-  if (method === 'cache' && reg) {
+  // Instant 1-year browser + server cache shortcut whenever Reg is provided & Force Refresh is off
+  if (!forceRefresh && reg && (method === 'cache' || !$('captchaInput').value.trim())) {
     const localHit = getLocalCachedResult(base.exam, base.year, base.board, roll, reg);
     if (localHit) {
       localHit.reg = cleanRegVal(localHit.reg, reg);
       localHit.board_key = base.board;
       localHit.cache_hit = true;
       showResult(localHit);
-      toast('Loaded instantaneously from 1-Year Local Cache!');
+      toast('⚡ Loaded instantaneously from 1-Year Local Cache!');
       return;
+    }
+    if (method !== 'cache') {
+      btn.disabled = true; setBtnLabel('Checking 1-Year Cache…');
+      try {
+        const cr = await fetch('/api/cache/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...base, engine: method === 'edu' ? 'eduboard' : 'eboard' }) });
+        const cd = await cr.json();
+        if (cd.success && cd.data) {
+          cd.data.board_key = base.board;
+          cd.data.reg = cleanRegVal(cd.data.reg, reg);
+          cd.data.cache_hit = true;
+          showResult(cd.data);
+          saveHistory(cd.data);
+          toast('⚡ Loaded instantaneously from 1-Year Server Cache!');
+          return;
+        }
+      } catch (err) {}
+      finally { btn.disabled = false; refreshMethodTexts(); }
     }
   }
 
   let url, body;
   if (method === 'edu') {
     const cap = $('captchaInput').value.trim();
-    if (!cap) return toast('Enter the 6-char Security Code');
+    if (!cap) { $('captchaInput').focus(); return toast('Not cached yet — enter the 6-char Security Code'); }
     url = '/api/eduboard/check';
     body = { ...base, captcha: cap, hash: capState.hash, timestamp: capState.ts };
   } else if (method === 'eboard') {
     const cap = $('captchaInput').value.trim();
-    if (!cap) return toast('Enter the 4-digit Security Key');
+    if (!cap) { $('captchaInput').focus(); return toast('Not cached yet — enter the 4-digit Security Key'); }
     url = '/api/eboard/check';
     body = { ...base, captcha: cap, session_id: capState.sid };
   } else {
@@ -631,7 +652,7 @@ async function onSubmit(e) {
     body = base;
   }
 
-  btn.disabled = true; btn.innerHTML = method === 'cache' ? 'Checking 1-Year Cache…' : 'Fetching result…';
+  btn.disabled = true; setBtnLabel(method === 'cache' ? 'Checking 1-Year Cache…' : 'Fetching result…');
   try {
     const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const d = await r.json();
@@ -644,7 +665,7 @@ async function onSubmit(e) {
       toast(d.data.cache_hit ? '⚡ Loaded from 1-Year Server Cache!' : 'Result fetched successfully!');
     } else if (method === 'cache') {
       toast(d.error || 'Not cached yet — solve Security Code once to save for 1 year.');
-      setMethod('edu');
+      setMethod(base.exam === 'hsc' ? 'edu' : 'eboard');
     } else {
       toast(d.error || 'Result not found or security code invalid');
       loadCaptcha();
@@ -654,7 +675,7 @@ async function onSubmit(e) {
     if (method !== 'cache') loadCaptcha();
   } finally {
     btn.disabled = false;
-    btn.innerHTML = old;
+    refreshMethodTexts();
     lucide.createIcons();
   }
 }
