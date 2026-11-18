@@ -323,8 +323,9 @@ PAGE_MAP = {
     'verify': 'verify.html',
 }
 ROOT_FILES = {
-    'llms.txt', 'robots.txt', 'sitemap.xml', 'favicon.svg', 'favicon.ico',
+    'llms.txt', 'llms-full.txt', 'robots.txt', 'sitemap.xml', 'favicon.svg', 'favicon.ico',
     'site.webmanifest', 'humans.txt', 'about.html', 'terms.html', 'privacy.html', 'verify.html',
+    '7f4c2b91a8d34e5f9c02b17a6e4d83c1.txt',
 }
 
 

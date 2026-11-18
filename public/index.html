@@ -10,10 +10,13 @@
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="theme-color" content="#006a4e">
   <link rel="canonical" href="https://resultsniper-bd.vercel.app/">
+  <link rel="alternate" type="text/plain" title="LLMs Context" href="/llms.txt">
+  <link rel="alternate" type="text/plain" title="Full LLMs Context" href="/llms-full.txt">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://resultsniper-bd.vercel.app/">
+  <meta property="og:image" content="https://resultsniper-bd.vercel.app/favicon.svg">
   <meta property="og:site_name" content="ResultSniper BD">
   <meta property="og:title" content="ResultSniper BD — Bangladesh Board Results &amp; Verified Marksheet">
   <meta property="og:description" content="Official Bangladesh board marksheet finder with subject-wise marks, merit calculator, auto-retry monitor &amp; 1-page QR verification PDF.">
@@ -889,7 +892,8 @@ function renderMerit() {
 }
 
 /* ======================= 1-Page Print Result Marksheet (Image-4 Structure, A4 / Letter) ======================= */
-function buildMarksheet(d) {
+function buildMarksheet(d, paperSz) {
+  const szClass = paperSz === 'letter' ? 'sz-letter' : 'sz-a4';
   const bk = d.board_key || d.board, bi = boardInfo(bk), m = computeMerit(d), rk = meritRanks();
   const passed = isPassed(d), docId = d.doc_id || ('RS-' + Date.now().toString(36).toUpperCase());
   const verifyUrl = d.verify_token ? `${location.origin}/verify?t=${d.verify_token}` : location.origin + '/verify';
@@ -933,7 +937,7 @@ function buildMarksheet(d) {
        <td><span class="k">Result</span><span class="v" style="color:${passed ? '#006a4e' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
        <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${passed ? esc(d.gpa || '—') : '0.00'}</span></td>`;
 
-  return `<div class="tx tx-result">
+  return `<div class="tx tx-result ${szClass}">
     <div class="tx-bg">${RS_ART.guillocheBG(seed, 'result')}</div>
     <div class="tx-diag">${diag}</div>
     <div class="tx-wm"><img src="${logoUrl(bk)}" alt=""></div>
@@ -984,22 +988,29 @@ function buildMarksheet(d) {
 
       <div class="tx-scale">Grading: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
 
-      <table class="tx-foot" style="margin-top:3.2mm"><tr>
-        <td style="width:36%">
-          <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #065f46">${RS_ART.qrSVG(verifyUrl)}</div>
-          <div class="tx-note" style="margin-top:0.8mm"><b style="color:#065f46">SCAN TO VERIFY</b> — Opens cryptographic /verify portal. Print a separate Verification Certificate via QR.</div>
-        </td>
-        <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'RESULTSNIPER BD • OFFICIAL MARKSHEET • QR VERIFIED •', 'VERIFIED', '#065f46')}</td>
-        <td style="width:36%;text-align:right" class="tx-note">
-          <div><b style="color:#065f46">Document ID:</b> <span class="mono">${esc(docId)}</span></div>
-          <div><b style="color:#065f46">Source:</b> ${esc(d.source || 'Education Board')}</div>
-          <div><b style="color:#065f46">Generated:</b> ${new Date().toLocaleString('en-GB')}</div>
-          <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #065f46;font-weight:800;color:#065f46;font-size:7.6px">RESULTSNIPER BD</div>
-          <div>Developed by Shahriyar Sojib Hasan</div>
-        </td>
-      </tr></table>
+      <div class="tx-bottom">
+        <div class="tx-authbar">
+          <span>STATUS: OFFICIAL ONLINE MARKSHEET</span>
+          <span>GATEWAY: ${esc((d.source || 'Education Board').toUpperCase())}</span>
+          <span>CRYPTO: HMAC-SHA256</span>
+        </div>
+        <table class="tx-foot"><tr>
+          <td style="width:36%">
+            <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #065f46">${RS_ART.qrSVG(verifyUrl)}</div>
+            <div class="tx-note" style="margin-top:0.8mm"><b style="color:#065f46">SCAN TO VERIFY</b> — Opens cryptographic /verify portal. Print a separate Verification Certificate via QR.</div>
+          </td>
+          <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'RESULTSNIPER BD • OFFICIAL MARKSHEET • QR VERIFIED •', 'VERIFIED', '#065f46')}</td>
+          <td style="width:36%;text-align:right" class="tx-note">
+            <div><b style="color:#065f46">Document ID:</b> <span class="mono">${esc(docId)}</span></div>
+            <div><b style="color:#065f46">Source:</b> ${esc(d.source || 'Education Board')}</div>
+            <div><b style="color:#065f46">Generated:</b> ${new Date().toLocaleString('en-GB')}</div>
+            <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #065f46;font-weight:800;color:#065f46;font-size:7.6px">RESULTSNIPER BD</div>
+            <div>Developed by Shahriyar Sojib Hasan</div>
+          </td>
+        </tr></table>
 
-      <div class="tx-disc">Computer-generated result transcript digitally signed via HMAC-SHA256 from official Bangladesh Education Board servers. Not a replacement for an original Board certificate.</div>
+        <div class="tx-disc">Computer-generated result transcript digitally signed via HMAC-SHA256 from official Bangladesh Education Board servers. Not a replacement for an original Board certificate.</div>
+      </div>
     </div>
   </div>`;
 }
@@ -1007,7 +1018,7 @@ function printMarksheet() {
   if (!last) return toast('Please fetch a result first');
   const sz = $('paperSizeSel').value;
   $('printPageStyle').textContent = `@page { size: ${sz} portrait; margin: 6mm; }`;
-  $('printArea').innerHTML = buildMarksheet(last);
+  $('printArea').innerHTML = buildMarksheet(last, sz);
   const imgs = [...$('printArea').querySelectorAll('img')];
   Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 150));
 }

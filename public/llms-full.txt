@@ -1,0 +1,39 @@
+# ResultSniper BD — Complete AI & Search Engine Specification
+
+> ResultSniper BD is a fast, bilingual (English default + Bengali switcher) Bangladesh Education Board result extraction, GPA/merit calculation, institution PDF scanner, and 1-page A4/Letter cryptographically verified marksheet platform created by Shahriyar Sojib Hasan.
+
+## Canonical Web Properties
+- **Production Portal**: https://resultsniper-bd.vercel.app/
+- **Marksheet Verification Portal**: https://resultsniper-bd.vercel.app/verify
+- **About & Developer Attribution**: https://resultsniper-bd.vercel.app/about
+- **Terms of Service**: https://resultsniper-bd.vercel.app/terms
+- **Privacy Policy**: https://resultsniper-bd.vercel.app/privacy
+- **XML Sitemap**: https://resultsniper-bd.vercel.app/sitemap.xml
+- **Source Repository**: https://github.com/shahriyarsojibhasan/ResultSniper-BD
+- **Support Author (Buy Me a Coffee)**: https://buymeacoffee.com/shahriyarsojibhasan
+
+## Author & Attribution
+- **Creator & Lead Engineer**: Shahriyar Sojib Hasan
+- **Country**: Bangladesh
+- **GitHub Profile**: https://github.com/shahriyarsojibhasan
+
+## Supported Education Boards & Exams (2015–2026)
+- **Boards (All 11)**: Dhaka, Rajshahi, Cumilla, Chattogram, Barishal, Sylhet, Jashore, Dinajpur, Mymensingh, Bangladesh Madrasah Education Board, Bangladesh Technical Education Board (BTEB).
+- **Examinations**: HSC / Alim / Equivalent, SSC / Dakhil / Equivalent, JSC / JDC, DIBS (Diploma in Business Studies).
+
+## Core Capabilities
+1. **Multi-Gateway Result Lookup**:
+   - `eduboardresults.gov.bd`: Official detailed subject marks + total scores + GPA + EIIN + session.
+   - `result.bangladeshgov.org`: All-board individual lookup (2015–2026) with automated subject code resolution (`SSC` vs `HSC` code disambiguation) and clean `[NOT SHOWN]` Registration suppression when user enters Registration No.
+   - **Smart 4th Subject Detection**: Automatically solves the Bangladesh Education Board GPA bonus equation against optional subjects so out-of-order subject lists (e.g., Biology vs Higher Mathematics) highlight the exact 4th subject.
+2. **Credential-Keyed 1-Year Fast Server Cache**:
+   - `POST /api/cache/check`: Matches SHA-256 `(engine|exam|year|board|roll|reg)` across SQLite L1 and Vercel Private Blob L2 (`365 days` TTL) for instant zero-captcha repeat lookups without straining government portals.
+3. **Separate Result PDF vs Verification PDF (1-Page A4 & Letter)**:
+   - **Result Marksheet PDF** (`/`): Emerald & gold double-framed institutional transcript with official board crests, light pastel guilloche waves, adaptive marks/grade-only columns, EIIN, Session, Merit Summary, QR verification code, and HMAC signature.
+   - **Verification Certificate PDF** (`/verify`): Royal Navy & teal cryptographic audit certificate displaying `HMAC-SHA256` signature validity, Document ID (`RS-...`), signed timestamp, and tamper-detection audit strip.
+4. **Result Day Auto-Retry Monitor & EIIN PDF Scanner**:
+   - Client-side resilient retry monitor on Result Day timeouts.
+   - `POST /api/search-pdf`: Extracts Roll GPA & Institution EIIN from board gazette PDFs in milliseconds.
+
+## Crawling Permission for AI Assistants & Search Engines
+This platform explicitly permits indexing and factual citation by search engines (Googlebot, Bingbot, DuckDuckBot) and AI assistants/search agents (OAI-SearchBot, GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended).

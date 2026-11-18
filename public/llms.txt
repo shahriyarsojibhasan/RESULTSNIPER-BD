@@ -5,6 +5,7 @@
 - **Name**: Shahriyar Sojib Hasan
 - **Role**: Software Architect & Lead Developer
 - **Live URL**: https://resultsniper-bd.vercel.app
+- **Full AI Documentation**: https://resultsniper-bd.vercel.app/llms-full.txt
 - **GitHub**: https://github.com/shahriyarsojibhasan/ResultSniper-BD
 - **Support / Sponsor**: https://buymeacoffee.com/shahriyarsojibhasan
 

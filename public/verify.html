@@ -10,10 +10,13 @@
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#006a4e">
   <link rel="canonical" href="https://resultsniper-bd.vercel.app/verify">
+  <link rel="alternate" type="text/plain" title="LLMs Context" href="/llms.txt">
+  <link rel="alternate" type="text/plain" title="Full LLMs Context" href="/llms-full.txt">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="manifest" href="/site.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://resultsniper-bd.vercel.app/verify">
+  <meta property="og:image" content="https://resultsniper-bd.vercel.app/favicon.svg">
   <meta property="og:site_name" content="ResultSniper BD">
   <meta property="og:title" content="Verify Official Marksheet | ResultSniper BD">
   <meta property="og:description" content="Verify authenticity &amp; print 1-page A4/Letter verification certificates signed via HMAC-SHA256.">
@@ -419,7 +422,8 @@
       document.getElementById('validState').classList.remove('hidden');
     }
 
-    function buildVerifyCertificate(d) {
+    function buildVerifyCertificate(d, paperSz) {
+      const szClass = paperSz === 'letter' ? 'sz-letter' : 'sz-a4';
       const bk = normKey(d.board);
       const meta = BOARDS_META[bk] || BOARDS_META.dhaka;
       const docId = d.doc_id || 'RS-VERIFIED';
@@ -467,7 +471,7 @@
            <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${val(d.gpa)}</span></td>
            <td><span class="k">Signature</span><span class="v" style="color:#0f766e;font-size:10.5px">HMAC VALID</span></td>`;
 
-      return `<div class="tx tx-verify">
+      return `<div class="tx tx-verify ${szClass}">
         <div class="tx-bg">${RS_ART.guillocheBG(seed, 'verify')}</div>
         <div class="tx-diag">${diag}</div>
         <div class="tx-wm"><img src="${meta.logo}" alt=""></div>
@@ -517,22 +521,29 @@
 
           <div class="tx-scale">Grading Scale: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
 
-          <table class="tx-foot" style="margin-top:3.4mm"><tr>
-            <td style="width:36%">
-              <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #0f2942">${RS_ART.qrSVG(verifyUrl)}</div>
-              <div class="tx-note" style="margin-top:0.8mm"><b style="color:#0f2942">VERIFICATION QR</b> — Re-scan to confirm cryptographic signature live on /verify.</div>
-            </td>
-            <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'CRYPTOGRAPHICALLY VERIFIED • HMAC-SHA256 AUTHENTIC •', 'AUTHENTIC', '#0f2942')}</td>
-            <td style="width:36%;text-align:right" class="tx-note">
-              <div><b style="color:#0f2942">Certificate ID:</b> <span class="mono">${esc(docId)}</span></div>
-              <div><b style="color:#0f2942">Signed At:</b> ${esc(issuedStr)}</div>
-              <div><b style="color:#0f2942">Verified On:</b> ${new Date().toLocaleString('en-GB')}</div>
-              <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #0f2942;font-weight:800;color:#0f2942;font-size:7.6px">RESULTSNIPER BD VERIFY</div>
-              <div>Developed by Shahriyar Sojib Hasan</div>
-            </td>
-          </tr></table>
+          <div class="tx-bottom">
+            <div class="tx-authbar">
+              <span>INTEGRITY AUDIT: PASSED (100% UNTAMPERED)</span>
+              <span>DOC ID: ${esc(docId)}</span>
+              <span>ALGORITHM: HMAC-SHA256</span>
+            </div>
+            <table class="tx-foot"><tr>
+              <td style="width:36%">
+                <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #0f2942">${RS_ART.qrSVG(verifyUrl)}</div>
+                <div class="tx-note" style="margin-top:0.8mm"><b style="color:#0f2942">VERIFICATION QR</b> — Re-scan to confirm cryptographic signature live on /verify.</div>
+              </td>
+              <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'CRYPTOGRAPHICALLY VERIFIED • HMAC-SHA256 AUTHENTIC •', 'AUTHENTIC', '#0f2942')}</td>
+              <td style="width:36%;text-align:right" class="tx-note">
+                <div><b style="color:#0f2942">Certificate ID:</b> <span class="mono">${esc(docId)}</span></div>
+                <div><b style="color:#0f2942">Signed At:</b> ${esc(issuedStr)}</div>
+                <div><b style="color:#0f2942">Verified On:</b> ${new Date().toLocaleString('en-GB')}</div>
+                <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #0f2942;font-weight:800;color:#0f2942;font-size:7.6px">RESULTSNIPER BD VERIFY</div>
+                <div>Developed by Shahriyar Sojib Hasan</div>
+              </td>
+            </tr></table>
 
-          <div class="tx-disc">Official ResultSniper BD Verification Certificate confirming cryptographic non-tampering of live Education Board records. Guaranteed 1-page A4/Letter output.</div>
+            <div class="tx-disc">Official ResultSniper BD Verification Certificate confirming cryptographic non-tampering of live Education Board records. Guaranteed 1-page A4/Letter output.</div>
+          </div>
         </div>
       </div>`;
     }
@@ -541,7 +552,7 @@
       if (!verifiedData) return;
       const sz = document.getElementById('vPaperSize').value;
       document.getElementById('verifyPrintPageStyle').textContent = `@page { size: ${sz} portrait; margin: 6mm; }`;
-      document.getElementById('verifyPrintArea').innerHTML = buildVerifyCertificate(verifiedData);
+      document.getElementById('verifyPrintArea').innerHTML = buildVerifyCertificate(verifiedData, sz);
       const imgs = [...document.getElementById('verifyPrintArea').querySelectorAll('img')];
       Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 150));
     }
