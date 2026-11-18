@@ -15,6 +15,8 @@ from core import (
     SIGN_SECRET,
     SSC_SUBJECT_MAP,
     attach_verification,
+    cache_stats,
+    check_cache_sync,
     check_eboard_sync,
     check_ebr_sync,
     check_eduboard_sync,
@@ -85,6 +87,16 @@ async def ebr_check_endpoint(request):
         data = await request.json()
         loop = asyncio.get_event_loop()
         payload, status = await loop.run_in_executor(None, check_ebr_sync, data)
+        return web.json_response(payload, status=status)
+    except Exception as e:
+        return web.json_response({"success": False, "error": str(e)}, status=500)
+
+
+async def cache_check_endpoint(request):
+    try:
+        data = await request.json()
+        loop = asyncio.get_event_loop()
+        payload, status = await loop.run_in_executor(None, check_cache_sync, data)
         return web.json_response(payload, status=status)
     except Exception as e:
         return web.json_response({"success": False, "error": str(e)}, status=500)
@@ -300,7 +312,7 @@ async def verify_api_endpoint(request):
 
 
 async def health_endpoint(request):
-    return web.json_response({"status": "ok", "service": "ResultSniper BD", "timestamp": int(time.time())})
+    return web.json_response({"status": "ok", "service": "ResultSniper BD", "timestamp": int(time.time()), "cache": cache_stats()})
 
 
 PAGE_MAP = {
@@ -351,6 +363,7 @@ def create_app():
     app.router.add_get('/api/verify', verify_api_endpoint)
     app.router.add_post('/api/check', check_result_endpoint)
     app.router.add_post('/api/ebr/check', ebr_check_endpoint)
+    app.router.add_post('/api/cache/check', cache_check_endpoint)
     app.router.add_get('/api/eduboard/captcha', eduboard_captcha_endpoint)
     app.router.add_post('/api/eduboard/check', eduboard_check_endpoint)
     app.router.add_get('/api/eboard/captcha', eboard_captcha_endpoint)

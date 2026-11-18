@@ -37,10 +37,10 @@
     }
     #verifyPrintArea { display: none; }
     @media print {
-      html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+      html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
       body * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       #screenUI { display: none !important; }
-      #verifyPrintArea { display: block !important; }
+      #verifyPrintArea { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
     }
   </style>
 </head>
@@ -67,6 +67,9 @@
             <a href="/" class="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50" data-i18n="nav.home">Result Finder</a>
             <a href="/about" class="text-sm font-semibold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-slate-50" data-i18n="nav.about">About</a>
           </nav>
+          <a href="https://buymeacoffee.com/shahriyarsojibhasan" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-[11px] sm:text-xs shadow-sm transition shrink-0" title="Support Shahriyar Sojib Hasan on Buy Me a Coffee">
+            <span>☕</span><span class="hidden sm:inline" data-i18n="nav.coffee">Buy Me a Coffee</span>
+          </a>
           <div class="inline-flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
             <button type="button" class="rs-lang-btn" data-lang="en">EN</button>
             <button type="button" class="rs-lang-btn" data-lang="bn">বাংলা</button>
@@ -173,8 +176,9 @@
                 <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.roll">Roll No.:</span><span id="vRoll" class="mono font-bold text-slate-900 text-right">--</span></div>
                 <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.reg">Registration No.:</span><span id="vReg" class="mono font-bold text-slate-900 text-right">--</span></div>
                 <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.group">Group:</span><span id="vGroup" class="font-semibold text-slate-800 uppercase text-right">--</span></div>
-                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.inst">Institution:</span><span id="vCollege" class="font-semibold text-slate-800 text-right break-words min-w-0">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.eiin">EIIN / Session:</span><span id="vEiinSession" class="mono font-semibold text-slate-800 text-right">--</span></div>
                 <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5"><span class="text-slate-500 shrink-0" data-i18n="v.gpa">Result (GPA):</span><span id="vGpa" class="font-black text-emerald-700 mono text-sm sm:text-base text-right">--</span></div>
+                <div class="flex justify-between gap-3 border-b border-slate-100 pb-1.5 md:col-span-2"><span class="text-slate-500 shrink-0" data-i18n="v.inst">Institution:</span><span id="vCollege" class="font-semibold text-slate-800 text-right break-words min-w-0">--</span></div>
               </div>
             </div>
 
@@ -185,16 +189,8 @@
                 <span id="vTotMarksBadge" class="text-xs font-bold text-emerald-700 mono"></span>
               </div>
               <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm min-w-[440px]">
-                  <thead class="bg-slate-50 text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
-                    <tr>
-                      <th class="py-2 sm:py-2.5 px-3 sm:px-4" data-i18n="v.code">Code</th>
-                      <th class="py-2 sm:py-2.5 px-3 sm:px-4" data-i18n="v.subName">Subject Name</th>
-                      <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center" data-i18n="v.marks">Marks</th>
-                      <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center" data-i18n="v.grade">Grade</th>
-                      <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center">GP</th>
-                    </tr>
-                  </thead>
+                <table id="vSubjectsTable" class="w-full text-left text-xs sm:text-sm min-w-[320px]">
+                  <thead id="vSubjectsHead" class="bg-slate-50 text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200"></thead>
                   <tbody id="vSubjectsBody" class="divide-y divide-slate-100 text-slate-700"></tbody>
                 </table>
               </div>
@@ -232,7 +228,8 @@
     <footer class="bg-white border-t border-slate-200 mt-10 py-6 text-center text-xs text-slate-500">
       <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div>© 2026 <strong class="text-slate-700">ResultSniper BD</strong> • <span data-i18n="footer.dev">Developed by</span> <a href="/about" class="text-emerald-700 font-semibold hover:underline">Shahriyar Sojib Hasan</a></div>
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a href="https://buymeacoffee.com/shahriyarsojibhasan" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold transition">☕ Buy Me a Coffee</a>
           <a href="/terms" class="hover:underline" data-i18n="nav.terms">Terms</a>
           <a href="/privacy" class="hover:underline" data-i18n="nav.privacy">Privacy Policy</a>
           <a href="/about" class="hover:underline" data-i18n="nav.about">About</a>
@@ -250,6 +247,7 @@
     RS_I18N.register({
       en: {
         'v.subtitle': 'Cryptographic Document Verification Portal',
+        'nav.coffee': 'Buy Me a Coffee',
         'v.inputTitle': 'Cryptographic Marksheet Token Verification',
         'v.inputDesc': 'Scan a marksheet QR code or paste the HMAC security token below to verify authenticity against official Education Board records.',
         'v.btnVerify': 'Verify Token',
@@ -264,17 +262,18 @@
         'v.gov': "Government of the People's Republic of Bangladesh",
         'v.profile': 'Candidate Profile',
         'v.name': 'Name:', 'v.father': "Father's Name:", 'v.mother': "Mother's Name:",
-        'v.roll': 'Roll No.:', 'v.reg': 'Registration No.:', 'v.group': 'Group:', 'v.inst': 'Institution:', 'v.gpa': 'Result (GPA):',
+        'v.roll': 'Roll No.:', 'v.reg': 'Registration No.:', 'v.group': 'Group:', 'v.eiin': 'EIIN / Session:', 'v.inst': 'Institution:', 'v.gpa': 'Result (GPA):',
         'v.subTitle': 'Verified Subject Grades & Marks',
         'v.code': 'Code', 'v.subName': 'Subject Name', 'v.marks': 'Marks', 'v.grade': 'Grade',
         'v.secTitle': 'Cryptographic Non-Tamper Guarantee',
         'v.secDesc': 'Any edit to Roll, Name, Marks or Grade breaks the digital signature.',
-        'v.printBtn': 'Print / Save 1-Page PDF'
+        'v.printBtn': 'Print / Save 1-Page Certificate PDF'
       },
       bn: {
         'v.subtitle': 'অফিশিয়াল ক্রিপ্টোগ্রাফিক ডকুমেন্ট ভেরিফিকেশন পোর্টাল',
+        'nav.coffee': 'কফি সহায়তা',
         'v.inputTitle': 'মার্কশিট ক্রিপ্টোগ্রাফিক টোকেন যাচাই',
-        'v.inputDesc': 'মার্কশিটের নিচে বা QR কোডে থাকা সিকিউরিটি টোকেনটি পেস্ট করে ফলাফলটির সত্যতা যাচাই করুন এবং ১-পেজ ভেরিফায়েড পিডিএফ ডাউনলোড করুন।',
+        'v.inputDesc': 'মার্কশিটের নিচে বা QR কোডে থাকা সিকিউরিটি টোকেনটি পেস্ট করে ফলাফলটির সত্যতা যাচাই করুন এবং ১-পেজ ভেরিফিকেশন সার্টিফিকেট পিডিএফ ডাউনলোড করুন।',
         'v.btnVerify': 'যাচাই করুন',
         'v.loading': 'ডিজিটাল সিগনেচার যাচাই করা হচ্ছে…',
         'v.invalidTitle': 'মার্কশিট যাচাইকরণ ব্যর্থ (INVALID / TAMPERED)',
@@ -287,12 +286,12 @@
         'v.gov': 'গণপ্রজাতন্ত্রী বাংলাদেশ সরকার',
         'v.profile': 'শিক্ষার্থীর ব্যক্তিগত বিবরণ',
         'v.name': 'শিক্ষার্থীর নাম:', 'v.father': 'পিতার নাম:', 'v.mother': 'মাতার নাম:',
-        'v.roll': 'রোল নম্বর:', 'v.reg': 'রেজিস্ট্রেশন:', 'v.group': 'বিভাগ:', 'v.inst': 'প্রতিষ্ঠান:', 'v.gpa': 'ফলাফল (GPA):',
+        'v.roll': 'রোল নম্বর:', 'v.reg': 'রেজিস্ট্রেশন:', 'v.group': 'বিভাগ:', 'v.eiin': 'EIIN / সেশন:', 'v.inst': 'প্রতিষ্ঠান:', 'v.gpa': 'ফলাফল (GPA):',
         'v.subTitle': 'যাচাইকৃত বিষয়ভিত্তিক গ্রেড ও নম্বর',
         'v.code': 'কোড', 'v.subName': 'বিষয়ের নাম', 'v.marks': 'নম্বর', 'v.grade': 'গ্রেড',
         'v.secTitle': 'ক্রিপ্টোগ্রাফিক সুরক্ষা গ্যারান্টি',
         'v.secDesc': 'কোনো নম্বর, রোল বা গ্রেড পরিবর্তন করলে ডিজিটাল সিগনেচার মিলবে না।',
-        'v.printBtn': '১-পেজ ভেরিফায়েড PDF / প্রিন্ট'
+        'v.printBtn': '১-পেজ ভেরিফিকেশন সার্টিফিকেট PDF'
       }
     }, () => { if (verifiedData) renderValid(verifiedData); });
 
@@ -347,57 +346,76 @@
       }
     }
 
+    function cleanStr(v) {
+      const s = String(v || '').trim();
+      return (!s || /^(N\/A|NA|\[?NOT SHOWN\]?|NOT AVAILABLE|--|-|NONE|NULL)$/i.test(s)) ? '' : s;
+    }
+
     function renderValid(d) {
       const bn = RS_I18N.getLang() === 'bn';
       const bk = normKey(d.board);
       const meta = BOARDS_META[bk] || BOARDS_META.dhaka;
+      const cleanReg = cleanStr(d.reg) || '—';
+      const eiin = cleanStr(d.eiin);
+      const sess = cleanStr(d.session);
+      const stType = cleanStr(d.type) || 'REGULAR';
 
       document.getElementById('vDocId').textContent = d.doc_id || 'RS-OFFICIAL';
       document.getElementById('vIssuedAt').textContent = d.issued_at ? ('SIGNED: ' + new Date(d.issued_at * 1000).toLocaleString('en-GB')) : '--';
       document.getElementById('vBoardName').textContent = bn ? meta.bn : meta.en;
       document.getElementById('vBoardLogo').src = meta.logo;
-      document.getElementById('vExamYear').textContent = `${(d.exam || 'HSC').toUpperCase()} EXAMINATION - ${d.year || '2026'}`;
+      document.getElementById('vExamYear').textContent = `${(d.exam || 'HSC').toUpperCase()} EXAMINATION - ${d.year || '2026'} (${stType})`;
 
-      document.getElementById('vName').textContent = d.name || 'N/A';
-      document.getElementById('vFather').textContent = d.father || 'N/A';
-      document.getElementById('vMother').textContent = d.mother || 'N/A';
-      document.getElementById('vRoll').textContent = d.roll || 'N/A';
-      document.getElementById('vReg').textContent = d.reg || 'N/A';
-      document.getElementById('vGroup').textContent = d.group || 'N/A';
-      document.getElementById('vCollege').textContent = d.college ? `${d.college}${d.eiin && d.eiin !== 'N/A' ? ' (' + d.eiin + ')' : ''}` : 'N/A';
+      document.getElementById('vName').textContent = cleanStr(d.name) || '—';
+      document.getElementById('vFather').textContent = cleanStr(d.father) || '—';
+      document.getElementById('vMother').textContent = cleanStr(d.mother) || '—';
+      document.getElementById('vRoll').textContent = cleanStr(d.roll) || '—';
+      document.getElementById('vReg').textContent = cleanReg;
+      document.getElementById('vGroup').textContent = cleanStr(d.group) || '—';
+      document.getElementById('vEiinSession').textContent = [eiin ? 'EIIN ' + eiin : '', sess].filter(Boolean).join(' • ') || '—';
+      document.getElementById('vCollege').textContent = cleanStr(d.college) || '—';
       document.getElementById('vGpa').textContent = d.gpa ? (d.gpa === 'PASSED' ? 'PASSED' : `GPA ${d.gpa}`) : 'PASSED';
 
       const subs = d.subjects || [];
-      let tot = 0, max = 0, hasNum = false;
+      let tot = 0, max = 0;
+      const hasNum = subs.some(s => !isNaN(parseInt(s.marks || s.total, 10)));
+      const thead = document.getElementById('vSubjectsHead');
+      const vtbl = document.getElementById('vSubjectsTable');
       const tbody = document.getElementById('vSubjectsBody');
       tbody.innerHTML = '';
 
+      vtbl.className = hasNum ? 'w-full text-left text-xs sm:text-sm min-w-[400px]' : 'w-full text-left text-xs sm:text-sm min-w-[300px]';
+      thead.innerHTML = hasNum
+        ? `<tr><th class="py-2 sm:py-2.5 px-3 sm:px-4">${RS_I18N.t('v.code')}</th><th class="py-2 sm:py-2.5 px-3 sm:px-4">${RS_I18N.t('v.subName')}</th><th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center">${RS_I18N.t('v.marks')}</th><th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center">${RS_I18N.t('v.grade')}</th><th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center">GP</th></tr>`
+        : `<tr><th class="py-2 sm:py-2.5 px-3 sm:px-4">${RS_I18N.t('v.code')}</th><th class="py-2 sm:py-2.5 px-3 sm:px-4">${RS_I18N.t('v.subName')}</th><th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center">${RS_I18N.t('v.grade')}</th><th class="py-2 sm:py-2.5 px-2 sm:px-4 text-center">GP</th></tr>`;
+
       if (!subs.length) {
-        tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-400">Subject breakdown not included in this token</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${hasNum ? 5 : 4}" class="py-4 text-center text-slate-400">Subject breakdown not included in this token</td></tr>`;
       } else {
         subs.forEach((s, idx) => {
           const mk = parseInt(s.marks || s.total, 10);
           const mx = String(s.code).includes('-') ? 200 : 100;
           max += mx;
-          if (!isNaN(mk)) { hasNum = true; tot += mk; }
+          if (!isNaN(mk)) tot += mk;
           const g = (s.grade || '').toUpperCase();
           const gp = s.gp || GP[g] || '--';
           const tr = document.createElement('tr');
           tr.className = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50';
+          const markCell = hasNum ? `<td class="py-2.5 px-3 text-center mono font-bold text-slate-900">${!isNaN(mk) ? mk : '—'}</td>` : '';
           tr.innerHTML = `
-            <td class="py-2.5 px-4 mono font-semibold text-xs text-slate-500">${esc(s.code)}</td>
-            <td class="py-2.5 px-4 font-medium text-slate-800">
+            <td class="py-2.5 px-3 sm:px-4 mono font-semibold text-xs text-slate-500">${esc(s.code)}</td>
+            <td class="py-2.5 px-3 sm:px-4 font-medium text-slate-800">
               <div>${esc(bn ? (s.name_bn || s.name_en || s.code) : (s.name_en || s.name_bn || s.code))}</div>
               <div class="text-[11px] text-slate-400">${esc(bn ? (s.name_en || '') : (s.name_bn || ''))}</div>
             </td>
-            <td class="py-2.5 px-4 text-center mono font-bold text-slate-900">${!isNaN(mk) ? mk : '—'}</td>
-            <td class="py-2.5 px-4 text-center"><span class="inline-block px-2.5 py-0.5 rounded font-black text-xs mono ${getGradeBadge(g)}">${esc(g || '--')}</span></td>
-            <td class="py-2.5 px-4 text-center mono text-xs text-slate-600">${esc(gp)}</td>
+            ${markCell}
+            <td class="py-2.5 px-3 text-center"><span class="inline-block px-2.5 py-0.5 rounded font-black text-xs mono ${getGradeBadge(g)}">${esc(g || '--')}</span></td>
+            <td class="py-2.5 px-3 text-center mono text-xs text-slate-600">${esc(gp)}</td>
           `;
           tbody.appendChild(tr);
         });
       }
-      document.getElementById('vTotMarksBadge').textContent = hasNum ? `TOTAL: ${tot} / ${max} (${(tot / max * 100).toFixed(2)}%)` : 'HMAC-SHA256 Verified';
+      document.getElementById('vTotMarksBadge').textContent = hasNum ? `TOTAL: ${tot} / ${max} (${(tot / max * 100).toFixed(2)}%)` : 'HMAC-SHA256 Verified (Grade Sheet)';
       document.getElementById('validState').classList.remove('hidden');
     }
 
@@ -407,91 +425,114 @@
       const docId = d.doc_id || 'RS-VERIFIED';
       const verifyUrl = `${location.origin}/verify?t=${d.token}`;
       const seed = [...String(d.roll || '0')].reduce((a, c) => a + c.charCodeAt(0), 0);
-      const micro = (`RESULTSNIPER BD • VERIFICATION CERTIFICATE • ${docId} • ROLL ${d.roll} • HMAC AUTHENTICATED • `).repeat(25);
-      const diag = Array.from({ length: 54 }, () => `<span>${esc(d.roll)} • ${esc(docId)} • VERIFIED AUTHENTIC</span>`).join('');
+      const micro = (`RESULTSNIPER BD • CRYPTOGRAPHIC VERIFICATION CERTIFICATE • ${docId} • HMAC-SHA256 AUTHENTIC • `).repeat(24);
+      const diag = Array.from({ length: 54 }, () => `<span>${esc(d.roll)} • ${esc(docId)} • HMAC VERIFIED CERTIFICATE</span>`).join('');
       const subs = d.subjects || [];
-      let tot = 0, max = 0, hasNum = false;
+      let tot = 0, max = 0;
+      const hasNum = subs.some(s => !isNaN(parseInt(s.marks || s.total, 10)));
       const rows = subs.map((s, i) => {
         const mk = parseInt(s.marks || s.total, 10);
         const mx = String(s.code).includes('-') ? 200 : 100;
         max += mx;
-        if (!isNaN(mk)) { hasNum = true; tot += mk; }
+        if (!isNaN(mk)) tot += mk;
         const g = (s.grade || '').toUpperCase();
         const gp = s.gp || GP[g] || '--';
+        const markTd = hasNum ? `<td class="tx-c mono tx-b">${!isNaN(mk) ? mk : '—'}</td>` : '';
         return `<tr><td class="tx-c">${i + 1}</td><td class="tx-c mono tx-b">${esc(s.code)}</td>
           <td class="tx-b">${esc((s.name_en || s.name_bn || s.code).toUpperCase())}</td>
-          <td class="tx-c mono tx-b">${!isNaN(mk) ? mk : '—'}</td>
-          <td class="tx-c tx-b" style="color:${g === 'F' ? '#dc2626' : '#065f46'}">${esc(g)}</td>
+          ${markTd}
+          <td class="tx-c tx-b" style="color:${g === 'F' ? '#dc2626' : '#0f2942'}">${esc(g)}</td>
           <td class="tx-c mono">${esc(gp)}</td></tr>`;
       }).join('');
       const passed = String(d.gpa || '').toUpperCase() !== 'F' && String(d.gpa || '') !== '0.00' && !subs.some(s => String(s.grade || '').toUpperCase() === 'F');
       const issuedStr = d.issued_at ? new Date(d.issued_at * 1000).toLocaleString('en-GB') : new Date().toLocaleString('en-GB');
-      const val = v => esc(v && v !== 'N/A' ? v : '—');
+      const val = v => esc(cleanStr(v) || '—');
+      const eiin = cleanStr(d.eiin) || '—';
+      const sess = cleanStr(d.session) || '—';
+      const stType = cleanStr(d.type) || 'REGULAR';
 
-      return `<div class="tx">
-        <div class="tx-bg">${RS_ART.guillocheBG(seed)}</div>
+      const subHeadHtml = hasNum
+        ? '<tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left">Verified Subject Name</th><th style="width:13%">Marks</th><th style="width:11%">Grade</th><th style="width:11%">G.P.</th></tr>'
+        : '<tr><th style="width:7%">SL</th><th style="width:15%">Code</th><th style="text-align:left">Verified Subject Name</th><th style="width:13%">Grade</th><th style="width:13%">G.P.</th></tr>';
+
+      const sumCells = hasNum
+        ? `<td><span class="k">Total Marks</span><span class="v">${tot}/${max}</span></td>
+           <td><span class="k">Percentage</span><span class="v">${(tot / max * 100).toFixed(2)}%</span></td>
+           <td><span class="k">Result</span><span class="v" style="color:${passed ? '#0f766e' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
+           <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${val(d.gpa)}</span></td>
+           <td><span class="k">Signature</span><span class="v" style="color:#0f766e;font-size:10.5px">HMAC VALID</span></td>`
+        : `<td><span class="k">Board</span><span class="v" style="font-size:10.5px">${esc(bk.toUpperCase())}</span></td>
+           <td><span class="k">EIIN</span><span class="v mono">${esc(eiin)}</span></td>
+           <td><span class="k">Result</span><span class="v" style="color:${passed ? '#0f766e' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
+           <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${val(d.gpa)}</span></td>
+           <td><span class="k">Signature</span><span class="v" style="color:#0f766e;font-size:10.5px">HMAC VALID</span></td>`;
+
+      return `<div class="tx tx-verify">
+        <div class="tx-bg">${RS_ART.guillocheBG(seed, 'verify')}</div>
         <div class="tx-diag">${diag}</div>
         <div class="tx-wm"><img src="${meta.logo}" alt=""></div>
         <div class="tx-frame"></div><div class="tx-frame2"></div>
         <div class="tx-micro t">${micro}</div><div class="tx-micro b">${micro}</div>
         <div class="tx-micro l">${micro}</div><div class="tx-micro r">${micro}</div>
-        <div class="tx-corner" style="top:4mm;left:4mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
-        <div class="tx-corner" style="top:4mm;right:4mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
-        <div class="tx-corner" style="bottom:4mm;left:4mm">${RS_ART.rosetteSVG(72, '#eab308')}</div>
-        <div class="tx-corner" style="bottom:4mm;right:4mm">${RS_ART.rosetteSVG(72, '', 'vphos')}</div>
+        <div class="tx-corner" style="top:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#0ea5e9')}</div>
+        <div class="tx-corner" style="top:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '#0ea5e9')}</div>
+        <div class="tx-corner" style="bottom:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#0f766e')}</div>
+        <div class="tx-corner" style="bottom:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '', 'vphos')}</div>
 
         <div class="tx-in">
           <table class="tx-head"><tr>
-            <td style="width:21mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal"></td>
+            <td style="width:19mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Bangladesh Govt Seal"></td>
             <td style="text-align:center">
-              <div class="tx-gov">Government of the People's Republic of Bangladesh</div>
+              <div class="tx-gov">ResultSniper BD • Independent Cryptographic Verification Authority</div>
               <div class="tx-board">${esc(meta.en)}</div>
-              <div class="tx-exam">${esc((d.exam || 'HSC').toUpperCase())} EXAMINATION — ${esc(d.year || '2026')}</div>
-              <div class="tx-pill">OFFICIAL CRYPTOGRAPHIC VERIFICATION RESULT</div>
+              <div class="tx-exam">${esc((d.exam || 'HSC').toUpperCase())} EXAMINATION — ${esc(d.year || '2026')} (${esc(stType)})</div>
+              <div class="tx-pill">CRYPTOGRAPHIC AUTHENTICITY CERTIFICATE</div>
             </td>
-            <td style="width:21mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${meta.logo}" alt="Board Logo"></td>
+            <td style="width:19mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${meta.logo}" alt="Board Logo"></td>
           </tr></table>
           <div class="tx-rule"></div>
 
+          <div class="tx-audit-strip">
+            <div><b>Algorithm:</b> <span class="mono">HMAC-SHA256</span></div>
+            <div><b>Document ID:</b> <span class="mono">${esc(docId)}</span></div>
+            <div><b>Signed:</b> ${esc(issuedStr)}</div>
+            <div class="tx-audit-badge">✓ SIGNATURE VALID &amp; UNTAMPERED</div>
+          </div>
+
+          <div class="tx-sec-hd">Verified Candidate Record</div>
           <table class="tx-info">
-            <tr><td class="k">Student Name</td><td class="v" colspan="3" style="font-size:10.5px">${val(d.name)}</td></tr>
-            <tr><td class="k">Father's Name</td><td class="v">${val(d.father)}</td><td class="k">Roll No.</td><td class="v mono">${val(d.roll)}</td></tr>
-            <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Registration No.</td><td class="v mono">${val(d.reg)}</td></tr>
-            <tr><td class="k">Group</td><td class="v">${val(d.group)}</td><td class="k">Board</td><td class="v">${esc(bk.toUpperCase())}</td></tr>
-            <tr><td class="k">Institution</td><td class="v" colspan="3">${val(d.college)}${d.eiin && d.eiin !== 'N/A' ? ` (EIIN: ${esc(d.eiin)})` : ''}</td></tr>
+            <tr><td class="k">Roll No.</td><td class="v mono">${val(d.roll)}</td><td class="k">Registration No.</td><td class="v mono">${val(d.reg)}</td></tr>
+            <tr><td class="k">Student Name</td><td class="v" style="font-size:9.6px">${val(d.name)}</td><td class="k">Father's Name</td><td class="v">${val(d.father)}</td></tr>
+            <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Group / Session</td><td class="v">${val(d.group)} (${esc(sess)})</td></tr>
+            <tr><td class="k">Institution</td><td class="v">${val(d.college)}</td><td class="k">EIIN</td><td class="v mono">${esc(eiin)}</td></tr>
           </table>
 
-          <table class="tx-sub" style="margin-top:2.4mm">
-            <thead><tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left">Subject Name</th><th style="width:13%">Marks</th><th style="width:11%">Grade</th><th style="width:11%">G.P.</th></tr></thead>
-            <tbody>${rows || '<tr><td colspan="6" class="tx-c">—</td></tr>'}</tbody>
+          <div class="tx-sec-hd">${hasNum ? 'Audited Subject Grades & Marks' : 'Audited Subject Grade Sheet'}</div>
+          <table class="tx-sub">
+            <thead>${subHeadHtml}</thead>
+            <tbody>${rows || `<tr><td colspan="${hasNum ? 6 : 5}" class="tx-c">—</td></tr>`}</tbody>
           </table>
 
-          <table class="tx-sum" style="margin-top:2.4mm"><tr>
-            <td><span class="k">Total Marks</span><span class="v">${hasNum ? `${tot}/${max}` : '—'}</span></td>
-            <td><span class="k">Percentage</span><span class="v">${hasNum ? (tot / max * 100).toFixed(2) + '%' : '—'}</span></td>
-            <td><span class="k">Status</span><span class="v" style="color:${passed ? '#065f46' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
-            <td><span class="k">G.P.A.</span><span class="v" style="font-size:15px">${val(d.gpa)}</span></td>
-            <td><span class="k">Integrity</span><span class="v" style="color:#065f46;font-size:11px">HMAC VALID</span></td>
-          </tr></table>
+          <table class="tx-sum" style="margin-top:2.2mm"><tr>${sumCells}</tr></table>
 
           <div class="tx-scale">Grading Scale: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
 
-          <table class="tx-foot" style="margin-top:4.5mm"><tr>
+          <table class="tx-foot" style="margin-top:3.4mm"><tr>
             <td style="width:36%">
-              <div style="width:24mm;height:24mm;padding:0.8mm;background:#fff;border:0.28mm solid #065f46">${RS_ART.qrSVG(verifyUrl)}</div>
-              <div class="tx-note" style="margin-top:1mm"><b style="color:#065f46">AUTHENTICITY QR</b> — Re-scan to verify live via /verify API. Signature cannot be forged.</div>
+              <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #0f2942">${RS_ART.qrSVG(verifyUrl)}</div>
+              <div class="tx-note" style="margin-top:0.8mm"><b style="color:#0f2942">VERIFICATION QR</b> — Re-scan to confirm cryptographic signature live on /verify.</div>
             </td>
-            <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId)}</td>
+            <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'CRYPTOGRAPHICALLY VERIFIED • HMAC-SHA256 AUTHENTIC •', 'AUTHENTIC', '#0f2942')}</td>
             <td style="width:36%;text-align:right" class="tx-note">
-              <div><b style="color:#065f46">Document ID:</b> <span class="mono">${esc(docId)}</span></div>
-              <div><b style="color:#065f46">Signed Timestamp:</b> ${esc(issuedStr)}</div>
-              <div><b style="color:#065f46">Verified On:</b> ${new Date().toLocaleString('en-GB')}</div>
-              <div style="margin-top:1.5mm;padding-top:1mm;border-top:.28mm solid #065f46;font-weight:800;color:#065f46;font-size:7.6px">RESULTSNIPER BD VERIFICATION</div>
+              <div><b style="color:#0f2942">Certificate ID:</b> <span class="mono">${esc(docId)}</span></div>
+              <div><b style="color:#0f2942">Signed At:</b> ${esc(issuedStr)}</div>
+              <div><b style="color:#0f2942">Verified On:</b> ${new Date().toLocaleString('en-GB')}</div>
+              <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #0f2942;font-weight:800;color:#0f2942;font-size:7.6px">RESULTSNIPER BD VERIFY</div>
               <div>Developed by Shahriyar Sojib Hasan</div>
             </td>
           </tr></table>
 
-          <div class="tx-disc">Verified authentic via HMAC-SHA256 cryptographic signature derived from live Education Board records. Guaranteed 1-page A4/Letter verification output.</div>
+          <div class="tx-disc">Official ResultSniper BD Verification Certificate confirming cryptographic non-tampering of live Education Board records. Guaranteed 1-page A4/Letter output.</div>
         </div>
       </div>`;
     }
@@ -499,7 +540,7 @@
     function printVerifiedPDF() {
       if (!verifiedData) return;
       const sz = document.getElementById('vPaperSize').value;
-      document.getElementById('verifyPrintPageStyle').textContent = `@page { size: ${sz} portrait; margin: 7mm; }`;
+      document.getElementById('verifyPrintPageStyle').textContent = `@page { size: ${sz} portrait; margin: 6mm; }`;
       document.getElementById('verifyPrintArea').innerHTML = buildVerifyCertificate(verifiedData);
       const imgs = [...document.getElementById('verifyPrintArea').querySelectorAll('img')];
       Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 150));

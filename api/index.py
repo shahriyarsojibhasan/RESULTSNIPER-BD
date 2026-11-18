@@ -14,6 +14,8 @@ if ROOT_DIR not in sys.path:
 
 from core import (
     PUBLIC_DIR,
+    cache_stats,
+    check_cache_sync,
     check_eboard_sync,
     check_ebr_sync,
     check_eduboard_sync,
@@ -76,7 +78,7 @@ class handler(BaseHTTPRequestHandler):
 
         try:
             if path == "/health":
-                return self._send_json({"status": "ok", "service": "ResultSniper BD", "runtime": "vercel", "timestamp": int(time.time())})
+                return self._send_json({"status": "ok", "service": "ResultSniper BD", "runtime": "vercel", "timestamp": int(time.time()), "cache": cache_stats()})
 
             if path == "/api/verify":
                 token = (qs.get("t") or [""])[0]
@@ -123,6 +125,10 @@ class handler(BaseHTTPRequestHandler):
 
             if path == "/api/ebr/check":
                 payload, status = check_ebr_sync(self._read_json_body())
+                return self._send_json(payload, status=status)
+
+            if path == "/api/cache/check":
+                payload, status = check_cache_sync(self._read_json_body())
                 return self._send_json(payload, status=status)
 
             if path == "/api/check":

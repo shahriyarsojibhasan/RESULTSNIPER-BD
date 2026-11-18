@@ -2,6 +2,9 @@
 .secret.key
 .env
 *.log
+*.sqlite
+*.db
+results_cache.sqlite
 
 # Python Cache
 __pycache__/

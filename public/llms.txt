@@ -6,15 +6,17 @@
 - **Role**: Software Architect & Lead Developer
 - **Live URL**: https://resultsniper-bd.vercel.app
 - **GitHub**: https://github.com/shahriyarsojibhasan/ResultSniper-BD
+- **Support / Sponsor**: https://buymeacoffee.com/shahriyarsojibhasan
 
 ## Architecture & Live API Engines
-1. **eduboardresults.gov.bd (Official Full Marks Engine)**: Fetches candidate profiles and subject-wise numerical marks (`getStudentResult`) with human-solved 6-char captcha.
-2. **result.bangladeshgov.org (All-Board / EBR Mirror Gateway)**: Supports SSC, HSC, JSC, DIBS across all 11 Education Boards (2015–2026) with `sub_details` resolution and 4-digit security key.
-3. **api.ebr.bd (EBR Leaderboard API)**: Protected upstream by Cloudflare Turnstile bound to `ebr.bd`; server route `/api/ebr/check` reports Turnstile gate status transparently and hands off cleanly to Full Marks / All-Board gateways.
+1. **eduboardresults.gov.bd (Official Full Marks Engine)**: Fetches candidate profiles and subject-wise numerical marks (`getStudentResult`) with human-solved 6-char captcha, EIIN, Session, and Student Type.
+2. **result.bangladeshgov.org (All-Board Gateway)**: Supports SSC, HSC, JSC, DIBS across all 11 Education Boards (2015–2026) with `sub_details` resolution and 4-digit security key, automatically suppressing missing `[NOT SHOWN]` fields when candidate Registration No. is provided.
+3. **1-Year Private Server Cache (`POST /api/cache/check`)**: Credential-keyed (SHA-256 Roll + Registration) SQLite + Vercel Private Blob store returning previously fetched results in milliseconds for up to 365 days, reducing upstream server congestion.
+4. **api.ebr.bd Transparency**: `api.ebr.bd` enforces Cloudflare Turnstile bound to `ebr.bd`; ResultSniper BD never circumvents Turnstile and instead offers a clean 1-click Roll/Reg copy + new-tab helper.
 
-## Security & 1-Page Print PDFs
-- **Light Currency Wave Underprint**: Soft pastel guilloche curves, rosettes, microtext frame, and dynamic official board emblems (including transparent official PNG crest for Rajshahi Board).
-- **1-Page A4 & US Letter Fit**: Both main marksheet print and `/verify` certificate fit cleanly onto a single A4 or Letter page.
+## Security & Distinct 1-Page Print PDFs
+- **Distinct Result PDF vs Verification PDF**: Result Marksheet uses an Emerald/Gold academic summary structure (with Roll, Reg, Name, Parents, Board, Group, Session, Type, EIIN, Institution, and adaptive marks/grade-only columns), while `/verify` outputs a Navy/Teal Cryptographic Authenticity Certificate PDF (`HMAC-SHA256` audit strip).
+- **Light Currency Wave Underprint & Unbroken Borders**: Soft pastel guilloche curves, rosettes, microtext frame, and official board crests inside crisp unbroken border frames fitting 1 single A4 or US Letter page.
 - **HMAC-SHA256 Verification**: Stateless compressed payload + signature embedded in QR code (`/verify?t=<TOKEN>`).
 
 ## Endpoints

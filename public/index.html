@@ -71,10 +71,10 @@
     .mono { font-family:'JetBrains Mono', monospace; }
     #printArea { display:none; }
     @media print {
-      html, body { background:#fff !important; margin:0 !important; padding:0 !important; }
+      html, body { background:#fff !important; margin:0 !important; padding:0 !important; width:100% !important; }
       body * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       #app { display:none !important; }
-      #printArea { display:block !important; }
+      #printArea { display:block !important; width:100% !important; margin:0 !important; padding:0 !important; }
     }
   </style>
 </head>
@@ -98,6 +98,9 @@
           <a href="/about" class="px-3 py-2 rounded-lg hover:bg-ink-100" data-i18n="nav.about">About</a>
           <a href="/privacy" class="px-3 py-2 rounded-lg hover:bg-ink-100" data-i18n="nav.privacy">Privacy Policy</a>
         </nav>
+        <a href="https://buymeacoffee.com/shahriyarsojibhasan" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-[11px] sm:text-xs shadow-sm transition shrink-0" title="Support Shahriyar Sojib Hasan on Buy Me a Coffee">
+          <span>☕</span><span class="hidden sm:inline" data-i18n="nav.coffee">Buy Me a Coffee</span>
+        </a>
         <div class="inline-flex items-center bg-ink-100 p-0.5 rounded-lg border border-ink-200">
           <button type="button" class="rs-lang-btn" data-lang="en">EN</button>
           <button type="button" class="rs-lang-btn" data-lang="bn">বাংলা</button>
@@ -140,7 +143,7 @@
           <div class="grid grid-cols-3 gap-1 p-1 bg-ink-100 rounded-xl text-[11px] sm:text-[12px]">
             <button type="button" class="seg active py-2 px-1 rounded-lg leading-tight truncate" data-method="edu"><span data-i18n="eng.edu">Full Marks</span><br><span class="text-[9.5px] sm:text-[10px] font-normal opacity-70">eduboard</span></button>
             <button type="button" class="seg py-2 px-1 rounded-lg leading-tight truncate" data-method="eboard"><span data-i18n="eng.eboard">All Boards</span><br><span class="text-[9.5px] sm:text-[10px] font-normal opacity-70">bangladeshgov</span></button>
-            <button type="button" class="seg py-2 px-1 rounded-lg leading-tight truncate" data-method="ebr"><span data-i18n="eng.ebr">EBR Merit</span><br><span class="text-[9.5px] sm:text-[10px] font-normal opacity-70">api.ebr.bd</span></button>
+            <button type="button" class="seg py-2 px-1 rounded-lg leading-tight truncate" data-method="cache"><span data-i18n="eng.cache">Fast Cache</span><br><span class="text-[9.5px] sm:text-[10px] font-normal opacity-70">1-Year Instant</span></button>
           </div>
           <p id="methodHint" class="text-[12px] text-ink-500 mt-2 leading-relaxed"></p>
         </div>
@@ -176,8 +179,17 @@
             </div>
           </div>
 
+          <label id="forceRefreshWrap" class="flex items-center gap-2 text-[11.5px] text-ink-500 select-none cursor-pointer">
+            <input id="forceRefreshChk" type="checkbox" class="rounded border-ink-200 text-brand-600 focus:ring-brand-500">
+            <span data-i18n="form.force">Bypass 1-year server cache (fetch fresh from board)</span>
+          </label>
+
           <button id="checkBtn" type="submit" class="btn btn-primary w-full py-3 text-[15px]"><i data-lucide="search" class="w-4 h-4"></i><span id="checkBtnText">Get Full Marksheet</span></button>
         </form>
+        <div class="pt-2 border-t border-ink-100 flex items-center justify-between gap-2 text-[11px] text-ink-500">
+          <span data-i18n="ebr.noteShort">Want EBR board ranking (#)?</span>
+          <button type="button" id="ebrFormBtn" class="text-brand-700 font-bold hover:underline inline-flex items-center gap-1 shrink-0"><i data-lucide="external-link" class="w-3 h-3"></i><span>ebr.bd</span></button>
+        </div>
       </div>
 
       <!-- Output -->
@@ -232,14 +244,8 @@
 
             <!-- Subjects -->
             <div id="subWrap" class="overflow-x-auto rounded-2xl border border-ink-200 -mx-0.5 sm:mx-0">
-              <table class="w-full text-xs sm:text-sm min-w-[540px]">
-                <thead class="bg-ink-50 text-ink-500 text-[10px] sm:text-[11px] uppercase tracking-wider">
-                  <tr>
-                    <th class="text-left py-2.5 sm:py-3 px-3 sm:px-4" data-i18n="tbl.sub">Subject</th>
-                    <th class="py-2.5 sm:py-3 px-1.5 sm:px-2">CQ</th><th class="py-2.5 sm:py-3 px-1.5 sm:px-2">MCQ</th><th class="py-2.5 sm:py-3 px-1.5 sm:px-2" data-i18n="tbl.prac">Practical</th>
-                    <th class="py-2.5 sm:py-3 px-2 text-brand-700" data-i18n="tbl.tot">Total</th><th class="py-2.5 sm:py-3 px-2" data-i18n="tbl.grd">Grade</th><th class="py-2.5 sm:py-3 px-2 sm:px-3">GP</th>
-                  </tr>
-                </thead>
+              <table id="subTable" class="w-full text-xs sm:text-sm min-w-[320px]">
+                <thead id="subHead" class="bg-ink-50 text-ink-500 text-[10px] sm:text-[11px] uppercase tracking-wider"></thead>
                 <tbody id="subBody" class="divide-y divide-ink-100"></tbody>
               </table>
             </div>
@@ -348,7 +354,7 @@
 
       <div class="pt-5 border-t border-ink-200 space-y-3">
         <div class="flex items-center justify-between">
-          <h3 class="font-extrabold flex items-center gap-2"><i data-lucide="history" class="w-4 h-4 text-gold-600"></i><span data-i18n="hist.title">Recent 7-Day Search History</span></h3>
+          <h3 class="font-extrabold flex items-center gap-2"><i data-lucide="history" class="w-4 h-4 text-gold-600"></i><span data-i18n="hist.title">Saved 1-Year History &amp; Fast Cache</span></h3>
           <button id="clearHistory" class="text-xs text-ink-500 hover:text-flag-red" data-i18n="hist.clear">Clear History</button>
         </div>
         <div id="historyList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
@@ -359,7 +365,8 @@
   <footer class="bg-white border-t border-ink-200 mt-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-ink-500">
       <div>© <span id="yr"></span> <b class="text-ink-900">ResultSniper BD</b> — <span data-i18n="footer.dev">Developed by</span> <b class="text-brand-700">Shahriyar Sojib Hasan</b></div>
-      <div class="flex flex-wrap gap-4">
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="https://buymeacoffee.com/shahriyarsojibhasan" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition">☕ Buy Me a Coffee</a>
         <a href="/about" class="hover:text-brand-700" data-i18n="nav.about">About</a>
         <a href="/terms" class="hover:text-brand-700" data-i18n="nav.terms">Terms</a>
         <a href="/privacy" class="hover:text-brand-700" data-i18n="nav.privacy">Privacy Policy</a>
@@ -380,10 +387,13 @@
 RS_I18N.register({
   en: {
     'tab.check': 'Result Finder', 'tab.sniper': 'Auto-Retry Monitor', 'tab.pdf': 'PDF Scanner', 'tab.profiles': 'Saved & History',
+    'nav.coffee': 'Buy Me a Coffee',
     'form.engine': 'Result Engine (API Gateway)',
-    'eng.edu': 'Full Marks', 'eng.eboard': 'All Boards', 'eng.ebr': 'EBR Merit',
+    'eng.edu': 'Full Marks', 'eng.eboard': 'All Boards', 'eng.cache': 'Fast Cache',
     'form.exam': 'Examination', 'form.year': 'Passing Year', 'form.board': 'Education Board',
     'form.roll': 'Roll Number', 'form.reg': 'Registration Number', 'form.newcap': 'Reload',
+    'form.force': 'Bypass 1-year server cache (fetch fresh from board)',
+    'ebr.noteShort': 'Need EBR board ranking (#)?',
     'ph.roll': 'Enter Roll No.', 'ph.reg': 'Enter Registration No.', 'ph.cap': 'Code',
     'ph.title': 'Ready to Fetch Official Result',
     'ph.desc': 'Enter your Roll & Registration number to fetch official board subject-wise marks, merit score analytics, and a 1-page QR-verified marksheet PDF.',
@@ -401,19 +411,22 @@ RS_I18N.register({
     'pdf.file': 'PDF File (.pdf)', 'pdf.btn': 'Scan PDF',
     'prof.title': 'Saved Candidate Profiles', 'prof.desc': 'Save student Roll, Registration & Board details for 1-click search loading.',
     'prof.add': 'Add New', 'prof.name': 'Student Name',
-    'hist.title': 'Recent 7-Day Search History', 'hist.clear': 'Clear History',
-    'hint.edu': '<b>eduboardresults.gov.bd (Official HSC Marks):</b> Fetches subject-wise numbers + merit score + 1-page QR-verified marksheet. Registration No. required.',
-    'hint.eboard': '<b>result.bangladeshgov.org (EBR & All-Board API):</b> Supports SSC, HSC, JSC, DIBS across all 11 boards (2015–2026) with 4-digit Security Key.',
-    'hint.ebr': '<b>api.ebr.bd (Leaderboard API):</b> Queries ebr.bd merit rank API directly (protected by Cloudflare Turnstile on ebr.bd; auto-switches to Full Marks/All-Board if gated).',
-    'btn.edu': 'Get Full Marksheet', 'btn.eboard': 'Search All-Board Result', 'btn.ebr': 'Query EBR Merit API',
+    'hist.title': 'Saved 1-Year History & Fast Cache', 'hist.clear': 'Clear History',
+    'hint.edu': '<b>eduboardresults.gov.bd (Full Marks):</b> Subject-wise numeric marks + merit score + 1-page QR marksheet. Cached securely for 1 year after first lookup.',
+    'hint.eboard': '<b>result.bangladeshgov.org (All Boards):</b> SSC, HSC, JSC &amp; DIBS across all 11 boards (2015–2026) with 4-digit Security Key.',
+    'hint.cache': '<b>1-Year Instant Server Cache (Zero Captcha):</b> Retrieves any previously fetched Roll + Registration result in milliseconds without hitting board servers. <i>(Note: ebr.bd rank API enforces Cloudflare Turnstile on ebr.bd — use the helper link below for rank #)</i>',
+    'btn.edu': 'Get Full Marksheet', 'btn.eboard': 'Search All-Board Result', 'btn.cache': 'Instant Lookup (1-Year Cache)',
     'cap.6': 'Security Code (6 chars)', 'cap.4': 'Security Key (4 digits)'
   },
   bn: {
     'tab.check': 'ফলাফল অনুসন্ধান', 'tab.sniper': 'অটো-রিট্রাই মনিটর', 'tab.pdf': 'পিডিএফ স্ক্যান', 'tab.profiles': 'সংরক্ষিত ও ইতিহাস',
+    'nav.coffee': 'কফি সহায়তা',
     'form.engine': 'ফলাফল পদ্ধতি (API গেটওয়ে)',
-    'eng.edu': 'নম্বরসহ মার্কশিট', 'eng.eboard': 'সকল বোর্ড', 'eng.ebr': 'EBR মেধাস্থান',
+    'eng.edu': 'নম্বরসহ মার্কশিট', 'eng.eboard': 'সকল বোর্ড', 'eng.cache': 'ফাস্ট ক্যাশ (১ বছর)',
     'form.exam': 'পরীক্ষা', 'form.year': 'পাশের সাল', 'form.board': 'শিক্ষা বোর্ড',
     'form.roll': 'রোল নম্বর', 'form.reg': 'রেজিস্ট্রেশন নম্বর', 'form.newcap': 'নতুন কোড',
+    'form.force': 'সার্ভার ক্যাশ এড়িয়ে বোর্ড থেকে লাইভ রিফ্রেশ করুন',
+    'ebr.noteShort': 'EBR বোর্ড মেধাস্থান (#) দরকার?',
     'ph.roll': 'রোল লিখুন', 'ph.reg': 'রেজিস্ট্রেশন লিখুন', 'ph.cap': 'কোড',
     'ph.title': 'ফলাফল দেখার জন্য প্রস্তুত',
     'ph.desc': 'রোল ও রেজিস্ট্রেশন দিয়ে সার্চ করুন। সরাসরি সরকারি সার্ভার থেকে নম্বরসহ মার্কশিট, মেরিট স্কোর এবং ১-পেজের QR ভেরিফায়েড পিডিএফ পাবেন।',
@@ -431,11 +444,11 @@ RS_I18N.register({
     'pdf.file': 'পিডিএফ ফাইল (.pdf)', 'pdf.btn': 'স্ক্যান করুন',
     'prof.title': 'সংরক্ষিত প্রোফাইলসমূহ', 'prof.desc': 'রোল, রেজিস্ট্রেশন ও বোর্ড সংরক্ষণ করুন — এক ক্লিকেই ফর্ম লোড হবে।',
     'prof.add': 'নতুন যোগ করুন', 'prof.name': 'শিক্ষার্থীর নাম',
-    'hist.title': 'গত ৭ দিনের অনুসন্ধান', 'hist.clear': 'ইতিহাস মুছুন',
-    'hint.edu': '<b>eduboardresults.gov.bd (অফিশিয়াল মার্কশিট):</b> বিষয়ভিত্তিক পূর্ণ নম্বর + মেরিট স্কোর + ১-পেজের QR ভেরিফায়েড মার্কশিট। রেজিস্ট্রেশন আবশ্যক।',
-    'hint.eboard': '<b>result.bangladeshgov.org (EBR ও সকল বোর্ড):</b> HSC, SSC, JSC, DIBS সকল বোর্ডের ফলাফল (২০১৫–২০২৬) ৪-ডিজিট সিকিউরিটি কি সহ।',
-    'hint.ebr': '<b>api.ebr.bd:</b> মেধাস্থান এপিআই যাচাই করবে; ক্লাউডফ্লেয়ার টার্নস্টাইল ব্লকে স্বয়ংক্রিয়ভাবে অন্য ইঞ্জিনে সুইচ করবে।',
-    'btn.edu': 'নম্বরসহ মার্কশিট বের করুন', 'btn.eboard': 'সকল বোর্ড ফলাফল দেখুন', 'btn.ebr': 'EBR এপিআই চেক করুন',
+    'hist.title': '১ বছরের সংরক্ষিত ইতিহাস ও ফাস্ট ক্যাশ', 'hist.clear': 'ইতিহাস মুছুন',
+    'hint.edu': '<b>eduboardresults.gov.bd (অফিশিয়াল মার্কশিট):</b> বিষয়ভিত্তিক পূর্ণ নম্বর + মেরিট স্কোর + ১-পেজের QR মার্কশিট। একবার দেখলে ১ বছর ক্যাশ থাকবে।',
+    'hint.eboard': '<b>result.bangladeshgov.org (সকল বোর্ড):</b> HSC, SSC, JSC, DIBS সকল বোর্ডের ফলাফল (২০১৫–২০২৬) ৪-ডিজিট সিকিউরিটি কি সহ।',
+    'hint.cache': '<b>১-বছরের ইনস্ট্যান্ট সার্ভার ক্যাশ (ক্যাপচা ছাড়াই):</b> আগে সার্চ করা রোল ও রেজিস্ট্রেশন নম্বর দিয়ে বোর্ড সার্ভারে চাপ ছাড়াই মুহূর্তে ফলাফল পান। <i>(বিঃদ্রঃ ebr.bd নিজস্ব ডোমেইনে Cloudflare Turnstile চালু রাখায় র‍্যাংক দেখতে নিচের লিংক ব্যবহার করুন)</i>',
+    'btn.edu': 'নম্বরসহ মার্কশিট বের করুন', 'btn.eboard': 'সকল বোর্ড ফলাফল দেখুন', 'btn.cache': 'ক্যাশ থেকে তাৎক্ষণিক দেখুন',
     'cap.6': 'সিকিউরিটি কোড (৬ অক্ষর)', 'cap.4': 'সিকিউরিটি কি (৪ ডিজিট)'
   }
 }, () => { refreshMethodTexts(); if (last) { renderSubjects(); renderMerit(); } });
@@ -517,10 +530,11 @@ function switchTab(t) {
   if (t === 'sniper') loadSniperCaptcha();
 }
 function refreshMethodTexts() {
-  $('methodHint').innerHTML = T('hint.' + method);
-  $('checkBtnText').textContent = T('btn.' + method);
-  const needCap = method !== 'ebr';
+  $('methodHint').innerHTML = T('hint.' + method) || '';
+  $('checkBtnText').textContent = T('btn.' + method) || 'Get Result';
+  const needCap = method !== 'cache';
   $('captchaBox').classList.toggle('hidden', !needCap);
+  $('forceRefreshWrap').classList.toggle('hidden', !needCap);
   if (needCap) {
     $('captchaLabel').querySelector('span').textContent = method === 'edu' ? T('cap.6') : T('cap.4');
     $('captchaInput').maxLength = method === 'edu' ? 6 : 4;
@@ -530,10 +544,10 @@ function setMethod(m) {
   method = m;
   document.querySelectorAll('.seg').forEach(b => b.classList.toggle('active', b.dataset.method === m));
   refreshMethodTexts();
-  if (m !== 'ebr') loadCaptcha();
+  if (m !== 'cache') loadCaptcha();
 }
 async function loadCaptcha() {
-  if (method === 'ebr') return;
+  if (method === 'cache') return;
   const img = $('captchaImg'), ld = $('captchaLoading');
   $('captchaInput').value = ''; ld.style.display = 'flex'; ld.textContent = 'Loading…';
   try {
@@ -558,15 +572,48 @@ async function loadSniperCaptcha() {
   } catch (e) {}
 }
 
+function cleanRegVal(rawReg, fallbackReg) {
+  const s = String(rawReg || '').trim();
+  if (!s || /^(N\/A|NA|\[?NOT SHOWN\]?|NOT AVAILABLE|--|-|NONE|NULL)$/i.test(s)) {
+    const fb = String(fallbackReg || '').trim();
+    return fb || '';
+  }
+  return s;
+}
+function splitInstEiin(instRaw, eiinRaw) {
+  let inst = cleanRegVal(instRaw, '') || '—';
+  let eiin = cleanRegVal(eiinRaw, '');
+  const m = inst.match(/\(?\bEIIN\s*[:#-]?\s*(\d{4,7})\)?/i);
+  if (m) {
+    if (!eiin) eiin = m[1];
+    inst = inst.replace(/\s*\(?\bEIIN\s*[:#-]?\s*\d{4,7}\)?/i, '').replace(/[,\s;-]+$/, '') || '—';
+  }
+  return { inst, eiin };
+}
+
 /* ======================= Submit ======================= */
 async function onSubmit(e) {
   e.preventDefault();
   const roll = $('roll').value.trim(), reg = $('reg').value.trim();
   if (!/^\d{3,8}$/.test(roll)) return toast('Please enter a valid Roll number');
-  if (method === 'edu' && !reg) return toast('Registration number is required for Full Marks mode');
+  if ((method === 'edu' || method === 'cache') && !reg) return toast('Registration number is required');
 
   const btn = $('checkBtn'), old = btn.innerHTML;
-  const base = { board: $('board').value, exam: $('exam').value, year: $('year').value, roll, reg };
+  const forceRefresh = $('forceRefreshChk').checked;
+  const base = { board: $('board').value, exam: $('exam').value, year: $('year').value, roll, reg, force_refresh: forceRefresh };
+
+  // Instant browser 1-year cache check when Force Refresh is off & Roll+Reg match
+  if (method === 'cache' && reg) {
+    const localHit = getLocalCachedResult(base.exam, base.year, base.board, roll, reg);
+    if (localHit) {
+      localHit.reg = cleanRegVal(localHit.reg, reg);
+      localHit.board_key = base.board;
+      localHit.cache_hit = true;
+      showResult(localHit);
+      toast('Loaded instantaneously from 1-Year Local Cache!');
+      return;
+    }
+  }
 
   let url, body;
   if (method === 'edu') {
@@ -580,29 +627,31 @@ async function onSubmit(e) {
     url = '/api/eboard/check';
     body = { ...base, captcha: cap, session_id: capState.sid };
   } else {
-    url = '/api/ebr/check';
+    url = '/api/cache/check';
     body = base;
   }
 
-  btn.disabled = true; btn.innerHTML = 'Fetching result…';
+  btn.disabled = true; btn.innerHTML = method === 'cache' ? 'Checking 1-Year Cache…' : 'Fetching result…';
   try {
     const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const d = await r.json();
     if (d.success && d.data) {
       d.data.board_key = $('board').value;
+      d.data.reg = cleanRegVal(d.data.reg, reg);
+      d.data.cache_hit = Boolean(d.cache_hit || d.data.cache_hit);
       showResult(d.data);
       saveHistory(d.data);
-      toast('Result fetched successfully!');
-    } else if (method === 'ebr' && d.requires_fallback) {
-      toast('api.ebr.bd requires Turnstile verification on ebr.bd — switching to All-Board Gateway...');
-      setMethod('eboard');
+      toast(d.data.cache_hit ? '⚡ Loaded from 1-Year Server Cache!' : 'Result fetched successfully!');
+    } else if (method === 'cache') {
+      toast(d.error || 'Not cached yet — solve Security Code once to save for 1 year.');
+      setMethod('edu');
     } else {
       toast(d.error || 'Result not found or security code invalid');
-      if (method !== 'ebr') loadCaptcha();
+      loadCaptcha();
     }
   } catch (err) {
     toast('Server error: ' + err.message);
-    if (method !== 'ebr') loadCaptcha();
+    if (method !== 'cache') loadCaptcha();
   } finally {
     btn.disabled = false;
     btn.innerHTML = old;
@@ -624,7 +673,13 @@ function meritRanks() {
   return { board: $('mBoard').value.trim().replace(/^#/, ''), group: $('mGroup').value.trim().replace(/^#/, ''), inst: $('mInst').value.trim().replace(/^#/, '') };
 }
 function showResult(d) {
+  const searchedReg = $('reg').value.trim();
+  const { inst, eiin } = splitInstEiin(d.college, d.eiin);
+  d.college = inst;
+  if (eiin) d.eiin = eiin;
+  d.reg = cleanRegVal(d.reg, searchedReg);
   last = d;
+
   const subs = d.subjects || [];
   fourthIdx = subs.length >= 6 ? subs.length - 1 : -1;
   ['mBoard', 'mGroup', 'mInst'].forEach(id => $(id).value = '');
@@ -638,51 +693,77 @@ function showResult(d) {
 
   const passed = isPassed(d), bi = boardInfo(d.board_key || d.board);
   $('resLogo').src = logoUrl(d.board_key || d.board);
-  $('resSource').textContent = (d.source || 'Education Board') + ' • ' + bi.en + ' Board';
+  $('resSource').innerHTML = esc((d.source || 'Education Board') + ' • ' + bi.en + ' Board')
+    + (d.cache_hit ? ' <span class="ml-1.5 inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[9.5px] font-extrabold">⚡ 1Y CACHE</span>' : '');
   $('resName').textContent = d.name || '—';
-  $('resInst').textContent = (d.college && d.college !== 'N/A' ? d.college : '') + (d.eiin && d.eiin !== 'N/A' ? ` (EIIN: ${d.eiin})` : '');
+  $('resInst').textContent = (inst !== '—' ? inst : '') + (eiin ? ` • EIIN: ${eiin}` : '');
   const gBox = $('resGpaBox');
-  gBox.className = 'text-center px-5 py-3 rounded-2xl border ' + (passed ? 'bg-brand-50 border-brand-200' : 'bg-red-50 border-red-200');
-  $('resGpa').className = 'text-3xl font-extrabold mono ' + (passed ? 'text-brand-700' : 'text-flag-red');
+  gBox.className = 'w-full sm:w-auto flex sm:block items-center justify-between sm:text-center px-4 py-2.5 sm:px-5 sm:py-3 rounded-2xl border shrink-0 ' + (passed ? 'bg-brand-50 border-brand-200' : 'bg-red-50 border-red-200');
+  $('resGpa').className = 'text-2xl sm:text-3xl font-extrabold mono ' + (passed ? 'text-brand-700' : 'text-flag-red');
   $('resGpa').textContent = passed ? (d.gpa || 'PASS') : 'F';
   $('resStatus').className = 'text-[11px] font-bold ' + (passed ? 'text-brand-700' : 'text-flag-red');
   $('resStatus').textContent = passed ? 'PASSED' : 'FAILED';
 
   const bn = RS_I18N.getLang() === 'bn';
   const info = [
-    [bn ? 'রোল' : 'Roll', d.roll],
-    [bn ? 'রেজিস্ট্রেশন' : 'Registration', d.reg],
+    [bn ? 'রোল' : 'Roll No', d.roll],
+    [bn ? 'রেজিস্ট্রেশন' : 'Registration No', d.reg || '—'],
+    [bn ? 'পিতার নাম' : "Father's Name", d.father],
+    [bn ? 'মাতার নাম' : "Mother's Name", d.mother],
     [bn ? 'বোর্ড' : 'Board', bi.en],
-    [bn ? 'পরীক্ষা' : 'Exam', `${String(d.exam || '').toUpperCase()} ${d.year || ''}`],
     [bn ? 'বিভাগ' : 'Group', d.group],
     [bn ? 'সেশন' : 'Session', d.session],
-    [bn ? 'পিতার নাম' : "Father's Name", d.father],
-    [bn ? 'মাতার নাম' : "Mother's Name", d.mother]
+    [bn ? 'পরীক্ষা ও ধরন' : 'Exam / Type', `${String(d.exam || '').toUpperCase()} ${d.year || ''} (${cleanRegVal(d.type, 'REGULAR')})`],
+    [bn ? 'EIIN নম্বর' : 'EIIN No', eiin || '—'],
+    [bn ? 'প্রতিষ্ঠান' : 'Institution', inst]
   ];
-  $('resInfo').innerHTML = info.map(([k, v]) => `<div class="rounded-xl bg-ink-50 px-3 py-2.5"><div class="text-[11px] text-ink-500">${k}</div><div class="font-bold text-ink-900 truncate">${esc(v && v !== 'N/A' ? v : '—')}</div></div>`).join('');
+  $('resInfo').innerHTML = info.map(([k, v], idx) => {
+    const span = idx === 9 ? 'col-span-2 sm:col-span-3' : '';
+    return `<div class="rounded-xl bg-ink-50 px-3 py-2.5 ${span}"><div class="text-[11px] text-ink-500">${k}</div><div class="font-bold text-ink-900 truncate">${esc(v && v !== 'N/A' ? v : '—')}</div></div>`;
+  }).join('');
 
   $('fourthSel').innerHTML = `<option value="-1">None</option>` + subs.map((s, i) => `<option value="${i}" ${i === fourthIdx ? 'selected' : ''}>${esc(s.name_en || s.code)} (${esc(s.code)})</option>`).join('');
   renderSubjects(); renderMerit();
 
   $('verifyBadge').innerHTML = d.verify_token
-    ? `<i data-lucide="badge-check" class="w-4 h-4 text-brand-600"></i><span>Verified Official Record • Doc ID <b class="mono text-ink-900">${esc(d.doc_id)}</b></span>`
-    : `<i data-lucide="info" class="w-4 h-4"></i><span>No verification token</span>`;
+    ? `<i data-lucide="badge-check" class="w-4 h-4 text-brand-600 shrink-0"></i><span>Verified Official Record • Doc ID <b class="mono text-ink-900">${esc(d.doc_id)}</b></span>`
+    : `<i data-lucide="info" class="w-4 h-4 shrink-0"></i><span>No verification token</span>`;
   lucide.createIcons();
   if (passed) { if (window.confetti) confetti({ particleCount: 100, spread: 75, origin: { y: .6 } }); beep(true); } else beep(false);
   $('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function renderSubjects() {
   const subs = last?.subjects || [], cell = v => esc(v && v !== '--' ? v : '—'), bn = RS_I18N.getLang() === 'bn';
-  if (!subs.length) { $('subBody').innerHTML = `<tr><td colspan="7" class="text-center py-6 text-ink-500">Subject breakdown not returned by this gateway.</td></tr>`; return; }
+  const hasVal = v => v && v !== '--' && v !== '—' && v !== 'N/A';
+  const hasDetail = subs.some(s => hasVal(s.cq) || hasVal(s.mcq) || hasVal(s.practical));
+  const hasMarks = subs.some(s => markOf(s) !== null);
+  const thead = $('subHead'), tbl = $('subTable');
+
+  if (hasDetail) {
+    tbl.className = 'w-full text-xs sm:text-sm min-w-[540px]';
+    thead.innerHTML = `<tr><th class="text-left py-2.5 sm:py-3 px-3 sm:px-4">${T('tbl.sub')}</th><th class="py-2.5 sm:py-3 px-1.5 sm:px-2">CQ</th><th class="py-2.5 sm:py-3 px-1.5 sm:px-2">MCQ</th><th class="py-2.5 sm:py-3 px-1.5 sm:px-2">${T('tbl.prac')}</th><th class="py-2.5 sm:py-3 px-2 text-brand-700">${T('tbl.tot')}</th><th class="py-2.5 sm:py-3 px-2">${T('tbl.grd')}</th><th class="py-2.5 sm:py-3 px-2 sm:px-3">GP</th></tr>`;
+  } else if (hasMarks) {
+    tbl.className = 'w-full text-xs sm:text-sm min-w-[360px]';
+    thead.innerHTML = `<tr><th class="text-left py-2.5 sm:py-3 px-3 sm:px-4">${T('tbl.sub')}</th><th class="py-2.5 sm:py-3 px-2 text-brand-700">${T('tbl.tot')}</th><th class="py-2.5 sm:py-3 px-2">${T('tbl.grd')}</th><th class="py-2.5 sm:py-3 px-2 sm:px-3">GP</th></tr>`;
+  } else {
+    tbl.className = 'w-full text-xs sm:text-sm min-w-[300px]';
+    thead.innerHTML = `<tr><th class="text-left py-2.5 sm:py-3 px-3 sm:px-4">${T('tbl.sub')}</th><th class="py-2.5 sm:py-3 px-2">${T('tbl.grd')}</th><th class="py-2.5 sm:py-3 px-2 sm:px-3">GP</th></tr>`;
+  }
+
+  if (!subs.length) {
+    $('subBody').innerHTML = `<tr><td colspan="${hasDetail ? 7 : hasMarks ? 4 : 3}" class="text-center py-6 text-ink-500">Subject breakdown not returned by this gateway.</td></tr>`;
+    return;
+  }
   $('subBody').innerHTML = subs.map((s, i) => {
     const g = gradeOf(s), m = markOf(s), f = g === 'F';
     const primaryName = bn ? (s.name_bn || s.name_en || s.code) : (s.name_en || s.name_bn || s.code);
     const subLine = bn ? (s.name_en || '') : (s.name_bn || '');
+    const detailCells = hasDetail ? `<td class="text-center">${cell(s.cq)}</td><td class="text-center">${cell(s.mcq)}</td><td class="text-center">${cell(s.practical)}</td>` : '';
+    const markCell = hasMarks ? `<td class="text-center"><span class="mono font-extrabold ${f ? 'text-flag-red' : 'text-brand-700'}">${m !== null ? m : '—'}</span></td>` : '';
     return `<tr class="${i === fourthIdx ? 'bg-gold-50' : ''}">
-      <td class="py-3 px-4"><div class="font-bold text-ink-900">${esc(primaryName)} ${i === fourthIdx ? '<span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-gold-100 text-gold-600 font-bold">4TH</span>' : ''}</div>
+      <td class="py-3 px-3 sm:px-4"><div class="font-bold text-ink-900">${esc(primaryName)} ${i === fourthIdx ? '<span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-gold-100 text-gold-600 font-bold">4TH</span>' : ''}</div>
         <div class="text-[11px] text-ink-500">${esc(subLine)} • <span class="mono">${esc(s.code)}</span></div></td>
-      <td class="text-center">${cell(s.cq)}</td><td class="text-center">${cell(s.mcq)}</td><td class="text-center">${cell(s.practical)}</td>
-      <td class="text-center"><span class="mono font-extrabold ${f ? 'text-flag-red' : 'text-brand-700'}">${m !== null ? m : '—'}</span></td>
+      ${detailCells}${markCell}
       <td class="text-center"><span class="px-2 py-0.5 rounded-md text-xs font-bold ${f ? 'bg-red-50 text-flag-red' : 'bg-brand-50 text-brand-700'}">${esc(g || '—')}</span></td>
       <td class="text-center mono text-ink-700">${esc(gpOf(s))}</td></tr>`;
   }).join('');
@@ -695,105 +776,125 @@ function renderMerit() {
       box(bn ? '৪র্থ বিষয় ছাড়া' : 'Without 4th Sub', m.totW, `/ ${m.maxW}`) +
       box(bn ? 'শতকরা (সর্বমোট)' : 'Percentage', m.pct.toFixed(2) + '%', bn ? '৪র্থসহ' : 'with 4th') +
       box(bn ? 'শতকরা (মূল)' : 'Core Percentage', m.pctW.toFixed(2) + '%', bn ? '৪র্থ ছাড়া' : 'w/o 4th')
-    : `<div class="col-span-full text-sm text-ink-500">${bn ? 'এই গেটওয়েতে বিষয়ভিত্তিক নম্বর পাওয়া যায়নি।' : 'Numeric subject marks not returned by this gateway.'}</div>`;
+    : `<div class="col-span-full text-xs sm:text-sm text-ink-600">${bn ? 'এই পুরনো/গ্রেড-অনলি গেটওয়েতে বিষয়ভিত্তিক নম্বর দেওয়া হয়নি — কেবল অফিশিয়াল গ্রেড ও জিপিএ প্রদর্শিত হচ্ছে।' : 'Grade-only result (numeric subject marks are not published for this gateway/year) — clean Grades & GPA shown below.'}</div>`;
 }
 
-/* ======================= 1-Page Print Marksheet (A4 / Letter) ======================= */
+/* ======================= 1-Page Print Result Marksheet (Image-4 Structure, A4 / Letter) ======================= */
 function buildMarksheet(d) {
   const bk = d.board_key || d.board, bi = boardInfo(bk), m = computeMerit(d), rk = meritRanks();
   const passed = isPassed(d), docId = d.doc_id || ('RS-' + Date.now().toString(36).toUpperCase());
   const verifyUrl = d.verify_token ? `${location.origin}/verify?t=${d.verify_token}` : location.origin + '/verify';
   const seed = [...String(d.roll || '0')].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const micro = (`RESULTSNIPER BD • ${docId} • ROLL ${d.roll} • ${bi.en.toUpperCase()} BOARD • VERIFIED COPY • `).repeat(30);
+  const micro = (`RESULTSNIPER BD • ACADEMIC RESULT MARKSHEET • ${docId} • ROLL ${d.roll} • ${bi.en.toUpperCase()} BOARD • `).repeat(30);
   const diag = Array.from({ length: 56 }, () => `<span>${esc(d.roll)} • ${esc(docId)} • RESULTSNIPER BD</span>`).join('');
+  const { inst, eiin } = splitInstEiin(d.college, d.eiin);
+  const cleanReg = cleanRegVal(d.reg, $('reg').value.trim()) || '—';
+  const studType = cleanRegVal(d.type, 'REGULAR');
   const val = v => esc(v && v !== 'N/A' ? v : '—');
   const examKey = String(d.exam || 'hsc').toLowerCase();
   const subs = d.subjects || [];
+  const hasMarks = subs.some(s => markOf(s) !== null);
+
   const rows = subs.map((s, i) => {
     const g = gradeOf(s), mk = markOf(s);
+    const markTd = hasMarks ? `<td class="tx-c mono tx-b">${mk !== null ? mk : '—'}</td>` : '';
     return `<tr><td class="tx-c">${i + 1}</td><td class="tx-c mono tx-b">${esc(s.code)}</td>
       <td class="tx-b">${esc((s.name_en || s.name || s.code).toUpperCase())}${i === fourthIdx ? ' <span style="font-size:6.8px;color:#b45309;font-weight:800">(4TH)</span>' : ''}</td>
-      <td class="tx-c mono tx-b">${mk !== null ? mk : '—'}</td><td class="tx-c tx-b" style="color:${g === 'F' ? '#dc2626' : '#065f46'}">${esc(g)}</td>
+      ${markTd}<td class="tx-c tx-b" style="color:${g === 'F' ? '#dc2626' : '#065f46'}">${esc(g)}</td>
       <td class="tx-c mono">${esc(gpOf(s))}</td></tr>`;
   }).join('');
   const hasRank = rk.board || rk.group || rk.inst;
 
-  return `<div class="tx">
-    <div class="tx-bg">${RS_ART.guillocheBG(seed)}</div>
+  const subHeadHtml = hasMarks
+    ? '<tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left">Name of Subject</th><th style="width:13%">Marks</th><th style="width:11%">Grade</th><th style="width:11%">G.P.</th></tr>'
+    : '<tr><th style="width:7%">SL</th><th style="width:15%">Code</th><th style="text-align:left">Name of Subject</th><th style="width:13%">Grade</th><th style="width:13%">G.P.</th></tr>';
+
+  const summaryHtml = hasMarks
+    ? `<td><span class="k">Total Marks</span><span class="v">${m.tot}/${m.max}</span></td>
+       <td><span class="k">Without 4th Subject</span><span class="v">${m.totW}/${m.maxW}</span></td>
+       <td><span class="k">Percentage</span><span class="v">${m.pct.toFixed(2)}%</span></td>
+       <td><span class="k">Result</span><span class="v" style="color:${passed ? '#006a4e' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
+       <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${passed ? esc(d.gpa || '—') : '0.00'}</span></td>`
+    : `<td><span class="k">Board</span><span class="v" style="font-size:10.5px">${esc(bi.en.toUpperCase())}</span></td>
+       <td><span class="k">EIIN</span><span class="v mono">${esc(eiin || '—')}</span></td>
+       <td><span class="k">Session / Type</span><span class="v" style="font-size:9.8px">${val(d.session)} • ${esc(studType)}</span></td>
+       <td><span class="k">Result</span><span class="v" style="color:${passed ? '#006a4e' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
+       <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${passed ? esc(d.gpa || '—') : '0.00'}</span></td>`;
+
+  return `<div class="tx tx-result">
+    <div class="tx-bg">${RS_ART.guillocheBG(seed, 'result')}</div>
     <div class="tx-diag">${diag}</div>
     <div class="tx-wm"><img src="${logoUrl(bk)}" alt=""></div>
     <div class="tx-frame"></div><div class="tx-frame2"></div>
     <div class="tx-micro t">${micro}</div><div class="tx-micro b">${micro}</div>
     <div class="tx-micro l">${micro}</div><div class="tx-micro r">${micro}</div>
-    <div class="tx-corner" style="top:4mm;left:4mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
-    <div class="tx-corner" style="top:4mm;right:4mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
-    <div class="tx-corner" style="bottom:4mm;left:4mm">${RS_ART.rosetteSVG(72, '#eab308')}</div>
-    <div class="tx-corner" style="bottom:4mm;right:4mm">${RS_ART.rosetteSVG(72, '', 'phos')}</div>
+    <div class="tx-corner" style="top:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
+    <div class="tx-corner" style="top:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '#34d399')}</div>
+    <div class="tx-corner" style="bottom:3.2mm;left:3.2mm">${RS_ART.rosetteSVG(72, '#eab308')}</div>
+    <div class="tx-corner" style="bottom:3.2mm;right:3.2mm">${RS_ART.rosetteSVG(72, '', 'phos')}</div>
 
     <div class="tx-in">
       <table class="tx-head"><tr>
-        <td style="width:21mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Government Seal of Bangladesh"></td>
+        <td style="width:19mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Government Seal of Bangladesh"></td>
         <td style="text-align:center">
           <div class="tx-gov">Government of the People's Republic of Bangladesh</div>
           <div class="tx-board">${esc(bi.full)}</div>
-          <div class="tx-exam">${esc(EXAM_FULL[examKey] || examKey.toUpperCase())} — ${esc(d.year)}</div>
-          <div class="tx-pill">ONLINE RESULT • VERIFICATION COPY</div>
+          <div class="tx-exam">Result of ${esc(examKey.toUpperCase())} Examination — ${esc(d.year)}</div>
+          <div class="tx-pill">ACADEMIC RESULT MARKSHEET</div>
         </td>
-        <td style="width:21mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${logoUrl(bk)}" alt="${esc(bi.en)} Board"></td>
+        <td style="width:19mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${logoUrl(bk)}" alt="${esc(bi.en)} Board"></td>
       </tr></table>
       <div class="tx-rule"></div>
 
+      <div class="tx-sec-hd">Student Information Summary</div>
       <table class="tx-info">
-        <tr><td class="k">Name of Student</td><td class="v" colspan="3" style="font-size:10.5px">${val(d.name)}</td></tr>
-        <tr><td class="k">Father's Name</td><td class="v">${val(d.father)}</td><td class="k">Roll No.</td><td class="v mono">${val(d.roll)}</td></tr>
-        <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Registration No.</td><td class="v mono">${val(d.reg)}</td></tr>
+        <tr><td class="k">Roll No</td><td class="v mono">${val(d.roll)}</td><td class="k">Registration No</td><td class="v mono">${esc(cleanReg)}</td></tr>
+        <tr><td class="k">Name</td><td class="v" style="font-size:9.6px">${val(d.name)}</td><td class="k">Father's Name</td><td class="v">${val(d.father)}</td></tr>
+        <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Board</td><td class="v">${esc(bi.en.toUpperCase())}</td></tr>
         <tr><td class="k">Group</td><td class="v">${val(d.group)}</td><td class="k">Session</td><td class="v mono">${val(d.session)}</td></tr>
-        <tr><td class="k">Institution</td><td class="v" colspan="3">${val(d.college)}${d.eiin && d.eiin !== 'N/A' ? ` (EIIN: ${esc(d.eiin)})` : ''}</td></tr>
+        <tr><td class="k">Exam Type</td><td class="v">${esc(examKey.toUpperCase())}</td><td class="k">Student Type</td><td class="v">${esc(studType)}</td></tr>
+        <tr><td class="k">Result</td><td class="v mono" style="color:${passed ? '#065f46' : '#dc2626'}">${passed ? 'GPA=' + esc(d.gpa || 'PASSED') : 'FAILED'}</td><td class="k">EIIN</td><td class="v mono">${esc(eiin || '—')}</td></tr>
+        <tr><td class="k">Institution</td><td class="v" colspan="3">${esc(inst)}</td></tr>
       </table>
 
-      <table class="tx-sub" style="margin-top:2.4mm">
-        <thead><tr><th style="width:7%">SL</th><th style="width:14%">Code</th><th style="text-align:left">Name of Subject</th><th style="width:13%">Marks</th><th style="width:11%">Grade</th><th style="width:11%">G.P.</th></tr></thead>
-        <tbody>${rows || '<tr><td colspan="6" class="tx-c">—</td></tr>'}</tbody>
+      <div class="tx-sec-hd">${hasMarks ? 'Subject-wise Grade / Marks' : 'Subject-wise Grade Sheet'}</div>
+      <table class="tx-sub">
+        <thead>${subHeadHtml}</thead>
+        <tbody>${rows || `<tr><td colspan="${hasMarks ? 6 : 5}" class="tx-c">—</td></tr>`}</tbody>
       </table>
 
-      <table class="tx-sum" style="margin-top:2.4mm"><tr>
-        <td><span class="k">Total Marks</span><span class="v">${m.has ? `${m.tot}/${m.max}` : '—'}</span></td>
-        <td><span class="k">Without 4th Subject</span><span class="v">${m.has ? `${m.totW}/${m.maxW}` : '—'}</span></td>
-        <td><span class="k">Percentage</span><span class="v">${m.has ? m.pct.toFixed(2) + '%' : '—'}</span></td>
-        <td><span class="k">Result</span><span class="v" style="color:${passed ? '#006a4e' : '#dc2626'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
-        <td><span class="k">G.P.A.</span><span class="v" style="font-size:15px">${passed ? esc(d.gpa || '—') : '0.00'}</span></td>
-      </tr></table>
+      <table class="tx-sum" style="margin-top:2.2mm"><tr>${summaryHtml}</tr></table>
 
-      ${hasRank ? `<table class="tx-merit" style="margin-top:2mm"><tr>
-        <td style="font-weight:800;color:#b45309;width:25%">MERIT POSITION<br><span style="font-size:6.5px;font-weight:600;color:#64748b">Reference: ebr.bd (informational)</span></td>
+      ${hasRank ? `<table class="tx-merit" style="margin-top:1.8mm"><tr>
+        <td style="font-weight:800;color:#b45309;width:26%">MERIT POSITION<br><span style="font-size:6.3px;font-weight:600;color:#64748b">Reference: ebr.bd (informational)</span></td>
         <td><b>Board:</b> ${rk.board ? '#' + esc(rk.board) : '—'}</td><td><b>Group:</b> ${rk.group ? '#' + esc(rk.group) : '—'}</td><td><b>Institute:</b> ${rk.inst ? '#' + esc(rk.inst) : '—'}</td>
       </tr></table>` : ''}
 
       <div class="tx-scale">Grading: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
 
-      <table class="tx-foot" style="margin-top:4mm"><tr>
+      <table class="tx-foot" style="margin-top:3.2mm"><tr>
         <td style="width:36%">
-          <div style="width:24mm;height:24mm;padding:0.8mm;background:#fff;border:0.28mm solid #065f46">${RS_ART.qrSVG(verifyUrl)}</div>
-          <div class="tx-note" style="margin-top:1mm"><b style="color:#065f46">SCAN TO VERIFY</b> — Opens ResultSniper BD cryptographic verification page. Any edit invalidates signature.</div>
+          <div style="width:23mm;height:23mm;padding:0.8mm;background:#fff;border:0.28mm solid #065f46">${RS_ART.qrSVG(verifyUrl)}</div>
+          <div class="tx-note" style="margin-top:0.8mm"><b style="color:#065f46">SCAN TO VERIFY</b> — Opens cryptographic /verify portal. Print a separate Verification Certificate via QR.</div>
         </td>
-        <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId)}</td>
+        <td style="width:28%;text-align:center">${RS_ART.sealSVG(docId, 'RESULTSNIPER BD • OFFICIAL MARKSHEET • QR VERIFIED •', 'VERIFIED', '#065f46')}</td>
         <td style="width:36%;text-align:right" class="tx-note">
           <div><b style="color:#065f46">Document ID:</b> <span class="mono">${esc(docId)}</span></div>
           <div><b style="color:#065f46">Source:</b> ${esc(d.source || 'Education Board')}</div>
           <div><b style="color:#065f46">Generated:</b> ${new Date().toLocaleString('en-GB')}</div>
-          <div style="margin-top:1.5mm;padding-top:1mm;border-top:.28mm solid #065f46;font-weight:800;color:#065f46;font-size:7.6px">RESULTSNIPER BD</div>
+          <div style="margin-top:1.3mm;padding-top:0.9mm;border-top:.28mm solid #065f46;font-weight:800;color:#065f46;font-size:7.6px">RESULTSNIPER BD</div>
           <div>Developed by Shahriyar Sojib Hasan</div>
         </td>
       </tr></table>
 
-      <div class="tx-disc">Computer-generated verification copy digitally signed via HMAC-SHA256 from official Bangladesh Education Board servers. Not a replacement for an original Board certificate.</div>
+      <div class="tx-disc">Computer-generated result transcript digitally signed via HMAC-SHA256 from official Bangladesh Education Board servers. Not a replacement for an original Board certificate.</div>
     </div>
   </div>`;
 }
 function printMarksheet() {
   if (!last) return toast('Please fetch a result first');
   const sz = $('paperSizeSel').value;
-  $('printPageStyle').textContent = `@page { size: ${sz} portrait; margin: 7mm; }`;
+  $('printPageStyle').textContent = `@page { size: ${sz} portrait; margin: 6mm; }`;
   $('printArea').innerHTML = buildMarksheet(last);
   const imgs = [...$('printArea').querySelectorAll('img')];
   Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 150));
@@ -913,14 +1014,35 @@ async function onPdf(e) {
   } catch (err) { toast('Scan failed'); } finally { btn.disabled = false; }
 }
 
-/* ======================= Profiles & History ======================= */
-const HKEY = 'rsbd_history_v3', WEEK = 7 * 864e5;
-function getHistory() { try { return JSON.parse(localStorage.getItem(HKEY) || '[]').filter(h => Date.now() - h.ts < WEEK); } catch (e) { return []; } }
+/* ======================= Profiles, 1-Year Local Cache & History ======================= */
+const HKEY = 'rsbd_history_v4', CKEY = 'rsbd_fullcache_v1', YEAR_MS = 365 * 864e5;
+function getHistory() { try { return JSON.parse(localStorage.getItem(HKEY) || '[]').filter(h => Date.now() - h.ts < YEAR_MS); } catch (e) { return []; } }
+function getLocalCachedResult(exam, year, board, roll, reg) {
+  try {
+    const list = JSON.parse(localStorage.getItem(CKEY) || '{}');
+    const k = `${String(exam).toLowerCase()}|${year}|${normBoard(board)}|${roll}|${reg}`;
+    const item = list[k];
+    if (item && Date.now() - item.ts < YEAR_MS && item.data) return { ...item.data };
+  } catch (e) {}
+  return null;
+}
 function saveHistory(d) {
   if (!d?.roll) return;
-  const h = getHistory().filter(x => !(x.roll === String(d.roll) && x.board === (d.board_key || normBoard(d.board))));
-  h.unshift({ roll: String(d.roll), reg: d.reg || '', board: d.board_key || normBoard(d.board), exam: String(d.exam || 'hsc').toLowerCase(), year: String(d.year || ''), name: d.name || '', gpa: d.gpa || '', ts: Date.now() });
-  localStorage.setItem(HKEY, JSON.stringify(h.slice(0, 40)));
+  const bk = d.board_key || normBoard(d.board), ex = String(d.exam || 'hsc').toLowerCase(), yr = String(d.year || '');
+  const h = getHistory().filter(x => !(x.roll === String(d.roll) && x.board === bk && x.exam === ex && x.year === yr));
+  h.unshift({ roll: String(d.roll), reg: cleanRegVal(d.reg, ''), board: bk, exam: ex, year: yr, name: d.name || '', gpa: d.gpa || '', ts: Date.now() });
+  localStorage.setItem(HKEY, JSON.stringify(h.slice(0, 80)));
+  if (d.reg && cleanRegVal(d.reg, '')) {
+    try {
+      const store = JSON.parse(localStorage.getItem(CKEY) || '{}');
+      const now = Date.now();
+      for (const [k, v] of Object.entries(store)) if (!v || now - v.ts > YEAR_MS) delete store[k];
+      store[`${ex}|${yr}|${bk}|${d.roll}|${d.reg}`] = { ts: now, data: d };
+      const keys = Object.keys(store);
+      if (keys.length > 60) delete store[keys[0]];
+      localStorage.setItem(CKEY, JSON.stringify(store));
+    } catch (e) {}
+  }
 }
 function itemCard(x, extra) {
   const bi = BOARDS[x.board] || BOARDS.dhaka;
@@ -933,7 +1055,7 @@ function itemCard(x, extra) {
 function renderHistory() {
   const h = getHistory();
   $('historyList').innerHTML = h.length ? h.map(x => itemCard(x, x.gpa ? `<span class="mono text-xs font-bold bg-gold-50 text-gold-600 px-2 py-0.5 rounded">GPA ${esc(x.gpa)}</span>` : '')).join('')
-    : `<div class="col-span-full text-sm text-ink-500 text-center py-4">No searches in the past 7 days.</div>`;
+    : `<div class="col-span-full text-sm text-ink-500 text-center py-4">No searches saved in the past 1 year.</div>`;
 }
 async function loadProfiles() {
   try {
@@ -952,7 +1074,14 @@ function loadIntoForm(p) {
   $('board').value = p.board; $('exam').value = p.exam || 'hsc'; if (p.year) $('year').value = p.year;
   $('roll').value = p.roll || ''; $('reg').value = p.reg || '';
   $('sBoard').value = p.board; $('sRoll').value = p.roll || ''; $('sReg').value = p.reg || '';
-  switchTab('check'); if (method !== 'ebr') loadCaptcha(); $('roll').focus();
+  switchTab('check'); if (method !== 'cache') loadCaptcha(); $('roll').focus();
+}
+
+function openEbrPortal() {
+  const r = last?.roll || $('roll').value.trim(), g = last?.reg || $('reg').value.trim();
+  if (r) navigator.clipboard?.writeText(`${r}\t${g}`).catch(() => {});
+  toast('Roll & Reg copied! Opening ebr.bd...');
+  window.open('https://ebr.bd/#individual-result', '_blank', 'noopener');
 }
 
 /* ======================= Wire up ======================= */
@@ -962,16 +1091,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => setMethod(b.dataset.method)));
   $('checkForm').addEventListener('submit', onSubmit);
   $('captchaRefresh').addEventListener('click', loadCaptcha);
-  $('board').addEventListener('change', () => { if (method !== 'ebr') loadCaptcha(); });
+  $('board').addEventListener('change', () => { if (method !== 'cache') loadCaptcha(); });
   $('sEngine').addEventListener('change', loadSniperCaptcha);
   $('sCapRefresh').addEventListener('click', loadSniperCaptcha);
   $('fourthSel').addEventListener('change', e => { fourthIdx = +e.target.value; renderSubjects(); renderMerit(); });
-  $('ebrLookupBtn').addEventListener('click', () => {
-    const r = last?.roll || $('roll').value.trim(), g = last?.reg || $('reg').value.trim();
-    if (r) navigator.clipboard?.writeText(`${r}\t${g}`).catch(() => {});
-    toast('Roll & Reg copied! Opening ebr.bd...');
-    window.open('https://ebr.bd/#individual-result', '_blank', 'noopener');
-  });
+  $('ebrLookupBtn').addEventListener('click', openEbrPortal);
+  $('ebrFormBtn').addEventListener('click', openEbrPortal);
   $('printBtn').addEventListener('click', printMarksheet);
   $('copyVerifyBtn').addEventListener('click', () => {
     if (!last?.verify_token) return toast('No verification token');
@@ -987,7 +1112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveProfile({ name: $('pName').value.trim() || 'Student ' + roll, exam: $('pExam').value, year: $('pYear').value, board: $('pBoard').value, roll, reg: $('pReg').value.trim(), college: '' });
     ['pName', 'pRoll', 'pReg'].forEach(id => $(id).value = ''); $('addBox').classList.add('hidden');
   });
-  $('clearHistory').addEventListener('click', () => { if (confirm('Clear 7-day search history?')) { localStorage.removeItem(HKEY); renderHistory(); } });
+  $('clearHistory').addEventListener('click', () => { if (confirm('Clear 1-year search history & local cache?')) { localStorage.removeItem(HKEY); localStorage.removeItem(CKEY); renderHistory(); } });
   document.addEventListener('click', async e => {
     const lb = e.target.closest('.load-btn'); if (lb) return loadIntoForm(JSON.parse(lb.dataset.p));
     const db = e.target.closest('.del-btn');

@@ -33,9 +33,13 @@
       .join('')}</svg>`;
   }
 
-  /** Soft, light pastel security wave background — gentle tint that keeps text razor sharp */
-  function guillocheBG(seed) {
+  /** Soft pastel security wave background; palette 'verify' shifts from emerald to slate/teal */
+  function guillocheBG(seed, palette) {
     const W = 188, H = 250;
+    const c1 = palette === 'verify' ? '#0ea5e9' : '#34d399';
+    const c2 = palette === 'verify' ? '#14b8a6' : '#eab308';
+    const op1 = palette === 'verify' ? '0.11' : '0.16';
+    const op2 = palette === 'verify' ? '0.10' : '0.13';
     let p = '';
     for (let i = 0; i < 34; i++) {
       const y0 = 6 + i * 7.2, ph = i * 0.55 + (seed % 7), A = 1.8 + (i % 3) * 0.35;
@@ -43,7 +47,7 @@
       for (let x = 0; x <= W; x += 2) {
         d += (x ? 'L' : 'M') + x.toFixed(1) + ',' + (y0 + A * Math.sin(x / 11 + ph) + 0.8 * Math.sin(x / 4.2 + ph * 2)).toFixed(2);
       }
-      p += `<path d="${d}" fill="none" stroke="#34d399" stroke-width="0.09" opacity="0.16"/>`;
+      p += `<path d="${d}" fill="none" stroke="${c1}" stroke-width="0.09" opacity="${op1}"/>`;
     }
     for (let i = 0; i < 28; i++) {
       const x0 = 4 + i * 6.8, ph = i * 0.65 + (seed % 5);
@@ -51,23 +55,26 @@
       for (let y = 0; y <= H; y += 2.5) {
         d += (y ? 'L' : 'M') + (x0 + 1.4 * Math.sin(y / 13 + ph)).toFixed(2) + ',' + y.toFixed(1);
       }
-      p += `<path d="${d}" fill="none" stroke="#eab308" stroke-width="0.07" opacity="0.13"/>`;
+      p += `<path d="${d}" fill="none" stroke="${c2}" stroke-width="0.07" opacity="${op2}"/>`;
     }
     return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">${p}</svg>`;
   }
 
-  function sealSVG(docId, labelText) {
+  function sealSVG(docId, labelText, centerText, accentColor) {
     const topLabel = labelText || 'RESULTSNIPER BD • DIGITALLY VERIFIED • QR AUTHENTIC •';
+    const midWord = centerText || 'VERIFIED';
+    const ink = accentColor || '#065f46';
+    const fillBg = accentColor ? 'rgba(240,253,250,0.7)' : 'rgba(236,253,245,0.6)';
     const uid = 'seal_' + Math.random().toString(36).slice(2, 7);
-    return `<svg viewBox="0 0 120 120" width="27mm" height="27mm">
+    return `<svg viewBox="0 0 120 120" width="26mm" height="26mm">
       <defs><path id="${uid}" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
-      <circle cx="60" cy="60" r="57" fill="rgba(236,253,245,0.6)" stroke="#065f46" stroke-width="1.4"/>
+      <circle cx="60" cy="60" r="57" fill="${fillBg}" stroke="${ink}" stroke-width="1.4"/>
       <circle cx="60" cy="60" r="52.5" fill="none" stroke="#d97706" stroke-width="0.5" stroke-dasharray="1.5 1.2"/>
-      <text font-size="7.1" font-weight="800" letter-spacing="1.25" fill="#065f46" font-family="Inter,Arial"><textPath href="#${uid}">${esc(topLabel)}</textPath></text>
-      <g transform="translate(26,26)">${rosetteSVG(68, '#10b981').replace('<svg ', '<svg width="68" height="68" ')}</g>
-      <circle cx="60" cy="60" r="21" fill="#fffefa" stroke="#065f46" stroke-width="0.7"/>
-      <text x="60" y="57" text-anchor="middle" font-size="8.2" font-weight="900" fill="#065f46" font-family="Inter,Arial">VERIFIED</text>
-      <text x="60" y="66" text-anchor="middle" font-size="5" font-weight="700" fill="#b45309" font-family="JetBrains Mono,monospace">${esc(docId)}</text>
+      <text font-size="6.9" font-weight="800" letter-spacing="1.2" fill="${ink}" font-family="Inter,Arial"><textPath href="#${uid}">${esc(topLabel)}</textPath></text>
+      <g transform="translate(26,26)">${rosetteSVG(68, accentColor ? '#0d9488' : '#10b981').replace('<svg ', '<svg width="68" height="68" ')}</g>
+      <circle cx="60" cy="60" r="21" fill="#fffefa" stroke="${ink}" stroke-width="0.7"/>
+      <text x="60" y="57" text-anchor="middle" font-size="7.6" font-weight="900" fill="${ink}" font-family="Inter,Arial">${esc(midWord)}</text>
+      <text x="60" y="66" text-anchor="middle" font-size="4.8" font-weight="700" fill="#b45309" font-family="JetBrains Mono,monospace">${esc(docId)}</text>
     </svg>`;
   }
 
