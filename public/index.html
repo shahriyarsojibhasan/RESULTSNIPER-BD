@@ -938,9 +938,9 @@ function buildMarksheet(d, paperSz) {
        <td><span class="k">G.P.A.</span><span class="v" style="font-size:14px">${passed ? esc(d.gpa || '—') : '0.00'}</span></td>`;
 
   const gradeRefHtml = `<table class="tx-grade-tbl">
-    <tr><th style="width:16%;text-align:left;padding-left:2mm">GRADING SCALE</th><th>A+</th><th>A</th><th>A-</th><th>B</th><th>C</th><th>D</th><th>F</th></tr>
-    <tr><td class="lbl">Marks Range</td><td>80–100</td><td>70–79</td><td>60–69</td><td>50–59</td><td>40–49</td><td>33–39</td><td>00–32</td></tr>
-    <tr><td class="lbl">Grade Point (GP)</td><td>5.00</td><td>4.00</td><td>3.50</td><td>3.00</td><td>2.00</td><td>1.00</td><td>0.00</td></tr>
+    <tr><th style="width:20%;text-align:left;padding-left:2mm">GRADING SCALE</th><th>A+</th><th>A</th><th>A-</th><th>B</th><th>C</th><th>D</th><th>F</th></tr>
+    <tr><td class="g-lbl">Marks Range</td><td>80–100</td><td>70–79</td><td>60–69</td><td>50–59</td><td>40–49</td><td>33–39</td><td>00–32</td></tr>
+    <tr><td class="g-lbl">Grade Point (GP)</td><td>5.00</td><td>4.00</td><td>3.50</td><td>3.00</td><td>2.00</td><td>1.00</td><td>0.00</td></tr>
   </table>`;
 
   const fourthName = fourthIdx >= 0 && subs[fourthIdx] ? esc((subs[fourthIdx].name_en || subs[fourthIdx].code).toUpperCase()) : 'None';
@@ -1196,18 +1196,37 @@ function renderHistory() {
   $('historyList').innerHTML = h.length ? h.map(x => itemCard(x, x.gpa ? `<span class="mono text-xs font-bold bg-gold-50 text-gold-600 px-2 py-0.5 rounded">GPA ${esc(x.gpa)}</span>` : '')).join('')
     : `<div class="col-span-full text-sm text-ink-500 text-center py-4">No searches saved in the past 1 year.</div>`;
 }
+const PKEY = 'rsbd_profiles_v1';
+function getLocalProfiles() { try { return JSON.parse(localStorage.getItem(PKEY) || '[]'); } catch (e) { return []; } }
+function setLocalProfiles(list) { try { localStorage.setItem(PKEY, JSON.stringify((list || []).slice(0, 60))); } catch (e) {} }
 async function loadProfiles() {
+  let srvList = [];
   try {
     const d = await (await fetch('/api/profiles')).json();
-    const list = (d.profiles || []).map(p => ({ ...p, board: normBoard(p.board), exam: String(p.exam || 'hsc').toLowerCase() }));
-    $('profilesList').innerHTML = list.length ? list.map(p => itemCard(p, `<button class="del-btn text-ink-400 hover:text-flag-red" data-id="${esc(p.id)}" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`)).join('')
-      : `<div class="col-span-full text-sm text-ink-500 text-center py-4">No saved profiles yet — click Add New.</div>`;
-    lucide.createIcons();
+    srvList = d.profiles || [];
   } catch (e) {}
+  const map = new Map();
+  [...getLocalProfiles(), ...srvList].forEach(p => {
+    if (!p?.roll) return;
+    const norm = { ...p, board: normBoard(p.board), exam: String(p.exam || 'hsc').toLowerCase() };
+    const k = norm.id || `${norm.exam}|${norm.year}|${norm.board}|${norm.roll}`;
+    map.set(k, norm);
+  });
+  const list = [...map.values()];
+  $('profilesList').innerHTML = list.length ? list.map(p => itemCard(p, `<button class="del-btn text-ink-400 hover:text-flag-red" data-id="${esc(p.id || '')}" data-roll="${esc(p.roll)}" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`)).join('')
+    : `<div class="col-span-full text-sm text-ink-500 text-center py-4">No saved profiles yet — click Add New.</div>`;
+  lucide.createIcons();
 }
 async function saveProfile(p) {
-  const d = await (await fetch('/api/profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })).json();
-  toast(d.success ? 'Profile saved' : 'Failed to save'); loadProfiles();
+  let saved = { ...p, id: 'p_' + Date.now() };
+  try {
+    const d = await (await fetch('/api/profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })).json();
+    if (d.success && d.profile) saved = d.profile;
+  } catch (e) {}
+  const loc = getLocalProfiles().filter(x => !(String(x.roll) === String(saved.roll) && x.board === normBoard(saved.board)));
+  loc.unshift(saved);
+  setLocalProfiles(loc);
+  toast('Profile saved'); loadProfiles();
 }
 function loadIntoForm(p) {
   $('board').value = p.board; $('exam').value = p.exam || 'hsc'; if (p.year) $('year').value = p.year;
@@ -1265,7 +1284,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', async e => {
     const lb = e.target.closest('.load-btn'); if (lb) return loadIntoForm(JSON.parse(lb.dataset.p));
     const db = e.target.closest('.del-btn');
-    if (db && confirm('Delete this saved profile?')) { await fetch('/api/profiles/' + encodeURIComponent(db.dataset.id), { method: 'DELETE' }); loadProfiles(); }
+    if (db && confirm('Delete this saved profile?')) {
+      const id = db.dataset.id, rl = db.dataset.roll;
+      setLocalProfiles(getLocalProfiles().filter(p => String(p.id || '') !== id && String(p.roll) !== String(rl)));
+      if (id) await fetch('/api/profiles/' + encodeURIComponent(id), { method: 'DELETE' }).catch(() => {});
+      loadProfiles();
+    }
   });
 });
 </script>

@@ -658,8 +658,8 @@ def parse_pdf_for_roll_sync(pdf_bytes, target_roll):
         try:
             full_text.append(zlib.decompress(match.group(1)).decode('latin1', errors='ignore'))
         except Exception:
-            pass
-    combined = '\n'.join(full_text)
+            full_text.append(match.group(1).decode('latin1', errors='ignore'))
+    combined = '\n'.join(full_text) if full_text else pdf_bytes.decode('latin1', errors='ignore')
 
     inst_match = re.search(r'Institution:\s*([^\n\r\(\)]+)', combined)
     eiin_match = re.search(r'EIIN:\s*(\d+)', combined)

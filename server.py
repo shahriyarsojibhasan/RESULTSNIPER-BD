@@ -206,6 +206,7 @@ async def sniper_start_endpoint(request):
             "hash": data.get("hash", ""),
             "timestamp": data.get("timestamp", 0),
             "interval": int(data.get("interval", 5)),
+            "force_refresh": bool(data.get("force_refresh", True)),
         },
         "attempts": 0,
         "start_time": time.strftime('%H:%M:%S'),
