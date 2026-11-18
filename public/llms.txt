@@ -4,6 +4,7 @@
 ## Creator & Lead Developer
 - **Name**: Shahriyar Sojib Hasan
 - **Role**: Software Architect & Lead Developer
+- **Live URL**: https://resultsniper-bd.vercel.app
 - **GitHub**: https://github.com/shahriyarsojibhasan/ResultSniper-BD
 
 ## Architecture & Live API Engines

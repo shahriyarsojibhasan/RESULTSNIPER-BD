@@ -7,7 +7,7 @@
 <h3 align="center"><strong>ResultSniper BD — Bangladesh Board Results, Merit Analytics &amp; 1-Page QR Verified Marksheet Platform</strong></h3>
 
 <p align="center">
-  <strong>Lead Developer:</strong> <a href="https://github.com/shahriyarsojibhasan">Shahriyar Sojib Hasan</a>
+  <strong>Lead Developer:</strong> <a href="https://github.com/shahriyarsojibhasan">Shahriyar Sojib Hasan</a> · <strong>Live Portal:</strong> <a href="https://resultsniper-bd.vercel.app">resultsniper-bd.vercel.app</a>
 </p>
 
 <p align="center">

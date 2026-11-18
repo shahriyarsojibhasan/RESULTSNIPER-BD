@@ -328,7 +328,11 @@ async def page_handler(request):
         proto = request.headers.get('X-Forwarded-Proto', request.scheme)
         origin = f"{proto}://{request.host}"
         with open(path, 'r', encoding='utf-8') as f:
-            body = f.read().replace('https://resultsniper-bd.local', origin)
+            body = (
+                f.read()
+                .replace('https://resultsniper-bd.vercel.app', origin)
+                .replace('https://resultsniper-bd.local', origin)
+            )
         return web.Response(
             text=body,
             content_type='application/xml' if fname.endswith('.xml') else 'text/plain',

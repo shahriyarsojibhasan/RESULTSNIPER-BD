@@ -98,7 +98,11 @@ class handler(BaseHTTPRequestHandler):
             if path in ("/robots.txt", "/sitemap.xml"):
                 fpath = os.path.join(PUBLIC_DIR, path.lstrip("/"))
                 with open(fpath, "r", encoding="utf-8") as f:
-                    content = f.read().replace("https://resultsniper-bd.local", self._origin())
+                    content = (
+                        f.read()
+                        .replace("https://resultsniper-bd.vercel.app", self._origin())
+                        .replace("https://resultsniper-bd.local", self._origin())
+                    )
                 ctype = "application/xml; charset=utf-8" if path.endswith(".xml") else "text/plain; charset=utf-8"
                 return self._send_text(content, content_type=ctype)
 

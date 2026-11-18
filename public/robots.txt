@@ -6,4 +6,4 @@ Allow: /terms
 Allow: /privacy
 Allow: /llms.txt
 
-Sitemap: https://resultsniper-bd.local/sitemap.xml
+Sitemap: https://resultsniper-bd.vercel.app/sitemap.xml
