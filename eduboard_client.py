@@ -94,10 +94,10 @@ class EduBoardClient:
                         "gpa": str(info.get('gpa', 'N/A')),
                         "status": info.get('result', 'P'),
                         "group": info.get('groupName', 'N/A'),
-                        "session": info.get('session', 'N/A'),
-                        "college": info.get('instituteName', 'N/A'),
-                        "eiin": str(info.get('eiin', 'N/A')),
-                        "type": info.get('type', 'REGULAR'),
+                        "session": info.get('session') or info.get('sessionName') or 'N/A',
+                        "college": info.get('instituteName') or info.get('institutionName') or 'N/A',
+                        "eiin": str(info.get('eiin') or info.get('eiinNo') or info.get('instituteCode') or 'N/A'),
+                        "type": info.get('type') or info.get('studentType') or 'REGULAR',
                         "source": "eduboardresults.gov.bd (শিক্ষা বোর্ড অফিসিয়াল ক্লাউড পোর্টাল)"
                     }
                 }

@@ -541,7 +541,7 @@ def check_eboard_sync(data):
         elif not raw_gpa:
             raw_gpa = "PASSED" if res_det == "P" else (res_det or "N/A")
 
-        inst, eiin = _extract_inst_and_eiin(raw.get("inst_name"), raw.get("eiin"))
+        inst, eiin = _extract_inst_and_eiin(raw.get("inst_name"), raw.get("eiin") or raw.get("eiin_no") or raw.get("inst_code"))
         clean_reg = _clean_reg(raw.get("regno"), reg)
         normalized = {
             "source": "result.bangladeshgov.org (All-Board Gateway)",
@@ -555,7 +555,7 @@ def check_eboard_sync(data):
             "year": str(year),
             "gpa": raw_gpa,
             "status": "F" if ("FAIL" in res_det.upper() or raw_gpa in ("F", "0.00")) else "P",
-            "session": _clean_str(raw.get("session"), "N/A"),
+            "session": _clean_str(raw.get("session") or raw.get("stud_sess") or raw.get("session_yr"), "N/A"),
             "type": _clean_str(raw.get("stud_type") or raw.get("type"), "REGULAR"),
             "college": inst,
             "eiin": eiin,
