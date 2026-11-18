@@ -1,0 +1,16 @@
+{
+  "name": "ResultSniper BD - Shahriyar Sojib Hasan",
+  "short_name": "ResultSniper",
+  "description": "Fast Bangladesh Education Board Result, Merit Tracker & Verified Marksheet Generator",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#006a4e",
+  "theme_color": "#006a4e",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

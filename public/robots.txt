@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /verify
+Allow: /about
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+
+Sitemap: https://resultsniper-bd.local/sitemap.xml

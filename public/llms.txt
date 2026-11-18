@@ -1,0 +1,28 @@
+# ResultSniper BD (ResultSniper BD - Shahriyar Sojib Hasan)
+> Fast, resilient Bangladesh Education Board Result Extraction, Merit Ranking & Banknote-Grade Cryptographically Verified Marksheet Generation Platform.
+
+## Creator & Lead Developer
+- **Name**: Shahriyar Sojib Hasan
+- **Role**: Software Architect & Lead Developer
+- **GitHub**: https://github.com/shahriyarsojibhasan
+
+## Architecture & Core Engines
+ResultSniper BD connects to 3 distinct backend gateways:
+1. **ebr.bd Engine**: Direct integration for fast result lookup with candidate Merit Positions and score breakdown without manual CAPTCHA hurdles.
+2. **eduboardresults.gov.bd Engine**: Ministry of Education official rescrutiny/detailed marksheet engine with subjectwise CQ, MCQ, Practical, and Total marks.
+3. **eboardresults.com Engine**: Nixtec Systems nationwide board API with 4-digit security code support and automated sniper loop.
+
+## Security & Marksheet Authenticity
+- **Banknote-Style Art**: High-security guilloche wave patterns, microtext borders (`RESULTSNIPER BD • DOC_ID • ROLL ...`), anti-copy rosette art, and authentic board watermarks.
+- **Official Board Crests**: Official emblems for all boards including custom high-resolution emblem for Rajshahi Education Board.
+- **Cryptographic Verification**: Every generated marksheet contains an HMAC-SHA256 digital signature (`verify_token`) and unique Document ID (`RS-XXXXXXXXXX`).
+- **QR Code Verification**: Scanning the embedded QR code routes to `/verify?t=<TOKEN>`, allowing instant tamper-evident authentication without server database dependencies.
+
+## Key Endpoints
+- `GET /`: Main user interface with interactive forms, live sniper, profile management, and print marksheet generator.
+- `GET /verify?t=<TOKEN>`: Public verification portal displaying full validated student transcript and tamper alerts.
+- `GET /api/verify?t=<TOKEN>`: Cryptographic JSON endpoint validating HMAC signatures and returning candidate records.
+- `POST /api/check`: Unified result checking endpoint supporting all 3 engines.
+- `GET /about`: Project details and developer biography.
+- `GET /terms`: Legal disclaimer and terms of usage.
+- `GET /privacy`: Zero-log privacy policy and security standards.

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResultSniper BD — মেধাস্থান, নম্বরসহ মার্কশিট ও QR ভেরিফিকেশন</title>
+  <meta name="description" content="ResultSniper BD — SSC, HSC ও সমমানের পরীক্ষার ফলাফল, বিষয়ভিত্তিক নম্বর, মেরিট স্কোর, মেধাস্থান (ebr.bd) এবং QR কোড ভেরিফায়েড প্রিন্টযোগ্য মার্কশিট। Developed by Shahriyar Sojib Hasan.">
+  <meta name="keywords" content="HSC result 2026, SSC result, education board result, marksheet, merit position, board rank, eboardresults, eduboardresults, ResultSniper BD, Shahriyar Sojib Hasan">
+  <meta name="author" content="Shahriyar Sojib Hasan">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#006a4e">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ResultSniper BD">
+  <meta property="og:title" content="ResultSniper BD — মেধাস্থান ও নম্বরসহ মার্কশিট">
+  <meta property="og:description" content="বিষয়ভিত্তিক নম্বর, মেরিট স্কোর ও QR ভেরিফায়েড মার্কশিট — সকল শিক্ষা বোর্ড।">
+  <meta property="og:image" content="/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ResultSniper BD",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "inLanguage": ["bn", "en"],
+    "description": "Bangladesh education board result finder with subject-wise marks, merit score, merit position (ebr.bd) and QR-verified marksheet.",
+    "author": { "@type": "Person", "name": "Shahriyar Sojib Hasan", "url": "https://github.com/shahriyarsojibhasan" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BDT" }
+  }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eef8f3', 100:'#d5efe2', 200:'#a9dec4', 500:'#0a8a5f', 600:'#006a4e', 700:'#00553e', 800:'#0b3d2e', 900:'#082a20' },
+            gold:  { 50:'#fbf6e9', 100:'#f4e7c3', 500:'#b8860b', 600:'#9a6f08' },
+            ink:   { 50:'#f6f7f9', 100:'#eceff3', 200:'#dde2ea', 400:'#8a93a3', 500:'#5b6475', 700:'#2b3445', 900:'#0f172a' },
+            flag:  { red:'#e0313f' }
+          },
+          fontFamily: { sans: ['"Hind Siliguri"', 'Inter', 'system-ui', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    body { background: #f6f7f9; }
+    .card { background:#fff; border:1px solid #e3e7ee; border-radius:18px; box-shadow:0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.04); }
+    .inp { width:100%; background:#fff; border:1px solid #d6dce5; border-radius:12px; padding:.6rem .8rem; font-size:.9rem; color:#0f172a; outline:none; transition:.15s; }
+    .inp:focus { border-color:#006a4e; box-shadow:0 0 0 3px rgba(0,106,78,.12); }
+    .lbl { display:block; font-size:.75rem; font-weight:600; color:#5b6475; margin-bottom:.3rem; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.45rem; border-radius:12px; font-weight:700; transition:.15s; }
+    .btn-primary { background:#006a4e; color:#fff; } .btn-primary:hover { background:#00553e; }
+    .btn-ghost { background:#fff; border:1px solid #d6dce5; color:#2b3445; } .btn-ghost:hover { border-color:#006a4e; color:#006a4e; }
+    .tab { color:#5b6475; } .tab.active { background:#006a4e; color:#fff; box-shadow:0 2px 8px rgba(0,106,78,.25); }
+    .seg { color:#5b6475; } .seg.active { background:#fff; color:#006a4e; box-shadow:0 1px 4px rgba(15,23,42,.12); font-weight:700; }
+    .flag-bar { height:4px; background:linear-gradient(90deg,#006a4e 0 70%,#e0313f 70% 100%); }
+    .mono { font-family:'JetBrains Mono', monospace; }
+    #printArea { display:none; }
+
+    /* ================= PRINT: only the verification marksheet ================= */
+    @media print {
+      @page { size: A4 portrait; margin: 7mm; }
+      html, body { background:#fff !important; margin:0 !important; padding:0 !important; }
+      body * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      #app { display:none !important; }
+      #printArea { display:block !important; }
+    }
+
+    /* ================= Marksheet (tx-*) ================= */
+    .tx { position:relative; width:196mm; min-height:281mm; margin:0 auto; background:#fffef9; color:#111827;
+          font-family:'Inter','Hind Siliguri',Arial,sans-serif; box-sizing:border-box; padding:9mm 9mm 7mm; overflow:hidden; }
+    .tx-frame { position:absolute; inset:2.2mm; border:0.6mm solid #0b3d2e; pointer-events:none; }
+    .tx-frame2 { position:absolute; inset:3.4mm; border:0.25mm solid #9a6f08; pointer-events:none; }
+    .tx-micro { position:absolute; font-size:4.2px; line-height:1; letter-spacing:.3px; color:#0b3d2e; white-space:nowrap; overflow:hidden; font-weight:600; pointer-events:none; }
+    .tx-micro.t { top:2.65mm; left:6mm; right:6mm; }
+    .tx-micro.b { bottom:2.65mm; left:6mm; right:6mm; }
+    .tx-micro.l { left:2.65mm; top:6mm; height:269mm; width:4.2px; writing-mode:vertical-rl; }
+    .tx-micro.r { right:2.65mm; top:6mm; height:269mm; width:4.2px; writing-mode:vertical-rl; }
+    .tx-bg { position:absolute; inset:4mm; pointer-events:none; }
+    .tx-wm { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+    .tx-wm img { width:105mm; height:105mm; object-fit:contain; opacity:.055; filter:grayscale(1); }
+    .tx-diag { position:absolute; inset:-30mm; display:flex; flex-wrap:wrap; align-content:space-around; justify-content:space-around;
+               transform:rotate(-32deg); pointer-events:none; }
+    .tx-diag span { font-size:7.5px; font-weight:700; letter-spacing:1.5px; color:rgba(11,61,46,.07); padding:7mm 5mm; white-space:nowrap; }
+    .tx-corner { position:absolute; width:20mm; height:20mm; pointer-events:none; }
+    .tx-in { position:relative; z-index:2; }
+    .tx table { width:100%; border-collapse:collapse; }
+    .tx-head td { vertical-align:middle; }
+    .tx-logo { width:21mm; height:21mm; object-fit:contain; display:block; }
+    .tx-gov { font-size:8.5px; letter-spacing:1.6px; font-weight:700; color:#334155; text-transform:uppercase; }
+    .tx-board { font-size:15.5px; font-weight:800; color:#0b3d2e; text-transform:uppercase; margin:1.2mm 0 .8mm; line-height:1.2; }
+    .tx-exam { font-size:10px; font-weight:700; color:#9a6f08; letter-spacing:.8px; text-transform:uppercase; }
+    .tx-pill { display:inline-block; margin-top:1.8mm; padding:1mm 5mm; border-top:.35mm solid #0b3d2e; border-bottom:.35mm solid #0b3d2e;
+               font-size:10.5px; font-weight:800; letter-spacing:2.2px; color:#0b3d2e; }
+    .tx-rule { height:.6mm; background:linear-gradient(90deg,#006a4e 0 72%,#e0313f 72% 100%); margin:3mm 0 3.2mm; }
+    .tx-info td { border:.25mm solid #cfd6df; padding:1.5mm 2.2mm; font-size:9.6px; }
+    .tx-info td.k { color:#475569; font-weight:600; width:19%; background:rgba(238,248,243,.65); }
+    .tx-info td.v { color:#0f172a; font-weight:700; text-transform:uppercase; }
+    .tx-sub th { background:#0b3d2e; color:#fff; font-size:8.6px; letter-spacing:.6px; text-transform:uppercase; padding:1.7mm 1.5mm; border:.25mm solid #0b3d2e; }
+    .tx-sub td { border:.25mm solid #9aa6b5; padding:1.45mm 2mm; font-size:9.6px; background:rgba(255,255,255,.55); }
+    .tx-sub tr:nth-child(even) td { background:rgba(238,248,243,.55); }
+    .tx-c { text-align:center; } .tx-b { font-weight:800; }
+    .tx-sum td { border:.35mm solid #0b3d2e; padding:2mm 2.5mm; text-align:center; background:rgba(251,246,233,.75); }
+    .tx-sum .k { display:block; font-size:7.4px; font-weight:700; letter-spacing:.8px; color:#64748b; text-transform:uppercase; }
+    .tx-sum .v { display:block; font-size:14px; font-weight:800; color:#0b3d2e; font-family:'JetBrains Mono',monospace; margin-top:.6mm; }
+    .tx-scale { margin-top:2.2mm; font-size:7.6px; color:#475569; text-align:center; letter-spacing:.2px; }
+    .tx-scale b { color:#0b3d2e; }
+    .tx-merit td { border:.25mm dashed #9a6f08; padding:1.6mm 2.2mm; font-size:9.4px; text-align:center; background:rgba(251,246,233,.6); }
+    .tx-foot td { vertical-align:bottom; }
+    .tx-note { font-size:7.2px; color:#64748b; line-height:1.45; }
+    .tx-disc { margin-top:3mm; padding-top:2mm; border-top:.25mm solid #cfd6df; font-size:7.2px; color:#64748b; text-align:center; line-height:1.5; }
+  </style>
+</head>
+<body class="font-sans text-ink-900 antialiased">
+<div id="app" class="min-h-screen flex flex-col">
+  <div class="flag-bar"></div>
+
+  <!-- Header -->
+  <header class="bg-white border-b border-ink-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <a href="/" class="flex items-center gap-3 min-w-0">
+        <img src="/favicon.svg" alt="ResultSniper BD" class="w-10 h-10 shrink-0">
+        <div class="min-w-0">
+          <div class="font-extrabold text-lg leading-tight text-brand-800 tracking-tight" style="font-family:Inter">ResultSniper <span class="text-flag-red">BD</span></div>
+          <div class="text-[11px] text-ink-500 truncate">মেধাস্থান • নম্বরসহ মার্কশিট • QR ভেরিফিকেশন</div>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-1 text-sm font-semibold text-ink-700">
+        <a href="/verify" class="px-3 py-2 rounded-lg hover:bg-ink-100">মার্কশিট যাচাই</a>
+        <a href="/about" class="px-3 py-2 rounded-lg hover:bg-ink-100">আমাদের সম্পর্কে</a>
+        <a href="/privacy" class="px-3 py-2 rounded-lg hover:bg-ink-100">প্রাইভেসি</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+    <!-- Tabs -->
+    <div class="card p-1.5 flex gap-1 overflow-x-auto">
+      <button class="tab active flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="check"><i data-lucide="search" class="w-4 h-4"></i>ফলাফল</button>
+      <button class="tab flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="sniper"><i data-lucide="crosshair" class="w-4 h-4"></i>অটো-স্নাইপার</button>
+      <button class="tab flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="pdf"><i data-lucide="file-search" class="w-4 h-4"></i>পিডিএফ স্ক্যান</button>
+      <button class="tab flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2" data-tab="profiles"><i data-lucide="bookmark" class="w-4 h-4"></i>সংরক্ষিত ও ইতিহাস</button>
+    </div>
+
+    <!-- ================= TAB: RESULT ================= -->
+    <section id="tab-check" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <!-- Form -->
+      <div class="lg:col-span-4 card p-5 space-y-4">
+        <div>
+          <div class="lbl">ফলাফল পদ্ধতি</div>
+          <div class="grid grid-cols-3 gap-1 p-1 bg-ink-100 rounded-xl text-[12px]">
+            <button type="button" class="seg active py-2 rounded-lg" data-method="ebr">মেধাস্থান<br><span class="text-[10px] font-normal opacity-70">ebr.bd</span></button>
+            <button type="button" class="seg py-2 rounded-lg" data-method="edu">নম্বরসহ<br><span class="text-[10px] font-normal opacity-70">eduboard</span></button>
+            <button type="button" class="seg py-2 rounded-lg" data-method="eboard">দ্রুত গ্রেড<br><span class="text-[10px] font-normal opacity-70">eboard</span></button>
+          </div>
+          <p id="methodHint" class="text-[12px] text-ink-500 mt-2 leading-relaxed"></p>
+        </div>
+
+        <form id="checkForm" class="space-y-3" autocomplete="off">
+          <div>
+            <label class="lbl" for="exam">পরীক্ষা</label>
+            <select id="exam" class="inp">
+              <option value="hsc">HSC / Alim / Equivalent</option>
+              <option value="ssc">SSC / Dakhil / Equivalent</option>
+              <option value="jsc">JSC / JDC</option>
+              <option value="dibs">DIBS</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="lbl" for="year">সাল</label><select id="year" class="inp"></select></div>
+            <div><label class="lbl" for="board">বোর্ড</label><select id="board" class="inp board-select"></select></div>
+          </div>
+          <div><label class="lbl" for="roll">রোল নম্বর</label><input id="roll" class="inp mono" inputmode="numeric" maxlength="8" placeholder="রোল লিখুন" required></div>
+          <div><label class="lbl" for="reg">রেজিস্ট্রেশন নম্বর</label><input id="reg" class="inp mono" inputmode="numeric" maxlength="12" placeholder="রেজিস্ট্রেশন লিখুন"></div>
+
+          <div id="captchaBox" class="hidden p-3 rounded-xl border border-brand-200 bg-brand-50 space-y-2">
+            <div class="flex items-center justify-between">
+              <span id="captchaLabel" class="text-xs font-bold text-brand-700 flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i>সিকিউরিটি কোড</span>
+              <button type="button" id="captchaRefresh" class="text-[11px] font-bold text-brand-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-brand-100"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>নতুন কোড</button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 items-stretch">
+              <div class="h-12 bg-white rounded-lg border border-ink-200 flex items-center justify-center overflow-hidden relative">
+                <img id="captchaImg" alt="captcha" class="h-full w-full object-contain">
+                <span id="captchaLoading" class="absolute inset-0 flex items-center justify-center text-xs text-ink-500 bg-white">লোড হচ্ছে…</span>
+              </div>
+              <input id="captchaInput" class="inp mono text-center text-lg font-bold tracking-widest h-12" placeholder="কোড">
+            </div>
+          </div>
+
+          <button id="checkBtn" type="submit" class="btn btn-primary w-full py-3 text-[15px]"><i data-lucide="search" class="w-4 h-4"></i><span id="checkBtnText">মেধাস্থানসহ ফলাফল দেখুন</span></button>
+        </form>
+      </div>
+
+      <!-- Output -->
+      <div class="lg:col-span-8 space-y-5 min-w-0">
+        <!-- Placeholder -->
+        <div id="placeholder" class="card p-10 text-center text-ink-500">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-3"><i data-lucide="award" class="w-8 h-8"></i></div>
+          <h3 class="font-bold text-ink-900 text-lg">ফলাফল দেখার জন্য প্রস্তুত</h3>
+          <p class="text-sm mt-1 max-w-md mx-auto">রোল ও রেজিস্ট্রেশন দিয়ে সার্চ করুন। নম্বরসহ মার্কশিট, মেরিট স্কোর এবং QR ভেরিফায়েড প্রিন্ট কপি পাবেন।</p>
+        </div>
+
+        <!-- ebr.bd merit panel -->
+        <div id="ebrPanel" class="hidden card overflow-hidden">
+          <div class="p-4 border-b border-ink-200 flex flex-wrap items-center justify-between gap-3 bg-gold-50">
+            <div>
+              <div class="font-bold text-ink-900 flex items-center gap-2"><i data-lucide="trophy" class="w-4 h-4 text-gold-600"></i>মেধাস্থান (Board / Group / Institute Rank) — ebr.bd</div>
+              <div class="text-xs text-ink-500 mt-0.5">রোল ও রেজি কপি হয়েছে — নিচের ফর্মে <b>Exam, Year, Board</b> সিলেক্ট করে পেস্ট করুন।</div>
+            </div>
+            <div class="flex gap-2">
+              <button id="copyRollReg" class="btn btn-ghost px-3 py-2 text-xs"><i data-lucide="copy" class="w-3.5 h-3.5"></i>রোল/রেজি কপি</button>
+              <a href="https://ebr.bd/#individual-result" target="_blank" rel="noopener" class="btn btn-primary px-3 py-2 text-xs"><i data-lucide="external-link" class="w-3.5 h-3.5"></i>নতুন ট্যাবে খুলুন</a>
+            </div>
+          </div>
+          <div id="ebrCreds" class="px-4 py-2 text-xs mono text-ink-700 bg-white border-b border-ink-200"></div>
+          <iframe id="ebrFrame" title="ebr.bd individual result" class="w-full bg-white" style="height:760px;border:0" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="p-3 text-[11px] text-ink-500 bg-ink-50 border-t border-ink-200">
+            ebr.bd তাদের নিজস্ব Cloudflare নিরাপত্তা যাচাই ব্যবহার করে, তাই মেধাস্থান সরাসরি তাদের পেজেই দেখাবে। মেধাস্থান পাওয়ার পর <b>নম্বরসহ</b> মোডে ফলাফল বের করে নিচের "মেধাস্থান" ঘরে বসালে প্রিন্ট মার্কশিটেও যুক্ত হবে।
+          </div>
+        </div>
+
+        <!-- Result card -->
+        <div id="resultCard" class="hidden card overflow-hidden">
+          <div id="resHeader" class="p-5 sm:p-6 flex flex-wrap items-center gap-4 border-b border-ink-200">
+            <img id="resLogo" class="w-16 h-16 object-contain shrink-0" alt="board logo">
+            <div class="flex-1 min-w-0">
+              <div id="resSource" class="text-[11px] font-bold text-brand-700 uppercase tracking-wider"></div>
+              <h2 id="resName" class="text-xl sm:text-2xl font-extrabold text-ink-900 truncate"></h2>
+              <div id="resInst" class="text-sm text-ink-500 truncate"></div>
+            </div>
+            <div id="resGpaBox" class="text-center px-5 py-3 rounded-2xl border">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-ink-500">GPA</div>
+              <div id="resGpa" class="text-3xl font-extrabold mono"></div>
+              <div id="resStatus" class="text-[11px] font-bold"></div>
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-6 space-y-5">
+            <div id="resInfo" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-sm"></div>
+
+            <!-- Merit score -->
+            <div class="rounded-2xl border border-gold-100 bg-gold-50 p-4 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="font-bold text-ink-900 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-gold-600"></i>মেরিট স্কোর</div>
+                <label class="text-xs text-ink-500 flex items-center gap-2">৪র্থ বিষয়:
+                  <select id="fourthSel" class="inp !py-1 !px-2 !text-xs !w-auto"></select>
+                </label>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="meritGrid"></div>
+              <div class="grid grid-cols-3 gap-2.5">
+                <div><label class="lbl">বোর্ড মেধাস্থান</label><input id="mBoard" class="inp mono !py-1.5" placeholder="#"></div>
+                <div><label class="lbl">গ্রুপ মেধাস্থান</label><input id="mGroup" class="inp mono !py-1.5" placeholder="#"></div>
+                <div><label class="lbl">প্রতিষ্ঠান মেধাস্থান</label><input id="mInst" class="inp mono !py-1.5" placeholder="#"></div>
+              </div>
+              <p class="text-[11px] text-ink-500">মেধাস্থান ebr.bd থেকে দেখে বসাতে পারেন (ঐচ্ছিক) — প্রিন্টে "Reference: ebr.bd" হিসেবে আলাদা দেখাবে, QR যাচাইয়ের অংশ নয়।
+                <button type="button" id="openEbrFromResult" class="text-brand-700 font-bold underline">ebr.bd তে দেখুন</button></p>
+            </div>
+
+            <!-- Subjects -->
+            <div id="subWrap" class="overflow-x-auto rounded-2xl border border-ink-200">
+              <table class="w-full text-sm min-w-[620px]">
+                <thead class="bg-ink-50 text-ink-500 text-[11px] uppercase tracking-wider">
+                  <tr>
+                    <th class="text-left py-3 px-4">বিষয়</th>
+                    <th class="py-3 px-2">CQ</th><th class="py-3 px-2">MCQ</th><th class="py-3 px-2">ব্যবহারিক</th>
+                    <th class="py-3 px-2 text-brand-700">মোট</th><th class="py-3 px-2">গ্রেড</th><th class="py-3 px-3">GP</th>
+                  </tr>
+                </thead>
+                <tbody id="subBody" class="divide-y divide-ink-100"></tbody>
+              </table>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <div id="verifyBadge" class="text-xs text-ink-500 flex items-center gap-1.5"></div>
+              <div class="flex flex-wrap gap-2">
+                <button id="saveProfileBtn" class="btn btn-ghost px-4 py-2.5 text-sm"><i data-lucide="bookmark-plus" class="w-4 h-4"></i>সংরক্ষণ</button>
+                <button id="copyVerifyBtn" class="btn btn-ghost px-4 py-2.5 text-sm"><i data-lucide="link" class="w-4 h-4"></i>যাচাই লিংক</button>
+                <button id="printBtn" class="btn btn-primary px-4 py-2.5 text-sm"><i data-lucide="printer" class="w-4 h-4"></i>মার্কশিট প্রিন্ট / PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB: SNIPER ================= -->
+    <section id="tab-sniper" class="hidden card p-5 sm:p-6 space-y-5">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-extrabold flex items-center gap-2"><i data-lucide="crosshair" class="w-5 h-5 text-brand-600"></i>অটো-স্নাইপার</h2>
+          <p class="text-sm text-ink-500 mt-1 max-w-2xl">রেজাল্ট প্রকাশের দিন চালু রাখুন — প্রকাশ হওয়া মাত্র স্বয়ংক্রিয়ভাবে ফলাফল ধরে আনবে। ক্যাপচা ছাড়া স্বয়ংক্রিয় চেক বর্তমানে ঢাকা বোর্ডের অফিসিয়াল গেটওয়েতে কাজ করে।</p>
+        </div>
+        <div id="sniperBadge" class="text-xs font-bold px-3 py-1.5 rounded-full bg-ink-100 text-ink-500">নিষ্ক্রিয়</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div><label class="lbl">বোর্ড</label><select id="sBoard" class="inp board-select"></select></div>
+        <div><label class="lbl">রোল</label><input id="sRoll" class="inp mono" placeholder="রোল"></div>
+        <div><label class="lbl">রেজিস্ট্রেশন</label><input id="sReg" class="inp mono" placeholder="রেজি"></div>
+        <div><label class="lbl">ইন্টারভাল</label><select id="sInterval" class="inp"><option value="3">৩ সেকেন্ড</option><option value="5" selected>৫ সেকেন্ড</option><option value="10">১০ সেকেন্ড</option></select></div>
+        <div class="flex items-end"><button id="sniperBtn" class="btn btn-primary w-full py-2.5"><i data-lucide="play" class="w-4 h-4"></i><span id="sniperBtnText">চালু করুন</span></button></div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+        <div class="rounded-xl bg-ink-50 p-3"><div class="text-[11px] text-ink-500">চেষ্টা</div><div id="stAttempts" class="font-extrabold mono text-lg">0</div></div>
+        <div class="rounded-xl bg-ink-50 p-3"><div class="text-[11px] text-ink-500">শুরু</div><div id="stStart" class="font-bold mono">--:--:--</div></div>
+        <div class="rounded-xl bg-ink-50 p-3"><div class="text-[11px] text-ink-500">সর্বশেষ</div><div id="stLast" class="font-bold mono">--:--:--</div></div>
+        <div class="rounded-xl bg-ink-50 p-3"><div class="text-[11px] text-ink-500">স্ট্যাটাস</div><div id="stMsg" class="font-bold text-xs text-brand-700 truncate mt-1">Idle</div></div>
+      </div>
+      <div id="sniperLog" class="rounded-xl bg-ink-900 text-brand-200 mono text-xs p-4 h-48 overflow-y-auto space-y-0.5"><div class="text-ink-400">// লগ এখানে দেখাবে</div></div>
+    </section>
+
+    <!-- ================= TAB: PDF ================= -->
+    <section id="tab-pdf" class="hidden card p-5 sm:p-6 space-y-4">
+      <div>
+        <h2 class="text-lg font-extrabold flex items-center gap-2"><i data-lucide="file-search" class="w-5 h-5 text-brand-600"></i>প্রতিষ্ঠানের রেজাল্ট পিডিএফ স্ক্যান</h2>
+        <p class="text-sm text-ink-500 mt-1">বোর্ড প্রকাশিত প্রতিষ্ঠানভিত্তিক রেজাল্ট পিডিএফ আপলোড করে রোল দিন — মুহূর্তেই GPA বের হবে।</p>
+      </div>
+      <form id="pdfForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+        <div><label class="lbl">রোল নম্বর</label><input id="pdfRoll" class="inp mono" required placeholder="রোল"></div>
+        <div><label class="lbl">পিডিএফ ফাইল</label><input id="pdfFile" type="file" accept=".pdf" required class="inp !py-1.5 text-xs"></div>
+        <button id="pdfBtn" class="btn btn-primary py-2.5"><i data-lucide="scan-search" class="w-4 h-4"></i>স্ক্যান করুন</button>
+      </form>
+      <div id="pdfResult" class="hidden rounded-xl border border-ink-200 p-4"></div>
+    </section>
+
+    <!-- ================= TAB: PROFILES ================= -->
+    <section id="tab-profiles" class="hidden card p-5 sm:p-6 space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-extrabold flex items-center gap-2"><i data-lucide="bookmark" class="w-5 h-5 text-brand-600"></i>সংরক্ষিত প্রোফাইল</h2>
+          <p class="text-sm text-ink-500">নিজে রোল/রেজি/বোর্ড যোগ করুন — ১ ক্লিকে ফলাফল ফর্মে লোড হবে।</p>
+        </div>
+        <button id="toggleAdd" class="btn btn-primary px-4 py-2 text-sm"><i data-lucide="plus" class="w-4 h-4"></i>নতুন যোগ করুন</button>
+      </div>
+      <div id="addBox" class="hidden rounded-2xl border border-ink-200 bg-ink-50 p-4 space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div><label class="lbl">নাম</label><input id="pName" class="inp" placeholder="শিক্ষার্থীর নাম"></div>
+          <div><label class="lbl">পরীক্ষা</label><select id="pExam" class="inp"><option value="hsc">HSC</option><option value="ssc">SSC</option><option value="jsc">JSC</option></select></div>
+          <div><label class="lbl">সাল</label><select id="pYear" class="inp"></select></div>
+          <div><label class="lbl">বোর্ড</label><select id="pBoard" class="inp board-select"></select></div>
+          <div><label class="lbl">রোল *</label><input id="pRoll" class="inp mono"></div>
+          <div><label class="lbl">রেজিস্ট্রেশন</label><input id="pReg" class="inp mono"></div>
+        </div>
+        <div class="flex gap-2"><button id="pSave" class="btn btn-primary px-4 py-2 text-sm">সংরক্ষণ</button><button id="pCancel" class="btn btn-ghost px-4 py-2 text-sm">বাতিল</button></div>
+      </div>
+      <div id="profilesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+
+      <div class="pt-5 border-t border-ink-200 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold flex items-center gap-2"><i data-lucide="history" class="w-4 h-4 text-gold-600"></i>গত ৭ দিনের অনুসন্ধান</h3>
+          <button id="clearHistory" class="text-xs text-ink-500 hover:text-flag-red">ইতিহাস মুছুন</button>
+        </div>
+        <div id="historyList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white border-t border-ink-200 mt-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-ink-500">
+      <div>© <span id="yr"></span> <b class="text-ink-900">ResultSniper BD</b> — Developed by <b class="text-brand-700">Shahriyar Sojib Hasan</b></div>
+      <div class="flex flex-wrap gap-4">
+        <a href="/about" class="hover:text-brand-700">About</a>
+        <a href="/terms" class="hover:text-brand-700">Terms</a>
+        <a href="/privacy" class="hover:text-brand-700">Privacy Policy</a>
+        <a href="/verify" class="hover:text-brand-700">Verify Marksheet</a>
+        <a href="/llms.txt" class="hover:text-brand-700">llms.txt</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Print-only marksheet -->
+<div id="printArea"></div>
+
+<script>
+/* ======================= Constants ======================= */
+const BOARDS = {
+  dhaka:      { en:'Dhaka', bn:'ঢাকা', logo:'dhaka.svg',      full:'Board of Intermediate and Secondary Education, Dhaka' },
+  rajshahi:   { en:'Rajshahi', bn:'রাজশাহী', logo:'rajshahi.jpg', full:'Board of Intermediate and Secondary Education, Rajshahi' },
+  comilla:    { en:'Cumilla', bn:'কুমিল্লা', logo:'comilla.png',  full:'Board of Intermediate and Secondary Education, Cumilla' },
+  chittagong: { en:'Chattogram', bn:'চট্টগ্রাম', logo:'chittagong.png', full:'Board of Intermediate and Secondary Education, Chattogram' },
+  jessore:    { en:'Jashore', bn:'যশোর', logo:'jessore.png',   full:'Board of Intermediate and Secondary Education, Jashore' },
+  barisal:    { en:'Barishal', bn:'বরিশাল', logo:'barisal.gif', full:'Board of Intermediate and Secondary Education, Barishal' },
+  sylhet:     { en:'Sylhet', bn:'সিলেট', logo:'sylhet.png',    full:'Board of Intermediate and Secondary Education, Sylhet' },
+  dinajpur:   { en:'Dinajpur', bn:'দিনাজপুর', logo:'dinajpur.svg', full:'Board of Intermediate and Secondary Education, Dinajpur' },
+  mymensingh: { en:'Mymensingh', bn:'ময়মনসিংহ', logo:'mymensingh.png', full:'Board of Intermediate and Secondary Education, Mymensingh' },
+  madrasah:   { en:'Madrasah', bn:'মাদ্রাসা', logo:'govt.svg',  full:'Bangladesh Madrasah Education Board' },
+  technical:  { en:'Technical', bn:'কারিগরি', logo:'technical.svg', full:'Bangladesh Technical Education Board' }
+};
+const BOARD_ALIAS = { cumilla:'comilla', chattogram:'chittagong', jashore:'jessore', barishal:'barisal', tec:'technical', bteb:'technical', bmeb:'madrasah' };
+const GP = { 'A+':'5.00','A':'4.00','A-':'3.50','B':'3.00','C':'2.00','D':'1.00','F':'0.00' };
+const EXAM_FULL = { hsc:'Higher Secondary Certificate (HSC) Examination', ssc:'Secondary School Certificate (SSC) Examination', jsc:'Junior School Certificate (JSC) Examination', dibs:'Diploma in Business Studies Examination' };
+const METHODS = {
+  ebr:    { btn:'মেধাস্থানসহ ফলাফল দেখুন', hint:'<b>ডিফল্ট:</b> ebr.bd থেকে বোর্ড/গ্রুপ/প্রতিষ্ঠান মেধাস্থান ও মোট নম্বর। কোনো ছবি-ক্যাপচা লাগবে না — ebr.bd নিজেই ব্রাউজারে যাচাই করে।', captcha:false },
+  edu:    { btn:'নম্বরসহ মার্কশিট বের করুন', hint:'<b>eduboardresults.gov.bd:</b> বিষয়ভিত্তিক নম্বর + মেরিট স্কোর + QR ভেরিফায়েড প্রিন্ট মার্কশিট। রেজিস্ট্রেশন আবশ্যক।', captcha:true },
+  eboard: { btn:'দ্রুত গ্রেডশিট দেখুন', hint:'<b>eboardresults.com:</b> সকল বোর্ডের দ্রুত গ্রেডশিট, ৪-ডিজিট সিকিউরিটি কি।', captcha:true }
+};
+
+/* ======================= Helpers ======================= */
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function normBoard(b) {
+  const s = String(b || '').toLowerCase().replace(/board|education|bise|,/g, ' ').trim();
+  for (const w of s.split(/\s+/)) { if (BOARDS[w]) return w; if (BOARD_ALIAS[w]) return BOARD_ALIAS[w]; }
+  for (const k of Object.keys(BOARDS)) if (s.includes(k)) return k;
+  for (const [a, k] of Object.entries(BOARD_ALIAS)) if (s.includes(a)) return k;
+  return 'dhaka';
+}
+const boardInfo = b => BOARDS[normBoard(b)];
+const logoUrl = b => '/assets/boards/' + boardInfo(b).logo;
+function gradeOf(s) { let g = String(s.grade || '').trim(); if (g.includes('=')) g = g.split('=').pop().trim(); return g.toUpperCase(); }
+function markOf(s) {
+  let m = s.total && s.total !== '--' ? s.total : (s.marks && s.marks !== '--' ? s.marks : '');
+  if (!m && String(s.grade || '').includes('=')) m = String(s.grade).split('=')[0].trim();
+  const n = parseInt(m, 10); return isNaN(n) ? null : n;
+}
+const gpOf = s => (s.gp && s.gp !== '--') ? s.gp : (GP[gradeOf(s)] || '--');
+const subjMax = code => String(code).includes('-') ? 200 : 100;
+function isPassed(d) {
+  const g = String(d.gpa || '').toUpperCase(), st = String(d.status || '').toUpperCase();
+  if (g.includes('FAIL') || g === 'F' || st.includes('FAIL') || st === 'F') return false;
+  if ((d.subjects || []).some(s => gradeOf(s) === 'F')) return false;
+  const n = parseFloat(g); if (!isNaN(n) && n <= 0) return false;
+  return true;
+}
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-ink-900 text-white text-sm px-4 py-2.5 rounded-xl shadow-lg';
+  t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+}
+function beep(ok) {
+  try { const a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain();
+    o.connect(g); g.connect(a.destination); o.frequency.setValueAtTime(ok ? 660 : 260, a.currentTime);
+    o.frequency.setValueAtTime(ok ? 990 : 200, a.currentTime + .15); g.gain.setValueAtTime(.2, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(.01, a.currentTime + .55); o.start(); o.stop(a.currentTime + .55); } catch (e) {}
+}
+
+/* ======================= State ======================= */
+let method = 'ebr', capState = { hash:'', ts:0, sid:null }, last = null, fourthIdx = -1;
+
+/* ======================= Init ======================= */
+function fillSelects() {
+  const yrs = []; const y0 = new Date().getFullYear(); for (let y = y0; y >= 2015; y--) yrs.push(y);
+  ['year', 'pYear'].forEach(id => $(id).innerHTML = yrs.map(y => `<option value="${y}">${y}</option>`).join(''));
+  document.querySelectorAll('.board-select').forEach(sel => {
+    sel.innerHTML = Object.entries(BOARDS).map(([k, b]) => `<option value="${k}">${b.en} (${b.bn})</option>`).join('');
+  });
+  $('yr').textContent = y0;
+}
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  ['check', 'sniper', 'pdf', 'profiles'].forEach(x => $('tab-' + x).classList.toggle('hidden', x !== t));
+  if (t === 'profiles') { loadProfiles(); renderHistory(); }
+}
+function setMethod(m) {
+  method = m;
+  document.querySelectorAll('.seg').forEach(b => b.classList.toggle('active', b.dataset.method === m));
+  $('methodHint').innerHTML = METHODS[m].hint;
+  $('checkBtnText').textContent = METHODS[m].btn;
+  $('captchaBox').classList.toggle('hidden', !METHODS[m].captcha);
+  $('captchaLabel').lastChild.textContent = m === 'edu' ? 'সিকিউরিটি কোড (৬ অক্ষর)' : 'সিকিউরিটি কি (৪ ডিজিট)';
+  $('captchaInput').maxLength = m === 'edu' ? 6 : 4;
+  if (METHODS[m].captcha) loadCaptcha();
+}
+async function loadCaptcha() {
+  const img = $('captchaImg'), ld = $('captchaLoading');
+  $('captchaInput').value = ''; ld.style.display = 'flex'; ld.textContent = 'লোড হচ্ছে…';
+  try {
+    const r = await fetch((method === 'edu' ? '/api/eduboard/captcha' : '/api/eboard/captcha') + '?t=' + Date.now());
+    const d = await r.json();
+    if (!d.success || !d.captcha_img) throw new Error(d.error || 'failed');
+    if (method === 'edu') { capState.hash = d.hash; capState.ts = d.timestamp; } else { capState.sid = d.session_id; }
+    img.src = d.captcha_img; ld.style.display = 'none';
+  } catch (e) { ld.textContent = 'লোড ব্যর্থ — নতুন কোড চাপুন'; }
+}
+
+/* ======================= ebr.bd ======================= */
+function openEbr(roll, reg) {
+  const txt = `Roll: ${roll || '-'}   Reg: ${reg || '-'}`;
+  $('ebrCreds').textContent = txt;
+  if (roll) navigator.clipboard?.writeText(`${roll}\t${reg || ''}`).catch(() => {});
+  if (!$('ebrFrame').src) $('ebrFrame').src = 'https://ebr.bd/#individual-result';
+  $('placeholder').classList.add('hidden');
+  $('ebrPanel').classList.remove('hidden');
+  $('ebrPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ======================= Submit ======================= */
+async function onSubmit(e) {
+  e.preventDefault();
+  const roll = $('roll').value.trim(), reg = $('reg').value.trim();
+  if (!/^\d{3,8}$/.test(roll)) return toast('সঠিক রোল নম্বর লিখুন');
+  if (method === 'ebr') { openEbr(roll, reg); toast('রোল/রেজি কপি হয়েছে — ebr.bd ফর্মে পেস্ট করুন'); return; }
+  if (method === 'edu' && !reg) return toast('নম্বরসহ মার্কশিটের জন্য রেজিস্ট্রেশন আবশ্যক');
+  const cap = $('captchaInput').value.trim(); if (!cap) return toast('সিকিউরিটি কোড লিখুন');
+
+  const btn = $('checkBtn'), old = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'ফলাফল আনা হচ্ছে…';
+  const base = { board: $('board').value, exam: $('exam').value, year: $('year').value, roll, reg, captcha: cap };
+  const [url, body] = method === 'edu'
+    ? ['/api/eduboard/check', { ...base, hash: capState.hash, timestamp: capState.ts }]
+    : ['/api/eboard/check', { ...base, session_id: capState.sid }];
+  try {
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const d = await r.json();
+    if (d.success && d.data) { d.data.board_key = $('board').value; showResult(d.data); saveHistory(d.data); }
+    else { toast(d.error || 'ফলাফল পাওয়া যায়নি অথবা কোড ভুল'); loadCaptcha(); }
+  } catch (err) { toast('সার্ভার ত্রুটি: ' + err.message); loadCaptcha(); }
+  finally { btn.disabled = false; btn.innerHTML = old; lucide.createIcons(); }
+}
+
+/* ======================= Result rendering ======================= */
+function computeMerit(d) {
+  let tot = 0, max = 0, totW = 0, maxW = 0, has = false;
+  (d.subjects || []).forEach((s, i) => {
+    const mx = subjMax(s.code), m = markOf(s);
+    max += mx; if (i !== fourthIdx) maxW += mx;
+    if (m !== null) { has = true; tot += m; if (i !== fourthIdx) totW += m; }
+  });
+  return { has, tot, max, totW, maxW, pct: max ? tot / max * 100 : 0, pctW: maxW ? totW / maxW * 100 : 0 };
+}
+function meritRanks() {
+  return { board: $('mBoard').value.trim().replace(/^#/, ''), group: $('mGroup').value.trim().replace(/^#/, ''), inst: $('mInst').value.trim().replace(/^#/, '') };
+}
+function showResult(d) {
+  last = d;
+  const subs = d.subjects || [];
+  fourthIdx = subs.length >= 6 ? subs.length - 1 : -1;
+  ['mBoard', 'mGroup', 'mInst'].forEach(id => $(id).value = '');
+  $('placeholder').classList.add('hidden');
+  $('resultCard').classList.remove('hidden');
+
+  const passed = isPassed(d), bi = boardInfo(d.board_key || d.board);
+  $('resLogo').src = logoUrl(d.board_key || d.board);
+  $('resSource').textContent = (d.source || 'Education Board') + ' • ' + bi.en + ' Board';
+  $('resName').textContent = d.name || '—';
+  $('resInst').textContent = (d.college && d.college !== 'N/A' ? d.college : '') + (d.eiin && d.eiin !== 'N/A' ? ` (EIIN: ${d.eiin})` : '');
+  const gBox = $('resGpaBox');
+  gBox.className = 'text-center px-5 py-3 rounded-2xl border ' + (passed ? 'bg-brand-50 border-brand-200' : 'bg-red-50 border-red-200');
+  $('resGpa').className = 'text-3xl font-extrabold mono ' + (passed ? 'text-brand-700' : 'text-flag-red');
+  $('resGpa').textContent = passed ? (d.gpa || 'PASS') : 'F';
+  $('resStatus').className = 'text-[11px] font-bold ' + (passed ? 'text-brand-700' : 'text-flag-red');
+  $('resStatus').textContent = passed ? 'PASSED (কৃতকার্য)' : 'FAILED (অকৃতকার্য)';
+
+  const info = [['রোল', d.roll], ['রেজিস্ট্রেশন', d.reg], ['বোর্ড', bi.en], ['পরীক্ষা', `${String(d.exam || '').toUpperCase()} ${d.year || ''}`],
+    ['বিভাগ', d.group], ['সেশন', d.session], ['পিতার নাম', d.father], ['মাতার নাম', d.mother]];
+  $('resInfo').innerHTML = info.map(([k, v]) => `<div class="rounded-xl bg-ink-50 px-3 py-2.5"><div class="text-[11px] text-ink-500">${k}</div><div class="font-bold text-ink-900 truncate">${esc(v && v !== 'N/A' ? v : '—')}</div></div>`).join('');
+
+  $('fourthSel').innerHTML = `<option value="-1">নেই</option>` + subs.map((s, i) => `<option value="${i}" ${i === fourthIdx ? 'selected' : ''}>${esc(s.name_en || s.code)} (${esc(s.code)})</option>`).join('');
+  renderSubjects(); renderMerit();
+
+  $('verifyBadge').innerHTML = d.verify_token
+    ? `<i data-lucide="badge-check" class="w-4 h-4 text-brand-600"></i><span>অফিসিয়াল সার্ভার থেকে যাচাইকৃত • Doc ID <b class="mono text-ink-900">${esc(d.doc_id)}</b></span>`
+    : `<i data-lucide="info" class="w-4 h-4"></i><span>যাচাই টোকেন পাওয়া যায়নি</span>`;
+  lucide.createIcons();
+  if (passed) { if (window.confetti) confetti({ particleCount: 110, spread: 75, origin: { y: .6 } }); beep(true); } else beep(false);
+  $('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function renderSubjects() {
+  const subs = last.subjects || [];
+  if (!subs.length) { $('subBody').innerHTML = `<tr><td colspan="7" class="py-6 text-center text-ink-500">বিষয়ভিত্তিক তথ্য পাওয়া যায়নি</td></tr>`; return; }
+  const cell = v => (v && v !== '--') ? `<span class="mono font-semibold text-ink-900">${esc(v)}</span>` : `<span class="text-ink-400">—</span>`;
+  $('subBody').innerHTML = subs.map((s, i) => {
+    const g = gradeOf(s), m = markOf(s), f = g === 'F';
+    return `<tr class="${i === fourthIdx ? 'bg-gold-50' : ''}">
+      <td class="py-3 px-4"><div class="font-bold text-ink-900">${esc(s.name_bn || s.name_en || s.code)} ${i === fourthIdx ? '<span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-gold-100 text-gold-600 font-bold">৪র্থ</span>' : ''}</div>
+        <div class="text-[11px] text-ink-500">${esc(s.name_en || '')} • <span class="mono">${esc(s.code)}</span></div></td>
+      <td class="text-center">${cell(s.cq)}</td><td class="text-center">${cell(s.mcq)}</td><td class="text-center">${cell(s.practical)}</td>
+      <td class="text-center"><span class="mono font-extrabold ${f ? 'text-flag-red' : 'text-brand-700'}">${m !== null ? m : '—'}</span></td>
+      <td class="text-center"><span class="px-2 py-0.5 rounded-md text-xs font-bold ${f ? 'bg-red-50 text-flag-red' : 'bg-brand-50 text-brand-700'}">${esc(g || '—')}</span></td>
+      <td class="text-center mono text-ink-700">${esc(gpOf(s))}</td></tr>`;
+  }).join('');
+}
+function renderMerit() {
+  const m = computeMerit(last);
+  const box = (k, v, sub) => `<div class="rounded-xl bg-white border border-gold-100 px-3 py-2.5"><div class="text-[11px] text-ink-500">${k}</div><div class="font-extrabold mono text-lg text-ink-900">${v}</div>${sub ? `<div class="text-[10px] text-ink-400">${sub}</div>` : ''}</div>`;
+  $('meritGrid').innerHTML = m.has
+    ? box('মোট নম্বর (৪র্থসহ)', m.tot, `/ ${m.max}`) + box('৪র্থ বিষয় ছাড়া', m.totW, `/ ${m.maxW}`) + box('শতকরা', m.pct.toFixed(2) + '%', '৪র্থসহ') + box('শতকরা', m.pctW.toFixed(2) + '%', '৪র্থ ছাড়া')
+    : `<div class="col-span-full text-sm text-ink-500">এই গেটওয়েতে বিষয়ভিত্তিক নম্বর নেই — নম্বরসহ মোড ব্যবহার করুন।</div>`;
+}
+
+/* ======================= Security art (guilloche / rosette) ======================= */
+function spiro(cx, cy, R, r, d, n = 720) {
+  const k = (R + r) / r; let p = '';
+  for (let i = 0; i <= n; i++) { const t = i / n * Math.PI * 2;
+    const x = cx + (R + r) * Math.cos(t) - d * Math.cos(k * t), y = cy + (R + r) * Math.sin(t) - d * Math.sin(k * t);
+    p += (i ? 'L' : 'M') + x.toFixed(2) + ',' + y.toFixed(2); }
+  return p + 'Z';
+}
+function rosetteSVG(size, stroke, gradId) {
+  const c = size / 2, s = size;
+  const paths = [spiro(c, c, s * .30, s * .05, s * .13), spiro(c, c, s * .26, s * .0433, s * .17), spiro(c, c, s * .18, s * .036, s * .12), spiro(c, c, s * .10, s * .025, s * .07)];
+  const grad = gradId ? `<defs><linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b6e4f"/><stop offset=".5" stop-color="#1e3a8a"/><stop offset="1" stop-color="#9a6f08"/></linearGradient></defs>` : '';
+  return `<svg viewBox="0 0 ${s} ${s}" width="100%" height="100%">${grad}${paths.map((p, i) => `<path d="${p}" fill="none" stroke="${gradId ? `url(#${gradId})` : stroke}" stroke-width="${i === 0 ? .35 : .25}" opacity="${.9 - i * .12}"/>`).join('')}</svg>`;
+}
+function guillocheBG(seed) {
+  const W = 188, H = 273; let p = '';
+  for (let i = 0; i < 46; i++) { const y0 = 6 + i * 6, ph = i * .55 + seed % 7, A = 2.2 + (i % 3) * .5; let d = '';
+    for (let x = 0; x <= W; x += 1.5) d += (x ? 'L' : 'M') + x.toFixed(1) + ',' + (y0 + A * Math.sin(x / 9 + ph) + 1.2 * Math.sin(x / 3.7 + ph * 2)).toFixed(2);
+    p += `<path d="${d}" fill="none" stroke="#0b6e4f" stroke-width=".11" opacity=".22"/>`; }
+  for (let i = 0; i < 40; i++) { const x0 = 4 + i * 4.8, ph = i * .7 + seed % 5; let d = '';
+    for (let y = 0; y <= H; y += 2) d += (y ? 'L' : 'M') + (x0 + 1.8 * Math.sin(y / 11 + ph)).toFixed(2) + ',' + y.toFixed(1);
+    p += `<path d="${d}" fill="none" stroke="#9a6f08" stroke-width=".08" opacity=".16"/>`; }
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">${p}</svg>`;
+}
+function sealSVG(docId) {
+  return `<svg viewBox="0 0 120 120" width="30mm" height="30mm">
+    <defs><path id="sealCircle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
+    <circle cx="60" cy="60" r="57" fill="rgba(238,248,243,.55)" stroke="#0b3d2e" stroke-width="1.8"/>
+    <circle cx="60" cy="60" r="52.5" fill="none" stroke="#9a6f08" stroke-width=".6" stroke-dasharray="1.6 1.2"/>
+    <text font-size="7.4" font-weight="800" letter-spacing="1.35" fill="#0b3d2e" font-family="Inter,Arial"><textPath href="#sealCircle">RESULTSNIPER BD • DIGITALLY VERIFIED • QR AUTHENTIC •</textPath></text>
+    <g transform="translate(26,26)">${rosetteSVG(68, '#0b6e4f').replace('<svg ', '<svg width="68" height="68" ')}</g>
+    <circle cx="60" cy="60" r="21" fill="#fffef9" stroke="#0b3d2e" stroke-width=".8"/>
+    <text x="60" y="57" text-anchor="middle" font-size="8.5" font-weight="900" fill="#0b3d2e" font-family="Inter,Arial">VERIFIED</text>
+    <text x="60" y="66" text-anchor="middle" font-size="5.2" font-weight="700" fill="#9a6f08" font-family="JetBrains Mono,monospace">${esc(docId)}</text>
+  </svg>`;
+}
+function qrSVG(text) {
+  try { const q = qrcode(0, 'M'); q.addData(text); q.make(); return q.createSvgTag({ cellSize: 2, margin: 1, scalable: true }); }
+  catch (e) { return '<div style="font-size:8px">QR error</div>'; }
+}
+
+/* ======================= Print marksheet ======================= */
+function buildMarksheet(d) {
+  const bk = d.board_key || d.board, bi = boardInfo(bk), m = computeMerit(d), rk = meritRanks();
+  const passed = isPassed(d), docId = d.doc_id || ('RS-' + Date.now().toString(36).toUpperCase());
+  const verifyUrl = d.verify_token ? `${location.origin}/verify?t=${d.verify_token}` : location.origin + '/verify';
+  const seed = [...String(d.roll || '0')].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const micro = (`RESULTSNIPER BD • ${docId} • ROLL ${d.roll} • ${bi.en.toUpperCase()} BOARD • VERIFIED COPY • `).repeat(30);
+  const diag = Array.from({ length: 70 }, () => `<span>${esc(d.roll)} • ${esc(docId)} • RESULTSNIPER BD</span>`).join('');
+  const val = v => esc(v && v !== 'N/A' ? v : '—');
+  const examKey = String(d.exam || 'hsc').toLowerCase();
+  const subs = d.subjects || [];
+  const rows = subs.map((s, i) => { const g = gradeOf(s), mk = markOf(s);
+    return `<tr><td class="tx-c">${i + 1}</td><td class="tx-c mono tx-b">${esc(s.code)}</td>
+      <td class="tx-b">${esc((s.name_en || s.name || s.code).toUpperCase())}${i === fourthIdx ? ' <span style="font-size:7px;color:#9a6f08;font-weight:800">(4TH SUBJECT)</span>' : ''}</td>
+      <td class="tx-c mono tx-b">${mk !== null ? mk : '—'}</td><td class="tx-c tx-b" style="color:${g === 'F' ? '#c81e2c' : '#0b3d2e'}">${esc(g)}</td>
+      <td class="tx-c mono">${esc(gpOf(s))}</td></tr>`; }).join('');
+  const hasRank = rk.board || rk.group || rk.inst;
+
+  return `<div class="tx">
+    <div class="tx-bg">${guillocheBG(seed)}</div>
+    <div class="tx-diag">${diag}</div>
+    <div class="tx-wm"><img src="${logoUrl(bk)}" alt=""></div>
+    <div class="tx-frame"></div><div class="tx-frame2"></div>
+    <div class="tx-micro t">${micro}</div><div class="tx-micro b">${micro}</div>
+    <div class="tx-micro l">${micro}</div><div class="tx-micro r">${micro}</div>
+    <div class="tx-corner" style="top:4.5mm;left:4.5mm">${rosetteSVG(80, '#0b6e4f')}</div>
+    <div class="tx-corner" style="top:4.5mm;right:4.5mm">${rosetteSVG(80, '#0b6e4f')}</div>
+    <div class="tx-corner" style="bottom:4.5mm;left:4.5mm">${rosetteSVG(80, '#9a6f08')}</div>
+    <div class="tx-corner" style="bottom:4.5mm;right:4.5mm">${rosetteSVG(80, '', 'phos')}</div>
+
+    <div class="tx-in">
+      <table class="tx-head"><tr>
+        <td style="width:24mm"><img class="tx-logo" src="/assets/boards/govt.svg" alt="Government Seal of Bangladesh"></td>
+        <td style="text-align:center">
+          <div class="tx-gov">Government of the People's Republic of Bangladesh</div>
+          <div class="tx-board">${esc(bi.full)}</div>
+          <div class="tx-exam">${esc(EXAM_FULL[examKey] || examKey.toUpperCase())} — ${esc(d.year)}</div>
+          <div class="tx-pill">ONLINE RESULT • VERIFICATION COPY</div>
+        </td>
+        <td style="width:24mm;text-align:right"><img class="tx-logo" style="margin-left:auto" src="${logoUrl(bk)}" alt="${esc(bi.en)} Board"></td>
+      </tr></table>
+      <div class="tx-rule"></div>
+
+      <table class="tx-info">
+        <tr><td class="k">Name of Student</td><td class="v" colspan="3" style="font-size:11px">${val(d.name)}</td></tr>
+        <tr><td class="k">Father's Name</td><td class="v">${val(d.father)}</td><td class="k">Roll No.</td><td class="v mono">${val(d.roll)}</td></tr>
+        <tr><td class="k">Mother's Name</td><td class="v">${val(d.mother)}</td><td class="k">Registration No.</td><td class="v mono">${val(d.reg)}</td></tr>
+        <tr><td class="k">Group</td><td class="v">${val(d.group)}</td><td class="k">Session</td><td class="v mono">${val(d.session)}</td></tr>
+        <tr><td class="k">Institution</td><td class="v" colspan="3">${val(d.college)}${d.eiin && d.eiin !== 'N/A' ? ` (EIIN: ${esc(d.eiin)})` : ''}</td></tr>
+      </table>
+
+      <table class="tx-sub" style="margin-top:3mm">
+        <thead><tr><th style="width:8%">SL</th><th style="width:14%">Code</th><th style="text-align:left">Name of Subject</th><th style="width:14%">Marks</th><th style="width:12%">Grade</th><th style="width:12%">G.P.</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="6" class="tx-c">—</td></tr>'}</tbody>
+      </table>
+
+      <table class="tx-sum" style="margin-top:3mm"><tr>
+        <td><span class="k">Total Marks</span><span class="v">${m.has ? `${m.tot}/${m.max}` : '—'}</span></td>
+        <td><span class="k">Without 4th Subject</span><span class="v">${m.has ? `${m.totW}/${m.maxW}` : '—'}</span></td>
+        <td><span class="k">Percentage</span><span class="v">${m.has ? m.pct.toFixed(2) + '%' : '—'}</span></td>
+        <td><span class="k">Result</span><span class="v" style="color:${passed ? '#006a4e' : '#c81e2c'}">${passed ? 'PASSED' : 'FAILED'}</span></td>
+        <td><span class="k">G.P.A.</span><span class="v" style="font-size:17px">${passed ? esc(d.gpa || '—') : '0.00'}</span></td>
+      </tr></table>
+
+      ${hasRank ? `<table class="tx-merit" style="margin-top:2.5mm"><tr>
+        <td style="font-weight:800;color:#9a6f08;width:24%">MERIT POSITION<br><span style="font-size:6.8px;font-weight:600;color:#64748b">Reference: ebr.bd (informational)</span></td>
+        <td><b>Board:</b> ${rk.board ? '#' + esc(rk.board) : '—'}</td><td><b>Group:</b> ${rk.group ? '#' + esc(rk.group) : '—'}</td><td><b>Institution:</b> ${rk.inst ? '#' + esc(rk.inst) : '—'}</td>
+      </tr></table>` : ''}
+
+      <div class="tx-scale">Grading: <b>A+</b> 80–100 (5.00) • <b>A</b> 70–79 (4.00) • <b>A-</b> 60–69 (3.50) • <b>B</b> 50–59 (3.00) • <b>C</b> 40–49 (2.00) • <b>D</b> 33–39 (1.00) • <b>F</b> 0–32 (0.00)</div>
+
+      <table class="tx-foot" style="margin-top:6mm"><tr>
+        <td style="width:36%">
+          <div style="width:27mm;height:27mm;padding:1mm;background:#fff;border:.3mm solid #0b3d2e">${qrSVG(verifyUrl)}</div>
+          <div class="tx-note" style="margin-top:1.2mm"><b style="color:#0b3d2e">SCAN TO VERIFY</b> — QR opens the ResultSniper BD verification page. Any edit to this copy will fail verification.</div>
+        </td>
+        <td style="width:28%;text-align:center">${sealSVG(docId)}</td>
+        <td style="width:36%;text-align:right" class="tx-note">
+          <div><b style="color:#0b3d2e">Document ID:</b> <span class="mono">${esc(docId)}</span></div>
+          <div><b style="color:#0b3d2e">Source:</b> ${esc(d.source || 'Education Board')}</div>
+          <div><b style="color:#0b3d2e">Generated:</b> ${new Date().toLocaleString('en-GB')}</div>
+          <div style="margin-top:2mm;padding-top:1.5mm;border-top:.3mm solid #0b3d2e;font-weight:800;color:#0b3d2e;font-size:8px">RESULTSNIPER BD</div>
+          <div>Developed by Shahriyar Sojib Hasan</div>
+        </td>
+      </tr></table>
+
+      <div class="tx-disc">This is a computer-generated copy of the result published online by the Education Board, digitally signed by ResultSniper BD. It is <b>not</b> a substitute for the Academic Transcript / Certificate issued by the Board. Verify authenticity by scanning the QR code.</div>
+    </div>
+  </div>`;
+}
+function printMarksheet() {
+  if (!last) return toast('প্রথমে ফলাফল বের করুন');
+  $('printArea').innerHTML = buildMarksheet(last);
+  const imgs = [...$('printArea').querySelectorAll('img')];
+  Promise.all(imgs.map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 150));
+}
+
+/* ======================= Sniper ======================= */
+let sniperOn = false, sniperTimer = null;
+async function toggleSniper() {
+  if (!sniperOn) {
+    const roll = $('sRoll').value.trim(); if (!roll) return toast('রোল নম্বর লিখুন');
+    const r = await fetch('/api/sniper/start', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ board: $('sBoard').value, roll, reg: $('sReg').value.trim(), exam: $('exam').value, year: $('year').value, interval: +$('sInterval').value }) });
+    const d = await r.json(); if (!d.success) return toast(d.error || 'চালু করা যায়নি');
+    sniperOn = true; sniperUI(); sniperTimer = setInterval(pollSniper, 2000);
+  } else {
+    await fetch('/api/sniper/stop', { method: 'POST' }); sniperOn = false; sniperUI(); clearInterval(sniperTimer);
+  }
+}
+function sniperUI() {
+  $('sniperBtnText').textContent = sniperOn ? 'বন্ধ করুন' : 'চালু করুন';
+  $('sniperBtn').className = 'btn w-full py-2.5 ' + (sniperOn ? 'bg-flag-red text-white' : 'btn-primary');
+  $('sniperBadge').className = 'text-xs font-bold px-3 py-1.5 rounded-full ' + (sniperOn ? 'bg-brand-50 text-brand-700' : 'bg-ink-100 text-ink-500');
+  $('sniperBadge').textContent = sniperOn ? '● মনিটরিং চলছে' : 'নিষ্ক্রিয়';
+}
+async function pollSniper() {
+  try {
+    const d = await (await fetch('/api/sniper/status')).json();
+    $('stAttempts').textContent = d.attempts; $('stStart').textContent = d.start_time || '--:--:--';
+    $('stLast').textContent = d.last_attempt_time || '--:--:--'; $('stMsg').textContent = d.last_status || '';
+    if (d.logs?.length) { $('sniperLog').innerHTML = d.logs.map(l => `<div>${esc(l)}</div>`).join(''); $('sniperLog').scrollTop = 1e9; }
+    if (d.status === 'FOUND' && d.result) {
+      sniperOn = false; sniperUI(); clearInterval(sniperTimer);
+      d.result.board_key = $('sBoard').value; switchTab('check'); showResult(d.result); saveHistory(d.result);
+    }
+  } catch (e) {}
+}
+
+/* ======================= PDF ======================= */
+async function onPdf(e) {
+  e.preventDefault();
+  const f = $('pdfFile').files[0]; if (!f) return toast('পিডিএফ ফাইল নির্বাচন করুন');
+  const fd = new FormData(); fd.append('roll', $('pdfRoll').value.trim()); fd.append('pdf', f);
+  const btn = $('pdfBtn'); btn.disabled = true;
+  try {
+    const d = await (await fetch('/api/search-pdf', { method: 'POST', body: fd })).json();
+    const box = $('pdfResult'); box.classList.remove('hidden');
+    if (d.success && d.data?.found) {
+      const x = d.data, ok = x.gpa !== 'FAIL'; beep(ok);
+      box.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2"><span class="text-xs font-bold px-2 py-1 rounded ${ok ? 'bg-brand-50 text-brand-700' : 'bg-red-50 text-flag-red'}">${ok ? 'PASSED' : 'FAILED'}</span>
+        <span class="text-xs text-ink-500">${esc(x.institution)} • EIIN ${esc(x.eiin)}</span></div>
+        <div class="mt-2 text-sm">রোল <b class="mono">${esc(x.roll)}</b></div>
+        <div class="text-2xl font-extrabold mono ${ok ? 'text-brand-700' : 'text-flag-red'}">${ok ? 'GPA ' + esc(x.gpa) : 'FAILED (' + esc(x.detail || 'F') + ')'}</div>`;
+    } else box.innerHTML = `<div class="text-sm text-flag-red">${esc(d.error || 'এই পিডিএফে রোল পাওয়া যায়নি')}</div>`;
+  } catch (err) { toast('স্ক্যান ব্যর্থ'); } finally { btn.disabled = false; }
+}
+
+/* ======================= Profiles & History ======================= */
+const HKEY = 'rsbd_history_v3', WEEK = 7 * 864e5;
+function getHistory() { try { return JSON.parse(localStorage.getItem(HKEY) || '[]').filter(h => Date.now() - h.ts < WEEK); } catch (e) { return []; } }
+function saveHistory(d) {
+  if (!d?.roll) return;
+  const h = getHistory().filter(x => !(x.roll === String(d.roll) && x.board === (d.board_key || normBoard(d.board))));
+  h.unshift({ roll: String(d.roll), reg: d.reg || '', board: d.board_key || normBoard(d.board), exam: String(d.exam || 'hsc').toLowerCase(), year: String(d.year || ''), name: d.name || '', gpa: d.gpa || '', ts: Date.now() });
+  localStorage.setItem(HKEY, JSON.stringify(h.slice(0, 40)));
+}
+function itemCard(x, extra) {
+  const bi = BOARDS[x.board] || BOARDS.dhaka;
+  return `<div class="rounded-2xl border border-ink-200 p-3.5 space-y-1.5 hover:border-brand-500 transition">
+    <div class="flex items-center justify-between gap-2"><span class="text-[11px] font-bold text-brand-700 uppercase">${esc(bi.en)} • ${esc(String(x.exam).toUpperCase())} ${esc(x.year)}</span>${extra || ''}</div>
+    <div class="font-bold truncate">${esc(x.name || 'Student')}</div>
+    <div class="text-xs text-ink-500 mono">Roll ${esc(x.roll)} • Reg ${esc(x.reg || '—')}</div>
+    <button class="load-btn text-sm font-bold text-brand-700 hover:underline" data-p='${esc(JSON.stringify({ board: x.board, exam: x.exam, year: x.year, roll: x.roll, reg: x.reg }))}'>১ ক্লিকে লোড →</button></div>`;
+}
+function renderHistory() {
+  const h = getHistory();
+  $('historyList').innerHTML = h.length ? h.map(x => itemCard(x, x.gpa ? `<span class="mono text-xs font-bold bg-gold-50 text-gold-600 px-2 py-0.5 rounded">GPA ${esc(x.gpa)}</span>` : '')).join('')
+    : `<div class="col-span-full text-sm text-ink-500 text-center py-4">গত ৭ দিনে কোনো অনুসন্ধান নেই।</div>`;
+}
+async function loadProfiles() {
+  try {
+    const d = await (await fetch('/api/profiles')).json();
+    const list = (d.profiles || []).map(p => ({ ...p, board: normBoard(p.board), exam: String(p.exam || 'hsc').toLowerCase() }));
+    $('profilesList').innerHTML = list.length ? list.map(p => itemCard(p, `<button class="del-btn text-ink-400 hover:text-flag-red" data-id="${esc(p.id)}" title="মুছুন"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`)).join('')
+      : `<div class="col-span-full text-sm text-ink-500 text-center py-4">কোনো প্রোফাইল নেই — "নতুন যোগ করুন" চাপুন।</div>`;
+    lucide.createIcons();
+  } catch (e) {}
+}
+async function saveProfile(p) {
+  const d = await (await fetch('/api/profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })).json();
+  toast(d.success ? 'প্রোফাইল সংরক্ষিত হয়েছে' : 'সংরক্ষণ ব্যর্থ'); loadProfiles();
+}
+function loadIntoForm(p) {
+  $('board').value = p.board; $('exam').value = p.exam || 'hsc'; if (p.year) $('year').value = p.year;
+  $('roll').value = p.roll || ''; $('reg').value = p.reg || '';
+  $('sBoard').value = p.board; $('sRoll').value = p.roll || ''; $('sReg').value = p.reg || '';
+  switchTab('check'); if (METHODS[method].captcha) loadCaptcha(); $('roll').focus();
+}
+
+/* ======================= Wire up ======================= */
+document.addEventListener('DOMContentLoaded', () => {
+  fillSelects(); lucide.createIcons(); setMethod('ebr');
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => setMethod(b.dataset.method)));
+  $('checkForm').addEventListener('submit', onSubmit);
+  $('captchaRefresh').addEventListener('click', loadCaptcha);
+  $('board').addEventListener('change', () => { if (METHODS[method].captcha) loadCaptcha(); });
+  $('copyRollReg').addEventListener('click', () => { navigator.clipboard?.writeText(`${$('roll').value}\t${$('reg').value}`); toast('কপি হয়েছে'); });
+  $('openEbrFromResult').addEventListener('click', () => openEbr(last?.roll, last?.reg));
+  $('fourthSel').addEventListener('change', e => { fourthIdx = +e.target.value; renderSubjects(); renderMerit(); });
+  $('printBtn').addEventListener('click', printMarksheet);
+  $('copyVerifyBtn').addEventListener('click', () => {
+    if (!last?.verify_token) return toast('যাচাই টোকেন নেই');
+    navigator.clipboard?.writeText(`${location.origin}/verify?t=${last.verify_token}`); toast('যাচাই লিংক কপি হয়েছে');
+  });
+  $('saveProfileBtn').addEventListener('click', () => last && saveProfile({ name: last.name, exam: String(last.exam || 'hsc').toLowerCase(), year: String(last.year), board: last.board_key || normBoard(last.board), roll: String(last.roll), reg: last.reg || '', college: last.college || '' }));
+  $('sniperBtn').addEventListener('click', toggleSniper);
+  $('pdfForm').addEventListener('submit', onPdf);
+  $('toggleAdd').addEventListener('click', () => $('addBox').classList.toggle('hidden'));
+  $('pCancel').addEventListener('click', () => $('addBox').classList.add('hidden'));
+  $('pSave').addEventListener('click', () => {
+    const roll = $('pRoll').value.trim(); if (!roll) return toast('রোল আবশ্যক');
+    saveProfile({ name: $('pName').value.trim() || 'Student ' + roll, exam: $('pExam').value, year: $('pYear').value, board: $('pBoard').value, roll, reg: $('pReg').value.trim(), college: '' });
+    ['pName', 'pRoll', 'pReg'].forEach(id => $(id).value = ''); $('addBox').classList.add('hidden');
+  });
+  $('clearHistory').addEventListener('click', () => { if (confirm('গত ৭ দিনের ইতিহাস মুছে ফেলবেন?')) { localStorage.removeItem(HKEY); renderHistory(); } });
+  document.addEventListener('click', async e => {
+    const lb = e.target.closest('.load-btn'); if (lb) return loadIntoForm(JSON.parse(lb.dataset.p));
+    const db = e.target.closest('.del-btn');
+    if (db && confirm('প্রোফাইলটি মুছবেন?')) { await fetch('/api/profiles/' + encodeURIComponent(db.dataset.id), { method: 'DELETE' }); loadProfiles(); }
+  });
+});
+</script>
+</body>
+</html>
